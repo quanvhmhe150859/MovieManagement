@@ -11,8 +11,8 @@ namespace CartoonMovieManagement
             InitializeComponent();
 
             //fix
-            //Form2 form2 = new Form2(2, this);
-            //form2.Show();
+            Form2 form2 = new Form2(2, this);
+            form2.Show();
 
             FormDashboard formDashboard = new FormDashboard(2, this);
             formDashboard.Show();

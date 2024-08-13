@@ -53,6 +53,7 @@
             dgvDashboard.Size = new Size(658, 426);
             dgvDashboard.TabIndex = 0;
             dgvDashboard.CellClick += dgvDashboard_CellClick;
+            dgvDashboard.CellContentClick += dgvDashboard_CellContentClick;
             // 
             // btnProject
             // 

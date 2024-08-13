@@ -44,7 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Uploads\" />
+    <Folder Include="Uploads\Movies\" />
+    <Folder Include="Uploads\Results\" />
+    <Folder Include="Uploads\Resources\" />
   </ItemGroup>
 
 </Project>

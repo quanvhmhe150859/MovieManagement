@@ -17,15 +17,15 @@ namespace CartoonMovieManagement
 {
     public partial class Form2 : Form
     {
-        private int accountId;
+        private int employeeId;
         private Form1 loginForm;
 
         private Timer countdownTimer;
 
-        public Form2(int accountId, Form1 form1)
+        public Form2(int employeeId, Form1 form1)
         {
             InitializeComponent();
-            this.accountId = accountId;
+            this.employeeId = employeeId;
             this.loginForm = form1;
 
             //InitializeDataGridView();
@@ -36,6 +36,31 @@ namespace CartoonMovieManagement
 
         private void LoadData()
         {
+            if (!dataGridView1.Columns.Contains("Deadline"))
+            {
+                // Add Countdown column
+                var countdownColumn = new DataGridViewTextBoxColumn
+                {
+                    Name = "Deadline",
+                    HeaderText = "Deadline",
+                    DefaultCellStyle = new DataGridViewCellStyle { Format = @"dd\:hh\:mm\:ss" }
+                };
+                dataGridView1.Columns.Insert(0, countdownColumn);
+            }
+
+            if (!dataGridView1.Columns.Contains("DownloadColumn"))
+            {
+                // Create a new DataGridViewLinkColumn
+                DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
+                linkColumn.Name = "DownloadColumn";
+                linkColumn.HeaderText = "Download";
+                linkColumn.Text = "Download";
+                linkColumn.UseColumnTextForLinkValue = true; // Use the text specified above as the link text
+
+                // Add the column to the DataGridView
+                dataGridView1.Columns.Add(linkColumn);
+            }
+
             var cbData = context.Statuses
                 .ToList();
             cbStatus.DataSource = cbData;
@@ -47,9 +72,10 @@ namespace CartoonMovieManagement
             var data = context.Tasks
                 .Include(t => t.Status)
                 .Include(t => t.EpisodeMovie)
-                .Where(t => t.ReceiverId == accountId)
+                .Where(t => t.ReceiverId == employeeId)
                 .Select(t => new
                 {
+                    TaskId = t.TaskId,
                     Name = t.Name,
                     Description = t.Description,
                     CreatedDate = t.CreatedDate,
@@ -65,41 +91,16 @@ namespace CartoonMovieManagement
 
             dataGridView1.DataSource = data;
 
-            if (!dataGridView1.Columns.Contains("Deadline"))
-            {
-                // Add Countdown column
-                var countdownColumn = new DataGridViewTextBoxColumn
-                {
-                    Name = "Deadline",
-                    HeaderText = "Deadline",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = @"dd\:hh\:mm\:ss" }
-                };
-                dataGridView1.Columns.Insert(0, countdownColumn);
-            }
-
             dataGridView1.Columns["CreatedDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
             dataGridView1.Columns["DeadlineDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
-
-            if (!dataGridView1.Columns.Contains("DownloadColumn"))
-            {
-                // Create a new DataGridViewLinkColumn
-                DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
-                linkColumn.Name = "DownloadColumn";
-                linkColumn.HeaderText = "Download";
-                linkColumn.Text = "Download";
-                linkColumn.UseColumnTextForLinkValue = true; // Use the text specified above as the link text
-
-                // Add the column to the DataGridView
-                dataGridView1.Columns.Add(linkColumn);
-            }
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            var account = context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
-            if (account != null)
+            var employee = context.Employees.FirstOrDefault(a => a.EmployeeId == employeeId);
+            if (employee != null)
             {
-                linkLabel1.Text = account.Email;
+                linkLabel1.Text = employee.FullName;
             }
 
             LoadData();
@@ -122,39 +123,54 @@ namespace CartoonMovieManagement
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            var task = context.Tasks.FirstOrDefault(t => t.TaskId == Int32.Parse(lbId.Text));
+            if(task != null)
             {
-                openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    // Get the path of specified file
-                    string sourceFilePath = openFileDialog.FileName;
+                    openFileDialog.InitialDirectory = "c:\\";
+                    openFileDialog.Filter = "All files (*.*)|*.*";
+                    openFileDialog.FilterIndex = 1;
+                    openFileDialog.RestoreDirectory = true;
 
-                    // Get the file name
-                    string fileName = Path.GetFileName(sourceFilePath);
-
-                    // Get the path to the "Uploads" folder
-                    string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-                    string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads");
-
-                    // Ensure the "Uploads" folder exists
-                    if (!Directory.Exists(uploadsFolderPath))
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        Directory.CreateDirectory(uploadsFolderPath);
+                        // Get the path of specified file
+                        string sourceFilePath = openFileDialog.FileName;
+
+                        // Get the file name
+                        string fileName = Path.GetFileName(sourceFilePath);
+
+                        // Get the path to the "Uploads" folder
+                        string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+                        string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads", "Results");
+
+                        // Ensure the "Uploads" folder exists
+                        if (!Directory.Exists(uploadsFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadsFolderPath);
+                        }
+
+                        // Combine the destination folder path and file name
+                        string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
+
+                        // Copy the file to the "Uploads" folder
+                        File.Copy(sourceFilePath, destinationFilePath, true);
+
+                        task.SubmitLink = fileName;
+                        task.StatusId = (int?)cbStatus.SelectedValue ?? 0;
+                        task.Note = tbNote.Text;
+
+                        context.Tasks.Update(task);
+                        context.SaveChanges();
+
+                        MessageBox.Show("File uploaded successfully");
                     }
-
-                    // Combine the destination folder path and file name
-                    string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
-
-                    // Copy the file to the "Uploads" folder
-                    File.Copy(sourceFilePath, destinationFilePath, true);
-
-                    MessageBox.Show("File uploaded successfully to " + destinationFilePath);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Task not exist");
             }
         }
 
@@ -170,6 +186,7 @@ namespace CartoonMovieManagement
 
                 // Display the data in the labels
                 lTaskName.Text = row.Cells["Name"].Value.ToString();
+                lbId.Text = row.Cells["TaskId"].Value.ToString();
 
                 var status = context.Statuses.FirstOrDefault(s => s.Name == row.Cells["Status"].Value.ToString());
                 cbStatus.SelectedValue = status?.StatusId;

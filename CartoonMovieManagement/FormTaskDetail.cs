@@ -26,6 +26,9 @@ namespace CartoonMovieManagement
             InitializeComponent();
             taskId = id;
             this.formDashboard = formDashboard;
+
+            dtbDeadLine.Format = DateTimePickerFormat.Custom;
+            dtbDeadLine.CustomFormat = "dd/MM/yyyy hh:mm tt";
         }
 
         private void FormTaskDetail_Load(object sender, EventArgs e)
@@ -154,22 +157,31 @@ namespace CartoonMovieManagement
                     ResourceLink = tbFilePath.Text,
                     TaskParentId = (int?)cbTaskParent.SelectedValue
                 };
-
-                bool resourcesChange = true;
-                var tempTask = context.Tasks.FirstOrDefault(t => t.TaskId == Int32.Parse(tbId.Text));
-                if (tbId.Text != "")
-                { 
+                Task tempTask = new Task();
+                bool isLinkChange = false;
+                if (taskId != 0)
+                {
+                    tempTask = context.Tasks.FirstOrDefault(t => t.TaskId == Int32.Parse(tbId.Text));
                     if (tempTask != null)
                     {
-                        if (tempTask.ResourceLink == tbFilePath.Text)
-                        {
-                            resourcesChange = false;
-                        }
+                        tempTask.Name = newTask.Name;
+                        tempTask.Description = newTask.Description;
+                        tempTask.AssignedDate = newTask.AssignedDate;
+                        tempTask.DeadlineDate = newTask.DeadlineDate;
+                        tempTask.StatusId = newTask.StatusId;
+                        tempTask.EpisodeMovieId = newTask.EpisodeMovieId;
+                        tempTask.TaskParentId = newTask.TaskParentId;
+
+                        if (tempTask.ResourceLink != newTask.ResourceLink)
+                            isLinkChange = true;
                     }
                 }
 
+                if (newTask.TaskParentId == 0)
+                    tempTask.TaskParentId = null;
+
                 // Ensure a file is selected
-                if (!string.IsNullOrEmpty(tbFilePath.Text) && resourcesChange)
+                if ((!string.IsNullOrEmpty(tbFilePath.Text) && taskId == 0) || isLinkChange)
                 {
                     try
                     {
@@ -182,17 +194,18 @@ namespace CartoonMovieManagement
                         //    Directory.CreateDirectory(uploadsFolderPath);
                         //}
                         // Define the upload folder
-                        string uploadFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Uploads");
-                        Directory.CreateDirectory(uploadFolder);
+                        string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                        string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Resources");
 
                         // Get the file name and destination path
                         string fileName = Path.GetFileName(tbFilePath.Text);
-                        string destPath = Path.Combine(uploadFolder, fileName);
+                        string destPath = Path.Combine(uploadsFolderPath, fileName);
 
                         // Copy the file to the upload folder
                         File.Copy(tbFilePath.Text, destPath, true);
 
-                        newTask.ResourceLink = destPath;
+                        newTask.ResourceLink = fileName;
+                        tempTask.ResourceLink = fileName;
                     }
                     catch (Exception ex)
                     {
@@ -200,19 +213,8 @@ namespace CartoonMovieManagement
                     }
                 }
 
-                if (tbId.Text != "" && tempTask != null)
+                if (tbId.Text != "")
                 {
-                    tempTask.Name = newTask.Name;
-                    tempTask.Description = newTask.Description;
-                    tempTask.ResourceLink = newTask.ResourceLink;
-                    tempTask.CreatedDate = newTask.CreatedDate;
-                    tempTask.AssignedDate = newTask.AssignedDate;
-                    tempTask.DeadlineDate = newTask.DeadlineDate;
-                    tempTask.ReceiverId = newTask.ReceiverId;
-                    tempTask.StatusId = newTask.StatusId;
-                    tempTask.EpisodeMovieId = newTask.EpisodeMovieId;
-                    tempTask.TaskParentId = newTask.TaskParentId;
-
                     context.Tasks.Update(tempTask);
                 }
                 else

@@ -41,6 +41,8 @@
             label4 = new Label();
             tbNote = new TextBox();
             panel1 = new Panel();
+            lbId = new Label();
+            label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -106,7 +108,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(3, 11);
+            label2.Location = new Point(3, 38);
             label2.Name = "label2";
             label2.Size = new Size(35, 15);
             label2.TabIndex = 8;
@@ -116,7 +118,7 @@
             // 
             cbStatus.Enabled = false;
             cbStatus.FormattingEnabled = true;
-            cbStatus.Location = new Point(51, 34);
+            cbStatus.Location = new Point(51, 61);
             cbStatus.Name = "cbStatus";
             cbStatus.Size = new Size(101, 23);
             cbStatus.TabIndex = 9;
@@ -124,7 +126,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(3, 37);
+            label3.Location = new Point(3, 64);
             label3.Name = "label3";
             label3.Size = new Size(45, 15);
             label3.TabIndex = 10;
@@ -133,7 +135,7 @@
             // lTaskName
             // 
             lTaskName.AutoSize = true;
-            lTaskName.Location = new Point(51, 11);
+            lTaskName.Location = new Point(51, 38);
             lTaskName.Name = "lTaskName";
             lTaskName.Size = new Size(0, 15);
             lTaskName.TabIndex = 11;
@@ -141,7 +143,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(3, 69);
+            label4.Location = new Point(3, 96);
             label4.Name = "label4";
             label4.Size = new Size(39, 15);
             label4.TabIndex = 12;
@@ -150,7 +152,7 @@
             // tbNote
             // 
             tbNote.Enabled = false;
-            tbNote.Location = new Point(51, 66);
+            tbNote.Location = new Point(51, 93);
             tbNote.Multiline = true;
             tbNote.Name = "tbNote";
             tbNote.Size = new Size(100, 89);
@@ -159,6 +161,8 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel1.Controls.Add(lbId);
+            panel1.Controls.Add(label6);
             panel1.Controls.Add(lTaskName);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(tbNote);
@@ -171,6 +175,24 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(152, 281);
             panel1.TabIndex = 15;
+            // 
+            // lbId
+            // 
+            lbId.AutoSize = true;
+            lbId.Location = new Point(58, 13);
+            lbId.Name = "lbId";
+            lbId.Size = new Size(17, 15);
+            lbId.TabIndex = 16;
+            lbId.Text = "Id";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(4, 13);
+            label6.Name = "label6";
+            label6.Size = new Size(48, 15);
+            label6.TabIndex = 15;
+            label6.Text = "Task Id: ";
             // 
             // Form2
             // 
@@ -207,5 +229,7 @@
         private Label label4;
         private TextBox tbNote;
         private Panel panel1;
+        private Label lbId;
+        private Label label6;
     }
 }

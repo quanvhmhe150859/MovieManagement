@@ -35,9 +35,9 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            comboBox1 = new ComboBox();
+            cbProject = new ComboBox();
             label7 = new Label();
-            checkBox1 = new CheckBox();
+            checkActive = new CheckBox();
             label4 = new Label();
             SuspendLayout();
             // 
@@ -108,14 +108,14 @@
             label1.TabIndex = 13;
             label1.Text = "Movie Detail";
             // 
-            // comboBox1
+            // cbProject
             // 
-            comboBox1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(135, 59);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(382, 33);
-            comboBox1.TabIndex = 26;
+            cbProject.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            cbProject.FormattingEnabled = true;
+            cbProject.Location = new Point(135, 59);
+            cbProject.Name = "cbProject";
+            cbProject.Size = new Size(382, 33);
+            cbProject.TabIndex = 26;
             // 
             // label7
             // 
@@ -127,17 +127,17 @@
             label7.TabIndex = 25;
             label7.Text = "Project: ";
             // 
-            // checkBox1
+            // checkActive
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            checkBox1.Location = new Point(135, 227);
-            checkBox1.Name = "checkBox1";
-            checkBox1.RightToLeft = RightToLeft.No;
-            checkBox1.Size = new Size(36, 29);
-            checkBox1.TabIndex = 27;
-            checkBox1.Text = " ";
-            checkBox1.UseVisualStyleBackColor = true;
+            checkActive.AutoSize = true;
+            checkActive.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            checkActive.Location = new Point(135, 227);
+            checkActive.Name = "checkActive";
+            checkActive.RightToLeft = RightToLeft.No;
+            checkActive.Size = new Size(36, 29);
+            checkActive.TabIndex = 27;
+            checkActive.Text = " ";
+            checkActive.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -155,8 +155,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 389);
             Controls.Add(label4);
-            Controls.Add(checkBox1);
-            Controls.Add(comboBox1);
+            Controls.Add(checkActive);
+            Controls.Add(cbProject);
             Controls.Add(label7);
             Controls.Add(tbId);
             Controls.Add(btnSubmit);
@@ -181,9 +181,9 @@
         private Label label3;
         private Label label2;
         private Label label1;
-        private ComboBox comboBox1;
+        private ComboBox cbProject;
         private Label label7;
-        private CheckBox checkBox1;
+        private CheckBox checkActive;
         private Label label4;
     }
 }
