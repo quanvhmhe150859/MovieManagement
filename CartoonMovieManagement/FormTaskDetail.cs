@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Forms.Button;
 using Task = CartoonMovieManagement.Models.Task;
 
 namespace CartoonMovieManagement
@@ -19,13 +20,21 @@ namespace CartoonMovieManagement
         private int? taskId;
         private FormDashboard formDashboard;
 
+        private int? projectSelected;
+        private int? movieSelected;
+        private int? episodeSelected;
+
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormTaskDetail(int? id, FormDashboard formDashboard)
+        public FormTaskDetail(int? id, FormDashboard formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected)
         {
             InitializeComponent();
             taskId = id;
             this.formDashboard = formDashboard;
+
+            this.projectSelected = projectSelected;
+            this.movieSelected = movieSelected;
+            this.episodeSelected = episodeSelected;
 
             dtbDeadLine.Format = DateTimePickerFormat.Custom;
             dtbDeadLine.CustomFormat = "dd/MM/yyyy hh:mm tt";
@@ -33,6 +42,9 @@ namespace CartoonMovieManagement
 
         private void FormTaskDetail_Load(object sender, EventArgs e)
         {
+            if(taskId != 0)
+                CreateDeleteButton();
+
             //Error
             errorProject.Text = "";
             errorMovie.Text = "";
@@ -53,7 +65,7 @@ namespace CartoonMovieManagement
             var placeholder = new Project { ProjectId = -1, Name = "Please select..." };
 
             // Retrieve the data and add the placeholder item
-            var dataProject = context.Projects.ToList();
+            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
             dataProject.Insert(0, placeholder); // Add placeholder to the beginning of the list
 
             // Set the data source and configure the ComboBox
@@ -66,6 +78,10 @@ namespace CartoonMovieManagement
             cbStatus.DataSource = statusData;
             cbStatus.DisplayMember = "Name";
             cbStatus.ValueMember = "StatusId";
+
+            cbProject.SelectedValue = projectSelected;
+            cbMovie.SelectedValue = movieSelected == 0 ? -1 : movieSelected;
+            cbEpisode.SelectedValue = episodeSelected == 0 ? -1 : episodeSelected;
 
             if (taskId != 0)
             {
@@ -88,6 +104,26 @@ namespace CartoonMovieManagement
                     tbFilePath.Text = task.ResourceLink;
                 }
             }
+        }
+
+        private void CreateDeleteButton()
+        {
+            // Create a new button
+            Button btnDelete = new Button();
+
+            btnDelete.BackColor = Color.Red;
+            btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            btnDelete.ForeColor = SystemColors.ActiveCaptionText;
+            btnDelete.Location = new Point(652, 578);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(136, 35);
+            btnDelete.TabIndex = 43;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
+
+            // Add the button to the form
+            this.Controls.Add(btnDelete);
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -149,8 +185,7 @@ namespace CartoonMovieManagement
                     Description = tbDescription.Text,
                     CreatedDate = DateTime.Now,
                     ReceiverId = (int?)cbEmployee.SelectedValue,
-                    AssignedDate = DateTime.Now,
-                    CreaterId = 2, //dang fix cung
+                    CreaterId = formDashboard.accountId, //dang fix cung
                     StatusId = (int)(cbStatus.SelectedValue ?? 0),
                     EpisodeMovieId = (int?)cbEpisode.SelectedValue ?? 0,
                     DeadlineDate = dtbDeadLine.Value,
@@ -178,7 +213,10 @@ namespace CartoonMovieManagement
                 }
 
                 if (newTask.TaskParentId == 0)
+                {
+                    newTask.TaskParentId = null;
                     tempTask.TaskParentId = null;
+                }
 
                 // Ensure a file is selected
                 if ((!string.IsNullOrEmpty(tbFilePath.Text) && taskId == 0) || isLinkChange)
@@ -216,10 +254,45 @@ namespace CartoonMovieManagement
                 if (tbId.Text != "")
                 {
                     context.Tasks.Update(tempTask);
+
+                    context.TaskHistoryLogs.Add(new TaskHistoryLog
+                    {
+                        TaskId = tempTask.TaskId,
+                        LogAction = "Update",
+                        UpdatedDate = DateTime.Now,
+                        Name = tempTask.Name,
+                        Description = tempTask.Description,
+                        EpisodeName = tempTask.EpisodeMovie.Name,
+                        ReceiverName = tempTask.Receiver?.FullName,
+                        DeadlineDate = tempTask.DeadlineDate,
+                        SubmitedDate = tempTask.AssignedDate,
+                        ResourceLink = tempTask.ResourceLink,
+                        SubmitLink = tempTask.SubmitLink,
+                        Status = tempTask.Status.Name,
+                        Note = tempTask.Note
+                    });
                 }
                 else
                 {
                     context.Tasks.Add(newTask);
+                    context.SaveChanges();
+
+                    context.TaskHistoryLogs.Add(new TaskHistoryLog
+                    {
+                        TaskId = newTask.TaskId,
+                        LogAction = "Create",
+                        UpdatedDate = DateTime.Now,
+                        Name = newTask.Name,
+                        Description = newTask.Description,
+                        EpisodeName = newTask.EpisodeMovie.Name,
+                        ReceiverName = newTask.Receiver?.FullName,
+                        DeadlineDate = newTask.DeadlineDate,
+                        SubmitedDate = newTask.AssignedDate,
+                        ResourceLink = newTask.ResourceLink,
+                        SubmitLink = newTask.SubmitLink,
+                        Status = newTask.Status.Name,
+                        Note = newTask.Note
+                    });
                 }
                 context.SaveChanges();
 
@@ -243,7 +316,7 @@ namespace CartoonMovieManagement
             {
                 // Query the database to get movies based on the selected project ID
                 var dataMovie = context.CartoonMovies
-                    .Where(c => c.ProjectId == selectedProjectId)
+                    .Where(c => c.ProjectId == selectedProjectId && c.DeletedDate == null)
                     .ToList();
 
                 if (dataMovie.Count > 0)
@@ -283,7 +356,7 @@ namespace CartoonMovieManagement
             {
                 // Query the database to get movies based on the selected project ID
                 var dataEpisode = context.EpisodeMovies
-                    .Where(c => c.CartoonMovieId == selectedProjectId)
+                    .Where(c => c.CartoonMovieId == selectedProjectId && c.DeletedDate == null)
                     .ToList();
 
                 if (dataEpisode.Count > 0)
@@ -320,7 +393,7 @@ namespace CartoonMovieManagement
             {
                 // Query the database to get movies based on the selected project ID
                 var dataTask = context.Tasks
-                    .Where(c => c.EpisodeMovieId == selectedProjectId)
+                    .Where(c => c.EpisodeMovieId == selectedProjectId && c.DeletedDate == null)
                     .ToList();
 
                 if (dataTask.Count > 0)
@@ -343,6 +416,52 @@ namespace CartoonMovieManagement
                     cbTaskParent.DataSource = null;
                     cbTaskParent.Enabled = false; // Optionally disable cbMovie if no valid selection
                 }
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // Show a confirmation message box
+            var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirm Deletion",
+                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            // Check the user's response
+            if (result == DialogResult.Yes)
+            {
+                var task = context.Tasks.FirstOrDefault(p => p.TaskId == taskId);
+                if (task != null)
+                {
+                    task.DeletedDate = DateTime.Now;
+
+                    context.Tasks.Update(task);
+
+                    context.TaskHistoryLogs.Add(new TaskHistoryLog
+                    {
+                        TaskId = task.TaskId,
+                        LogAction = "Delete",
+                        UpdatedDate = DateTime.Now,
+                        Name = task.Name,
+                        Description = task.Description,
+                        EpisodeName = task.EpisodeMovie.Name,
+                        ReceiverName = task.Receiver?.FullName,
+                        DeadlineDate = task.DeadlineDate,
+                        SubmitedDate = task.AssignedDate,
+                        ResourceLink = task.ResourceLink,
+                        SubmitLink = task.SubmitLink,
+                        Status = task.Status.Name,
+                        Note = task.Note
+                    });
+
+                    context.SaveChanges();
+                    MessageBox.Show("Deletion complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    formDashboard.LoadData("Task");
+                    this.Close();
+                }
+            }
+            else
+            {
+                // Deletion was canceled
+                MessageBox.Show("Deletion canceled.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

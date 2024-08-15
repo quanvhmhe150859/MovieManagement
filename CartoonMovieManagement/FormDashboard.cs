@@ -16,12 +16,13 @@ namespace CartoonMovieManagement
 {
     public partial class FormDashboard : Form
     {
-        private int accountId;
+        public int accountId;
         private Form1 loginForm;
 
         private Timer countdownTimer;
 
         private int selectedId;
+        private string selectedName;
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
@@ -37,6 +38,9 @@ namespace CartoonMovieManagement
         public void LoadData(string type)
         {
             selectedId = 0;
+            selectedName = "";
+            string key = tbSearch.Text.ToLower();
+            bool del = checkActive.Checked;
 
             // Assuming the DataGridView is named dgvDashboard
             if (!dgvDashboard.Columns.Contains("Countdown"))
@@ -58,6 +62,7 @@ namespace CartoonMovieManagement
                 dgvDashboard.DataSource = null;
                 var data = context.Projects
                     .AsNoTracking()
+                    .Where(p => p.Name.ToLower().Contains(key))
                     .Select(p => new
                     {
                         ProjectId = p.ProjectId,
@@ -69,12 +74,20 @@ namespace CartoonMovieManagement
                         Budget = p.Budget
                     })
                     .ToList();
+
+                if (del)
+                    data = data.Where(p => p.DeletedDate != null).ToList();
+                else
+                    data = data.Where(p => p.DeletedDate == null).ToList();
+
                 dgvDashboard.DataSource = data;
 
                 dgvDashboard.Columns["ProjectId"].Visible = false;
                 dgvDashboard.Columns["Countdown"].Visible = false;
                 dgvDashboard.Columns["CategoryId"].HeaderText = "Category Name";
                 dgvDashboard.Columns["CategoryId"].Width = 150;
+                dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
                 dgvDashboard.Columns["Description"].Width = 150;
             }
             else if (type == "Movie")
@@ -87,7 +100,11 @@ namespace CartoonMovieManagement
 
                 dgvDashboard.DataSource = null;
                 var data = context.CartoonMovies
+                    .Include(p => p.Project)
                     .AsNoTracking()
+                    .Where(p => /*p.Project.DeletedDate == null &&*/
+                        (p.Name.ToLower().Contains(key) ||
+                        p.Project.Name.ToLower().Contains(key)))
                     .Select(m => new
                     {
                         CartoonMovieId = m.CartoonMovieId,
@@ -99,12 +116,21 @@ namespace CartoonMovieManagement
                         IsActive = m.IsActive
                     })
                     .ToList();
+
+                if (del)
+                    data = data.Where(p => p.DeletedDate != null).ToList();
+                else
+                    data = data.Where(p => p.DeletedDate == null).ToList();
+
                 dgvDashboard.DataSource = data;
 
                 dgvDashboard.Columns["CartoonMovieId"].Visible = false;
                 dgvDashboard.Columns["Countdown"].Visible = false;
                 dgvDashboard.Columns["ProjectId"].HeaderText = "Project Name";
                 dgvDashboard.Columns["ProjectId"].Width = 150;
+                dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
             }
             else if (type == "Episode")
             {
@@ -116,7 +142,13 @@ namespace CartoonMovieManagement
 
                 dgvDashboard.DataSource = null;
                 var data = context.EpisodeMovies
+                    .Include(p => p.CartoonMovie)
+                    //.ThenInclude(cm => cm.Project)
                     .AsNoTracking()
+                    .Where(p => /*p.CartoonMovie.DeletedDate == null &&
+                        p.CartoonMovie.Project.DeletedDate == null &&*/
+                        (p.Name.ToLower().Contains(key) ||
+                        p.CartoonMovie.Name.ToLower().Contains(key)))
                     .Select(e => new
                     {
                         EpisodeMovieId = e.EpisodeMovieId,
@@ -130,10 +162,20 @@ namespace CartoonMovieManagement
                         IsActive = e.IsActive
                     })
                     .ToList();
+
+                if (del)
+                    data = data.Where(p => p.DeletedDate != null).ToList();
+                else
+                    data = data.Where(p => p.DeletedDate == null).ToList();
+
                 dgvDashboard.DataSource = data;
 
                 dgvDashboard.Columns["EpisodeMovieId"].Visible = false;
                 dgvDashboard.Columns["CartoonMovieId"].HeaderText = "Movie Name";
+                dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
+                dgvDashboard.Columns["MovieLink"].HeaderText = "Movie Link";
 
                 dgvDashboard.Columns["MovieLink"].Visible = false;
                 dgvDashboard.Columns["Countdown"].Visible = false;
@@ -154,42 +196,72 @@ namespace CartoonMovieManagement
 
                 dgvDashboard.DataSource = null;
                 var data = context.Tasks
+                    .Include(p => p.EpisodeMovie)
+                    //.ThenInclude(em => em.CartoonMovie)
+                    //.ThenInclude(cm => cm.Project)
                     .AsNoTracking()
+                    .Where(p => /*p.EpisodeMovie.DeletedDate == null &&
+                        p.EpisodeMovie.CartoonMovie.DeletedDate == null &&
+                        p.EpisodeMovie.CartoonMovie.Project.DeletedDate == null &&*/
+                        (p.Name.ToLower().Contains(key) ||
+                        p.EpisodeMovie.Name.ToLower().Contains(key)))
                     .Select(t => new
                     {
-                        TaskId = t.TaskId,
                         EpisodeMovieId = t.EpisodeMovieId,
                         Name = t.Name,
                         Description = t.Description,
                         CreatedDate = t.CreatedDate,
-                        DeletedDate = t.DeletedDate,
                         AssignedDate = t.AssignedDate,
+                        DeletedDate = t.DeletedDate,
                         DeadlineDate = t.DeadlineDate,
                         ReceiverId = t.ReceiverId,
                         StatusId = t.StatusId,
                         Note = t.Note,
                         ResourceLink = t.ResourceLink,
                         SubmitLink = t.SubmitLink,
-                        TaskParentId = t.TaskParentId
+                        TaskParentId = t.TaskParentId,
+                        TaskId = t.TaskId
                     })
                     .ToList();
+
+                if (del)
+                    data = data.Where(p => p.DeletedDate != null).ToList();
+                else
+                    data = data.Where(p => p.DeletedDate == null).ToList();
+
                 dgvDashboard.DataSource = data;
 
-                dgvDashboard.Columns["TaskId"].Visible = false;
+                //dgvDashboard.Columns["TaskId"].Visible = false;
                 dgvDashboard.Columns["EpisodeMovieId"].HeaderText = "Episode Name";
                 dgvDashboard.Columns["EpisodeMovieId"].Width = 150;
                 dgvDashboard.Columns["ReceiverId"].HeaderText = "Employee Name";
                 dgvDashboard.Columns["ReceiverId"].Width = 150;
                 dgvDashboard.Columns["StatusId"].HeaderText = "Status";
+                dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["AssignedDate"].HeaderText = "Submit Date";
+                dgvDashboard.Columns["DeadlineDate"].HeaderText = "Deadline Date";
+                dgvDashboard.Columns["TaskParentId"].HeaderText = "Task Parent";
+                dgvDashboard.Columns["ResourceLink"].HeaderText = "Resource Link";
+                dgvDashboard.Columns["SubmitLink"].HeaderText = "Submit Link";
 
                 dgvDashboard.Columns["ResourceLink"].Visible = false;
                 dgvDashboard.Columns["Countdown"].Visible = true;
+
                 DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
                 linkColumn.Name = "ResourceLink";
                 //linkColumn.HeaderText = "Download";
                 linkColumn.DataPropertyName = "ResourceLink"; // This should match your property name in the data source
                 linkColumn.LinkBehavior = LinkBehavior.AlwaysUnderline;
                 dgvDashboard.Columns.Add(linkColumn);
+
+                dgvDashboard.Columns["SubmitLink"].Visible = false;
+                DataGridViewLinkColumn linkColumn2 = new DataGridViewLinkColumn();
+                linkColumn2.Name = "SubmitLink";
+                //linkColumn.HeaderText = "Download";
+                linkColumn2.DataPropertyName = "SubmitLink"; // This should match your property name in the data source
+                linkColumn2.LinkBehavior = LinkBehavior.AlwaysUnderline;
+                dgvDashboard.Columns.Add(linkColumn2);
 
                 foreach (DataGridViewRow row in dgvDashboard.Rows)
                 {
@@ -218,7 +290,7 @@ namespace CartoonMovieManagement
 
                         row.Cells["Countdown"].Value = countdownText;
                     }
-                }     
+                }
             }
         }
 
@@ -377,6 +449,12 @@ namespace CartoonMovieManagement
 
         private void UpdateCountdown()
         {
+            if (!dgvDashboard.Columns.Contains("DeadlineDate"))
+            {
+                // If the column doesn't exist, simply return to avoid errors
+                return;
+            }
+
             foreach (DataGridViewRow row in dgvDashboard.Rows)
             {
                 if (row.Cells["DeadlineDate"].Value is DateTime deadlineDate)
@@ -446,28 +524,32 @@ namespace CartoonMovieManagement
                 {
                     btnCreateProject.Text = "Edit Project";
                     selectedId = Convert.ToInt32(dgvDashboard.Rows[e.RowIndex].Cells["ProjectId"].Value);
+                    selectedName = "Project";
                 }
                 else if (btnCreateMovie.Enabled)
                 {
                     btnCreateMovie.Text = "Edit Movie";
                     selectedId = Convert.ToInt32(dgvDashboard.Rows[e.RowIndex].Cells["CartoonMovieId"].Value);
+                    selectedName = "Movie";
+                }
+                else if (btnCreateEpisode.Enabled)
+                {
+                    btnCreateEpisode.Text = "Edit Episode";
+                    selectedId = Convert.ToInt32(dgvDashboard.Rows[e.RowIndex].Cells["EpisodeMovieId"].Value);
+                    selectedName = "Episode";
                 }
                 else if (btnCreateTask.Enabled)
                 {
                     btnCreateTask.Text = "Edit Task";
                     selectedId = Convert.ToInt32(dgvDashboard.Rows[e.RowIndex].Cells["TaskId"].Value);
-                }
-                else if (btnCreateEpisode.Enabled)
-                {
-                    btnCreateEpisode.Text = "Edit Task";
-                    selectedId = Convert.ToInt32(dgvDashboard.Rows[e.RowIndex].Cells["EpisodeMovieId"].Value);
+                    selectedName = "Task";
                 }
             }
         }
 
         private void btnCreateTask_Click(object sender, EventArgs e)
         {
-            FormTaskDetail formTaskDetail = new FormTaskDetail(selectedId, this);
+            FormTaskDetail formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0);
             formTaskDetail.Show();
         }
 
@@ -523,6 +605,37 @@ namespace CartoonMovieManagement
                 }
             }
 
+            if (dgvDashboard.Columns[e.ColumnIndex].Name == "SubmitLink")
+            {
+                string resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
+                if (!string.IsNullOrEmpty(resourceLink))
+                {
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.FileName = Path.GetFileName(resourceLink); // Default file name
+                        saveFileDialog.Filter = "All files (*.*)|*.*"; // Filter to allow all file types
+
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string destinationPath = saveFileDialog.FileName;
+
+                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
+                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                            // Here you would implement the logic to download the file to the selected path
+                            // For example, using WebClient or HttpClient to download the file from resourceLink
+                            using (var client = new WebClient())
+                            {
+                                client.DownloadFile(fullFilePath, destinationPath);
+                            }
+
+                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+            }
+
             if (dgvDashboard.Columns[e.ColumnIndex].Name == "MovieLink")
             {
                 string resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["MovieLink"].Value.ToString();
@@ -554,6 +667,39 @@ namespace CartoonMovieManagement
                     }
                 }
             }
+        }
+
+        private void btnStatusSetting_Click(object sender, EventArgs e)
+        {
+            FormStatusSetting formStatusSetting = new FormStatusSetting();
+            formStatusSetting.Show();
+        }
+
+        private void dgvDashboard_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (selectedName == "Project")
+            {
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0);
+                formTaskDetail.Show();
+            }
+            else if (selectedName == "Movie")
+            {
+                var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == selectedId);
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0);
+                formTaskDetail.Show();
+            }
+            else if (selectedName == "Episode")
+            {
+                var episode = context.EpisodeMovies.Include(e => e.CartoonMovie).FirstOrDefault(e => e.EpisodeMovieId == selectedId);
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId);
+                formTaskDetail.Show();
+            }
+        }
+
+        private void btnTaskLog_Click(object sender, EventArgs e)
+        {
+            FormHistoryLog formHistoryLog = new FormHistoryLog();
+            formHistoryLog.Show();
         }
     }
 }

@@ -47,5 +47,7 @@ public partial class Task
 
     public virtual Status Status { get; set; } = null!;
 
+    public virtual ICollection<TaskHistoryLog> TaskHistoryLogs { get; set; } = new List<TaskHistoryLog>();
+
     public virtual Task? TaskParent { get; set; }
 }

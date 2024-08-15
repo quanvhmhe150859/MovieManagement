@@ -52,6 +52,8 @@ public partial class CartoonProductManagementContext : DbContext
 
     public virtual DbSet<Task> Tasks { get; set; }
 
+    public virtual DbSet<TaskHistoryLog> TaskHistoryLogs { get; set; }
+
     public virtual DbSet<Type> Types { get; set; }
 
     public virtual DbSet<UserLoginLog> UserLoginLogs { get; set; }
@@ -352,6 +354,20 @@ public partial class CartoonProductManagementContext : DbContext
             entity.HasOne(d => d.TaskParent).WithMany(p => p.InverseTaskParent)
                 .HasForeignKey(d => d.TaskParentId)
                 .HasConstraintName("FK_Task_Task");
+        });
+
+        modelBuilder.Entity<TaskHistoryLog>(entity =>
+        {
+            entity.ToTable("TaskHistoryLog");
+
+            entity.Property(e => e.DeadlineDate).HasColumnType("datetime");
+            entity.Property(e => e.SubmitedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Task).WithMany(p => p.TaskHistoryLogs)
+                .HasForeignKey(d => d.TaskId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TaskHistoryLog_Task");
         });
 
         modelBuilder.Entity<Type>(entity =>

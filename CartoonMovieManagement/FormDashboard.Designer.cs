@@ -38,8 +38,11 @@
             btnCreateEpisode = new Button();
             btnEpisode = new Button();
             label1 = new Label();
-            textBox1 = new TextBox();
+            tbSearch = new TextBox();
             panel1 = new Panel();
+            checkActive = new CheckBox();
+            btnStatusSetting = new Button();
+            btnTaskLog = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -54,13 +57,14 @@
             dgvDashboard.TabIndex = 0;
             dgvDashboard.CellClick += dgvDashboard_CellClick;
             dgvDashboard.CellContentClick += dgvDashboard_CellContentClick;
+            dgvDashboard.CellDoubleClick += dgvDashboard_CellDoubleClick;
             // 
             // btnProject
             // 
             btnProject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnProject.Location = new Point(0, 0);
+            btnProject.Location = new Point(3, 0);
             btnProject.Name = "btnProject";
-            btnProject.Size = new Size(92, 32);
+            btnProject.Size = new Size(89, 32);
             btnProject.TabIndex = 1;
             btnProject.Text = "Project";
             btnProject.UseVisualStyleBackColor = true;
@@ -69,9 +73,9 @@
             // btnMovie
             // 
             btnMovie.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnMovie.Location = new Point(0, 38);
+            btnMovie.Location = new Point(3, 38);
             btnMovie.Name = "btnMovie";
-            btnMovie.Size = new Size(92, 32);
+            btnMovie.Size = new Size(89, 32);
             btnMovie.TabIndex = 2;
             btnMovie.Text = "Movie";
             btnMovie.UseVisualStyleBackColor = true;
@@ -80,9 +84,9 @@
             // btnTask
             // 
             btnTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnTask.Location = new Point(0, 114);
+            btnTask.Location = new Point(3, 114);
             btnTask.Name = "btnTask";
-            btnTask.Size = new Size(92, 32);
+            btnTask.Size = new Size(89, 32);
             btnTask.TabIndex = 3;
             btnTask.Text = "Task";
             btnTask.UseVisualStyleBackColor = true;
@@ -93,7 +97,7 @@
             btnCreateTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateTask.Location = new Point(98, 114);
             btnCreateTask.Name = "btnCreateTask";
-            btnCreateTask.Size = new Size(109, 32);
+            btnCreateTask.Size = new Size(106, 32);
             btnCreateTask.TabIndex = 6;
             btnCreateTask.Text = "Create Task";
             btnCreateTask.UseVisualStyleBackColor = true;
@@ -104,7 +108,7 @@
             btnCreateMovie.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateMovie.Location = new Point(98, 38);
             btnCreateMovie.Name = "btnCreateMovie";
-            btnCreateMovie.Size = new Size(109, 32);
+            btnCreateMovie.Size = new Size(106, 32);
             btnCreateMovie.TabIndex = 5;
             btnCreateMovie.Text = "Create Movie";
             btnCreateMovie.UseVisualStyleBackColor = true;
@@ -115,7 +119,7 @@
             btnCreateProject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateProject.Location = new Point(98, 0);
             btnCreateProject.Name = "btnCreateProject";
-            btnCreateProject.Size = new Size(109, 32);
+            btnCreateProject.Size = new Size(106, 32);
             btnCreateProject.TabIndex = 4;
             btnCreateProject.Text = "Create Project";
             btnCreateProject.UseVisualStyleBackColor = true;
@@ -126,7 +130,7 @@
             btnCreateEpisode.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateEpisode.Location = new Point(98, 76);
             btnCreateEpisode.Name = "btnCreateEpisode";
-            btnCreateEpisode.Size = new Size(109, 32);
+            btnCreateEpisode.Size = new Size(106, 32);
             btnCreateEpisode.TabIndex = 8;
             btnCreateEpisode.Text = "Create Episode";
             btnCreateEpisode.UseVisualStyleBackColor = true;
@@ -135,9 +139,9 @@
             // btnEpisode
             // 
             btnEpisode.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEpisode.Location = new Point(0, 76);
+            btnEpisode.Location = new Point(3, 76);
             btnEpisode.Name = "btnEpisode";
-            btnEpisode.Size = new Size(92, 32);
+            btnEpisode.Size = new Size(89, 32);
             btnEpisode.TabIndex = 7;
             btnEpisode.Text = "Episode";
             btnEpisode.UseVisualStyleBackColor = true;
@@ -154,19 +158,20 @@
             label1.TabIndex = 9;
             label1.Text = "Search: ";
             // 
-            // textBox1
+            // tbSearch
             // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(63, 152);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(144, 23);
-            textBox1.TabIndex = 10;
+            tbSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tbSearch.Location = new Point(63, 152);
+            tbSearch.Name = "tbSearch";
+            tbSearch.Size = new Size(141, 23);
+            tbSearch.TabIndex = 10;
             // 
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel1.Controls.Add(checkActive);
             panel1.Controls.Add(btnCreateMovie);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(tbSearch);
             panel1.Controls.Add(btnProject);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(btnMovie);
@@ -180,11 +185,47 @@
             panel1.Size = new Size(207, 229);
             panel1.TabIndex = 11;
             // 
+            // checkActive
+            // 
+            checkActive.AutoSize = true;
+            checkActive.Font = new Font("Segoe UI", 9F);
+            checkActive.Location = new Point(135, 181);
+            checkActive.Name = "checkActive";
+            checkActive.RightToLeft = RightToLeft.No;
+            checkActive.Size = new Size(69, 19);
+            checkActive.TabIndex = 40;
+            checkActive.Text = " Deleted";
+            checkActive.UseVisualStyleBackColor = true;
+            // 
+            // btnStatusSetting
+            // 
+            btnStatusSetting.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnStatusSetting.Location = new Point(794, 406);
+            btnStatusSetting.Name = "btnStatusSetting";
+            btnStatusSetting.Size = new Size(89, 32);
+            btnStatusSetting.TabIndex = 12;
+            btnStatusSetting.Text = "Status Setting";
+            btnStatusSetting.UseVisualStyleBackColor = true;
+            btnStatusSetting.Click += btnStatusSetting_Click;
+            // 
+            // btnTaskLog
+            // 
+            btnTaskLog.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnTaskLog.Location = new Point(679, 406);
+            btnTaskLog.Name = "btnTaskLog";
+            btnTaskLog.Size = new Size(89, 32);
+            btnTaskLog.TabIndex = 13;
+            btnTaskLog.Text = "Task Log";
+            btnTaskLog.UseVisualStyleBackColor = true;
+            btnTaskLog.Click += btnTaskLog_Click;
+            // 
             // FormDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(895, 450);
+            Controls.Add(btnTaskLog);
+            Controls.Add(btnStatusSetting);
             Controls.Add(panel1);
             Controls.Add(dgvDashboard);
             Name = "FormDashboard";
@@ -209,7 +250,10 @@
         private Button btnCreateEpisode;
         private Button btnEpisode;
         private Label label1;
-        private TextBox textBox1;
+        private TextBox tbSearch;
         private Panel panel1;
+        private CheckBox checkActive;
+        private Button btnStatusSetting;
+        private Button btnTaskLog;
     }
 }

@@ -29,11 +29,14 @@ namespace CartoonMovieManagement
 
         private void FormEpisodeDetail_Load(object sender, EventArgs e)
         {
+            if(episodeId != 0)
+                CreateDeleteButton();
+
             // Create a placeholder item
             var placeholder = new Project { ProjectId = -1, Name = "Please select..." };
 
             // Retrieve the data and add the placeholder item
-            var dataProject = context.Projects.ToList();
+            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
             dataProject.Insert(0, placeholder); // Add placeholder to the beginning of the list
 
             // Set the data source and configure the ComboBox
@@ -61,6 +64,26 @@ namespace CartoonMovieManagement
                 axWindowsMediaPlayer1.URL = fullVideoPath;
                 axWindowsMediaPlayer1.Ctlcontrols.play();
             }
+        }
+
+        private void CreateDeleteButton()
+        {
+            // Create a new button
+            Button btnDelete = new Button();
+
+            btnDelete.BackColor = Color.Red;
+            btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            btnDelete.ForeColor = SystemColors.ActiveCaptionText;
+            btnDelete.Location = new Point(1049, 512);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(136, 35);
+            btnDelete.TabIndex = 49;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.Click += btnDelete_Click;
+
+            // Add the button to the form
+            this.Controls.Add(btnDelete);
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -172,7 +195,7 @@ namespace CartoonMovieManagement
             {
                 // Query the database to get movies based on the selected project ID
                 var dataMovie = context.CartoonMovies
-                    .Where(c => c.ProjectId == selectedProjectId)
+                    .Where(c => c.ProjectId == selectedProjectId && c.DeletedDate == null)
                     .ToList();
 
                 if (dataMovie.Count > 0)
@@ -195,6 +218,43 @@ namespace CartoonMovieManagement
                     cbMovie.DataSource = null;
                     cbMovie.Enabled = false; // Optionally disable cbMovie if no valid selection
                 }
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // Show a confirmation message box
+            var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirm Deletion",
+                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            // Check the user's response
+            if (result == DialogResult.Yes)
+            {
+                var episode = context.EpisodeMovies.FirstOrDefault(p => p.EpisodeMovieId == episodeId);
+                if (episode != null)
+                {
+                    episode.DeletedDate = DateTime.Now;
+
+                    context.EpisodeMovies.Update(episode);
+
+                    var tasks = context.Tasks.Where(t => t.EpisodeMovieId == episode.EpisodeMovieId).ToList();
+                    foreach (var task in tasks)
+                    {
+                        task.DeletedDate = DateTime.Now;
+
+                        context.Tasks.Update(task);
+                    }
+
+                    context.SaveChanges();
+                    MessageBox.Show("Deletion complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    formDashboard.LoadData("Episode");
+                    this.Close();
+                }
+            }
+            else
+            {
+                // Deletion was canceled
+                MessageBox.Show("Deletion canceled.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

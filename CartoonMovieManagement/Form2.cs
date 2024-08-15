@@ -1,5 +1,6 @@
 ﻿using CartoonMovieManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,51 +49,83 @@ namespace CartoonMovieManagement
                 dataGridView1.Columns.Insert(0, countdownColumn);
             }
 
-            if (!dataGridView1.Columns.Contains("DownloadColumn"))
-            {
-                // Create a new DataGridViewLinkColumn
-                DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
-                linkColumn.Name = "DownloadColumn";
-                linkColumn.HeaderText = "Download";
-                linkColumn.Text = "Download";
-                linkColumn.UseColumnTextForLinkValue = true; // Use the text specified above as the link text
-
-                // Add the column to the DataGridView
-                dataGridView1.Columns.Add(linkColumn);
-            }
-
-            var cbData = context.Statuses
+            var cbStatus = context.Statuses
+                .Where(s => s.Name != "Not Start")
                 .ToList();
-            cbStatus.DataSource = cbData;
-            cbStatus.DisplayMember = "Name";
-            cbStatus.ValueMember = "StatusId";
+            this.cbStatus.DataSource = cbStatus;
+            this.cbStatus.DisplayMember = "Name";
+            this.cbStatus.ValueMember = "StatusId";
 
             dataGridView1.DataSource = null;
 
+            // Step 1: Extract the EpisodeMovieId values from uniqueEpisodeIdList
+            var episodeMovieIds = new List<int>();
+
+            foreach (var item in cbEpisode.Items)
+            {
+                var episodeMovie = item as dynamic; // Use 'dynamic' if it's an anonymous type, or cast to the specific type
+                episodeMovieIds.Add(episodeMovie.EpisodeMovieId);
+            }
+
+            // Step 2: Query to get tasks where EpisodeMovieId is in the episodeMovieIds list
             var data = context.Tasks
                 .Include(t => t.Status)
                 .Include(t => t.EpisodeMovie)
-                .Where(t => t.ReceiverId == employeeId)
+                .Include(t => t.Status)
+                .AsNoTracking()
+                .Where(t => episodeMovieIds.Contains(t.EpisodeMovieId) && t.Status.Name != "Not Start" && t.DeletedDate == null)
                 .Select(t => new
                 {
                     TaskId = t.TaskId,
                     Name = t.Name,
                     Description = t.Description,
                     CreatedDate = t.CreatedDate,
-                    AssignedDate = t.AssignedDate,
+                    //AssignedDate = t.AssignedDate,
                     DeadlineDate = t.DeadlineDate,
+                    ReceiverId = t.ReceiverId,
                     Status = t.Status.Name,
                     Note = t.Note,
                     ResourceLink = t.ResourceLink,
                     SubmitLink = t.SubmitLink,
-                    EpisodeMovie = t.EpisodeMovie.Name
+                    EpisodeMovie = t.EpisodeMovie.Name,
+                    EpisodeMovieId = t.EpisodeMovieId
                 })
                 .ToList();
+
+            if ((int?)cbEpisode.SelectedValue != -1)
+                data = data.Where(t => t.EpisodeMovieId == (int?)cbEpisode.SelectedValue).ToList();
 
             dataGridView1.DataSource = data;
 
             dataGridView1.Columns["CreatedDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
             dataGridView1.Columns["DeadlineDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
+            dataGridView1.Columns["TaskId"].Visible = false;
+            dataGridView1.Columns["EpisodeMovieId"].Visible = false;
+            dataGridView1.Columns["ReceiverId"].Visible = false;
+            dataGridView1.Columns["ResourceLink"].Visible = false;
+            dataGridView1.Columns["SubmitLink"].Visible = false;
+            dataGridView1.Columns["CreatedDate"].HeaderText = "Created Date";
+            dataGridView1.Columns["DeadlineDate"].HeaderText = "Deadline Date";
+            dataGridView1.Columns["EpisodeMovie"].HeaderText = "Episode Movie";
+
+            if (!dataGridView1.Columns.Contains("DownloadColumn"))
+            {
+                DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
+                linkColumn.Name = "Resource Link";
+                //linkColumn.HeaderText = "Download";
+                linkColumn.DataPropertyName = "ResourceLink"; // This should match your property name in the data source
+                linkColumn.LinkBehavior = LinkBehavior.AlwaysUnderline;
+                dataGridView1.Columns.Insert(1, linkColumn);
+
+                DataGridViewLinkColumn linkColumn2 = new DataGridViewLinkColumn();
+                linkColumn2.Name = "Submit Link";
+                //linkColumn.HeaderText = "Download";
+                linkColumn2.DataPropertyName = "SubmitLink"; // This should match your property name in the data source
+                linkColumn2.LinkBehavior = LinkBehavior.AlwaysUnderline;
+
+                // Add the column to the DataGridView
+                dataGridView1.Columns.Insert(2, linkColumn2);
+            }
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -102,6 +135,25 @@ namespace CartoonMovieManagement
             {
                 linkLabel1.Text = employee.FullName;
             }
+
+            // Get a list of unique EpisodeId values from the Tasks table
+            var uniqueEpisodeIdList = context.Tasks
+                .Include(t => t.EpisodeMovie)
+                .Where(t => t.ReceiverId == employeeId && t.Status.Name != "Not Start" && t.DeletedDate == null)
+                .Select(t => new { EpisodeMovieName = t.EpisodeMovie.Name, t.EpisodeMovieId })  // Create an anonymous type
+                .Distinct()  // Apply Distinct to get unique combinations of EpisodeMovieName and EpisodeMovieId
+                .ToList();
+
+            // Create a placeholder item
+            var placeholder = new { EpisodeMovieName = "All", EpisodeMovieId = -1 };
+
+            // Insert the placeholder at the beginning of the list
+            uniqueEpisodeIdList.Insert(0, placeholder);
+
+            // Bind the list to the ComboBox
+            cbEpisode.DataSource = uniqueEpisodeIdList;
+            cbEpisode.DisplayMember = "EpisodeMovieName";  // Display the EpisodeMovieName in the ComboBox
+            cbEpisode.ValueMember = "EpisodeMovieId";  // Use EpisodeMovieId as the value
 
             LoadData();
 
@@ -113,6 +165,7 @@ namespace CartoonMovieManagement
             cbStatus.Enabled = false;
             tbNote.Enabled = false;
             btnUploadFile.Enabled = false;
+            btnSubmit.Enabled = false;
             LoadData();
         }
 
@@ -123,63 +176,23 @@ namespace CartoonMovieManagement
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var task = context.Tasks.FirstOrDefault(t => t.TaskId == Int32.Parse(lbId.Text));
-            if(task != null)
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    openFileDialog.InitialDirectory = "c:\\";
-                    openFileDialog.Filter = "All files (*.*)|*.*";
-                    openFileDialog.FilterIndex = 1;
-                    openFileDialog.RestoreDirectory = true;
-
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        // Get the path of specified file
-                        string sourceFilePath = openFileDialog.FileName;
-
-                        // Get the file name
-                        string fileName = Path.GetFileName(sourceFilePath);
-
-                        // Get the path to the "Uploads" folder
-                        string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-                        string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads", "Results");
-
-                        // Ensure the "Uploads" folder exists
-                        if (!Directory.Exists(uploadsFolderPath))
-                        {
-                            Directory.CreateDirectory(uploadsFolderPath);
-                        }
-
-                        // Combine the destination folder path and file name
-                        string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
-
-                        // Copy the file to the "Uploads" folder
-                        File.Copy(sourceFilePath, destinationFilePath, true);
-
-                        task.SubmitLink = fileName;
-                        task.StatusId = (int?)cbStatus.SelectedValue ?? 0;
-                        task.Note = tbNote.Text;
-
-                        context.Tasks.Update(task);
-                        context.SaveChanges();
-
-                        MessageBox.Show("File uploaded successfully");
-                    }
+                    // Get the path of specified file
+                    tbFile.Text = openFileDialog.FileName;
                 }
-            }
-            else
-            {
-                MessageBox.Show("Task not exist");
             }
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            cbStatus.Enabled = true;
-            tbNote.Enabled = true;
-            btnUploadFile.Enabled = true;
-
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
@@ -187,9 +200,32 @@ namespace CartoonMovieManagement
                 // Display the data in the labels
                 lTaskName.Text = row.Cells["Name"].Value.ToString();
                 lbId.Text = row.Cells["TaskId"].Value.ToString();
+                tbNote.Text = row.Cells["Note"].Value?.ToString();
+                tbFile.Text = row.Cells["SubmitLink"].Value?.ToString();
 
                 var status = context.Statuses.FirstOrDefault(s => s.Name == row.Cells["Status"].Value.ToString());
                 cbStatus.SelectedValue = status?.StatusId;
+
+                if (status.Name == "Passed" ||
+                    (row.Cells["DeadlineDate"].Value != null &&
+                    Convert.ToDateTime(row.Cells["DeadlineDate"].Value) < DateTime.Now) ||
+                    (row.Cells["ReceiverId"].Value != null &&
+                    employeeId != Convert.ToInt32(row.Cells["ReceiverId"].Value)))
+                {
+                    cbStatus.Enabled = false;
+                    tbNote.Enabled = false;
+                    btnUploadFile.Enabled = false;
+                    btnSubmit.Enabled = false;
+                }
+                else
+                {
+                    cbStatus.Enabled = true;
+                    tbNote.Enabled = true;
+                    btnUploadFile.Enabled = true;
+                    btnSubmit.Enabled = true;
+                }
+
+
             }
         }
 
@@ -239,14 +275,66 @@ namespace CartoonMovieManagement
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Check if the clicked cell is in the 'DownloadColumn'
-            if (e.ColumnIndex == dataGridView1.Columns["DownloadColumn"].Index && e.RowIndex >= 0)
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "ResourceLink")
             {
-                // Retrieve the data you need (e.g., file path or URL) from the corresponding row
-                var filePath = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
+                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
+                if (!string.IsNullOrEmpty(resourceLink))
+                {
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.FileName = Path.GetFileName(resourceLink); // Default file name
+                        saveFileDialog.Filter = "All files (*.*)|*.*"; // Filter to allow all file types
 
-                // Start the download or handle the file as needed
-                DownloadFile(filePath);
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string destinationPath = saveFileDialog.FileName;
+
+                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
+                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                            // Here you would implement the logic to download the file to the selected path
+                            // For example, using WebClient or HttpClient to download the file from resourceLink
+                            using (var client = new WebClient())
+                            {
+                                client.DownloadFile(fullFilePath, destinationPath);
+                            }
+
+                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+            }
+
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "SubmitLink")
+            {
+                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
+                if (!string.IsNullOrEmpty(resourceLink))
+                {
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.FileName = Path.GetFileName(resourceLink); // Default file name
+                        saveFileDialog.Filter = "All files (*.*)|*.*"; // Filter to allow all file types
+
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string destinationPath = saveFileDialog.FileName;
+
+                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
+                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                            // Here you would implement the logic to download the file to the selected path
+                            // For example, using WebClient or HttpClient to download the file from resourceLink
+                            using (var client = new WebClient())
+                            {
+                                client.DownloadFile(fullFilePath, destinationPath);
+                            }
+
+                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
             }
         }
 
@@ -295,6 +383,67 @@ namespace CartoonMovieManagement
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            var task = context.Tasks.Include(t => t.EpisodeMovie).FirstOrDefault(t => t.TaskId == Int32.Parse(lbId.Text));
+            if (task != null)
+            {
+                // Get the file name
+                string fileName = Path.GetFileName(tbFile.Text);
+
+                if (!fileName.IsNullOrEmpty())
+                {
+                    // Get the path to the "Uploads" folder
+                    string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+                    string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads", "Results");
+
+                    // Ensure the "Uploads" folder exists
+                    if (!Directory.Exists(uploadsFolderPath))
+                    {
+                        Directory.CreateDirectory(uploadsFolderPath);
+                    }
+
+                    // Combine the destination folder path and file name
+                    string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
+
+                    // Copy the file to the "Uploads" folder
+                    File.Copy(tbFile.Text, destinationFilePath, true);
+
+                    task.SubmitLink = fileName;
+                }
+
+                task.StatusId = (int?)cbStatus.SelectedValue ?? 0;
+                task.Note = tbNote.Text;
+
+                context.Tasks.Update(task);
+
+                context.TaskHistoryLogs.Add(new TaskHistoryLog
+                {
+                    TaskId = task.TaskId,
+                    LogAction = "Submit",
+                    UpdatedDate = DateTime.Now,
+                    Name = task.Name,
+                    Description = task.Description,
+                    EpisodeName = task.EpisodeMovie?.Name ?? "N/A", // Handle null EpisodeMovie
+                    ReceiverName = task.Receiver?.FullName ?? "N/A", // Handle null Receiver
+                    DeadlineDate = task.DeadlineDate,
+                    SubmitedDate = task.AssignedDate,
+                    ResourceLink = task.ResourceLink,
+                    SubmitLink = task.SubmitLink,
+                    Status = task.Status?.Name ?? "Unknown", // Handle null Status
+                    Note = task.Note
+                });
+
+                context.SaveChanges();
+
+                MessageBox.Show("Submit successfully");
+            }
+            else
+            {
+                MessageBox.Show("Task not found");
             }
         }
     }

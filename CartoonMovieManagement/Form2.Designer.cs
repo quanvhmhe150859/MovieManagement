@@ -41,6 +41,10 @@
             label4 = new Label();
             tbNote = new TextBox();
             panel1 = new Panel();
+            cbEpisode = new ComboBox();
+            btnSubmit = new Button();
+            label5 = new Label();
+            tbFile = new TextBox();
             lbId = new Label();
             label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -51,7 +55,7 @@
             // 
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(12, 44);
+            dataGridView1.Location = new Point(12, 84);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(776, 394);
             dataGridView1.TabIndex = 0;
@@ -82,7 +86,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.Location = new Point(35, 247);
+            button1.Location = new Point(36, 366);
             button1.Name = "button1";
             button1.Size = new Size(75, 25);
             button1.TabIndex = 6;
@@ -97,9 +101,9 @@
             // btnUploadFile
             // 
             btnUploadFile.Enabled = false;
-            btnUploadFile.Location = new Point(35, 218);
+            btnUploadFile.Location = new Point(51, 217);
             btnUploadFile.Name = "btnUploadFile";
-            btnUploadFile.Size = new Size(75, 23);
+            btnUploadFile.Size = new Size(98, 23);
             btnUploadFile.TabIndex = 7;
             btnUploadFile.Text = "Upload File";
             btnUploadFile.UseVisualStyleBackColor = true;
@@ -120,7 +124,7 @@
             cbStatus.FormattingEnabled = true;
             cbStatus.Location = new Point(51, 61);
             cbStatus.Name = "cbStatus";
-            cbStatus.Size = new Size(101, 23);
+            cbStatus.Size = new Size(98, 23);
             cbStatus.TabIndex = 9;
             // 
             // label3
@@ -155,12 +159,16 @@
             tbNote.Location = new Point(51, 93);
             tbNote.Multiline = true;
             tbNote.Name = "tbNote";
-            tbNote.Size = new Size(100, 89);
+            tbNote.Size = new Size(98, 89);
             tbNote.TabIndex = 14;
             // 
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel1.Controls.Add(cbEpisode);
+            panel1.Controls.Add(btnSubmit);
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(tbFile);
             panel1.Controls.Add(lbId);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(lTaskName);
@@ -171,10 +179,46 @@
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(cbStatus);
-            panel1.Location = new Point(794, 44);
+            panel1.Location = new Point(794, 84);
             panel1.Name = "panel1";
-            panel1.Size = new Size(152, 281);
+            panel1.Size = new Size(152, 394);
             panel1.TabIndex = 15;
+            // 
+            // cbEpisode
+            // 
+            cbEpisode.FormattingEnabled = true;
+            cbEpisode.Location = new Point(3, 337);
+            cbEpisode.Name = "cbEpisode";
+            cbEpisode.Size = new Size(146, 23);
+            cbEpisode.TabIndex = 16;
+            // 
+            // btnSubmit
+            // 
+            btnSubmit.Enabled = false;
+            btnSubmit.Location = new Point(51, 261);
+            btnSubmit.Name = "btnSubmit";
+            btnSubmit.Size = new Size(75, 23);
+            btnSubmit.TabIndex = 20;
+            btnSubmit.Text = "Submit";
+            btnSubmit.UseVisualStyleBackColor = true;
+            btnSubmit.Click += btnSubmit_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(4, 191);
+            label5.Name = "label5";
+            label5.Size = new Size(31, 15);
+            label5.TabIndex = 19;
+            label5.Text = "File: ";
+            // 
+            // tbFile
+            // 
+            tbFile.Enabled = false;
+            tbFile.Location = new Point(51, 188);
+            tbFile.Name = "tbFile";
+            tbFile.Size = new Size(98, 23);
+            tbFile.TabIndex = 18;
             // 
             // lbId
             // 
@@ -231,5 +275,9 @@
         private Panel panel1;
         private Label lbId;
         private Label label6;
+        private Label label5;
+        private TextBox tbFile;
+        private Button btnSubmit;
+        private ComboBox cbEpisode;
     }
 }
