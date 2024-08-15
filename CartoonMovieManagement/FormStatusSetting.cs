@@ -39,7 +39,8 @@ namespace CartoonMovieManagement
                 {
                     StatusId = p.StatusId,
                     Name = p.Name,
-                    Description = p.Description
+                    Description = p.Description,
+                    ForAdmin = p.ForAdmin
                 })
                 .ToList();
             dataGridView1.DataSource = status;
@@ -57,12 +58,11 @@ namespace CartoonMovieManagement
                 tbDescription.Text = row.Cells["Description"].Value != null
                      ? row.Cells["Description"].Value.ToString()
                      : "";
-
+                checkForAdmin.Checked = Convert.ToBoolean(row.Cells["ForAdmin"].Value);
 
                 btnEdit.Enabled = true;
                 btnDelete.Enabled = true;
                 btnCreate.Enabled = false;
-
             }
         }
 
@@ -87,6 +87,7 @@ namespace CartoonMovieManagement
                 {
                     Name = tbName.Text.Trim(),
                     Description = tbDescription.Text.Trim(),
+                    ForAdmin = checkForAdmin.Checked
                 });
                 context.SaveChanges();
                 LoadData();
@@ -109,6 +110,7 @@ namespace CartoonMovieManagement
                 var s = context.Statuses.FirstOrDefault(s => s.StatusId == Int32.Parse(tbId.Text));
                 s.Name = tbName.Text.Trim();
                 s.Description = tbDescription.Text.Trim();
+                s.ForAdmin = checkForAdmin.Checked;
                 context.Statuses.Update(s);
                 context.SaveChanges();
                 LoadData();

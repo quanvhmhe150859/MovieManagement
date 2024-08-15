@@ -40,7 +40,9 @@
             label1 = new Label();
             tbSearch = new TextBox();
             panel1 = new Panel();
-            checkActive = new CheckBox();
+            checkExpired = new CheckBox();
+            checkAll = new CheckBox();
+            checkDeleted = new CheckBox();
             btnStatusSetting = new Button();
             btnTaskLog = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
@@ -58,6 +60,7 @@
             dgvDashboard.CellClick += dgvDashboard_CellClick;
             dgvDashboard.CellContentClick += dgvDashboard_CellContentClick;
             dgvDashboard.CellDoubleClick += dgvDashboard_CellDoubleClick;
+            dgvDashboard.ColumnHeaderMouseClick += dgvDashboard_ColumnHeaderMouseClick;
             // 
             // btnProject
             // 
@@ -169,7 +172,9 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            panel1.Controls.Add(checkActive);
+            panel1.Controls.Add(checkExpired);
+            panel1.Controls.Add(checkAll);
+            panel1.Controls.Add(checkDeleted);
             panel1.Controls.Add(btnCreateMovie);
             panel1.Controls.Add(tbSearch);
             panel1.Controls.Add(btnProject);
@@ -182,20 +187,50 @@
             panel1.Controls.Add(btnCreateTask);
             panel1.Location = new Point(676, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(207, 229);
+            panel1.Size = new Size(207, 354);
             panel1.TabIndex = 11;
             // 
-            // checkActive
+            // checkExpired
             // 
-            checkActive.AutoSize = true;
-            checkActive.Font = new Font("Segoe UI", 9F);
-            checkActive.Location = new Point(135, 181);
-            checkActive.Name = "checkActive";
-            checkActive.RightToLeft = RightToLeft.No;
-            checkActive.Size = new Size(69, 19);
-            checkActive.TabIndex = 40;
-            checkActive.Text = " Deleted";
-            checkActive.UseVisualStyleBackColor = true;
+            checkExpired.AutoSize = true;
+            checkExpired.Enabled = false;
+            checkExpired.Font = new Font("Segoe UI", 9F);
+            checkExpired.Location = new Point(131, 206);
+            checkExpired.Name = "checkExpired";
+            checkExpired.RightToLeft = RightToLeft.No;
+            checkExpired.Size = new Size(65, 19);
+            checkExpired.TabIndex = 42;
+            checkExpired.Text = "Expired";
+            checkExpired.UseVisualStyleBackColor = true;
+            checkExpired.CheckedChanged += checkExpired_CheckedChanged;
+            // 
+            // checkAll
+            // 
+            checkAll.AutoSize = true;
+            checkAll.Checked = true;
+            checkAll.CheckState = CheckState.Checked;
+            checkAll.Font = new Font("Segoe UI", 9F);
+            checkAll.Location = new Point(23, 181);
+            checkAll.Name = "checkAll";
+            checkAll.RightToLeft = RightToLeft.No;
+            checkAll.Size = new Size(40, 19);
+            checkAll.TabIndex = 41;
+            checkAll.Text = "All";
+            checkAll.UseVisualStyleBackColor = true;
+            checkAll.CheckedChanged += checkAll_CheckedChanged;
+            // 
+            // checkDeleted
+            // 
+            checkDeleted.AutoSize = true;
+            checkDeleted.Font = new Font("Segoe UI", 9F);
+            checkDeleted.Location = new Point(131, 181);
+            checkDeleted.Name = "checkDeleted";
+            checkDeleted.RightToLeft = RightToLeft.No;
+            checkDeleted.Size = new Size(66, 19);
+            checkDeleted.TabIndex = 40;
+            checkDeleted.Text = "Deleted";
+            checkDeleted.UseVisualStyleBackColor = true;
+            checkDeleted.CheckedChanged += checkDeleted_CheckedChanged;
             // 
             // btnStatusSetting
             // 
@@ -252,8 +287,10 @@
         private Label label1;
         private TextBox tbSearch;
         private Panel panel1;
-        private CheckBox checkActive;
+        private CheckBox checkDeleted;
         private Button btnStatusSetting;
         private Button btnTaskLog;
+        private CheckBox checkExpired;
+        private CheckBox checkAll;
     }
 }

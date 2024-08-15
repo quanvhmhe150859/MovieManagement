@@ -50,7 +50,7 @@ namespace CartoonMovieManagement
             }
 
             var cbStatus = context.Statuses
-                .Where(s => s.Name != "Not Start")
+                .Where(s => s.ForAdmin == false)
                 .ToList();
             this.cbStatus.DataSource = cbStatus;
             this.cbStatus.DisplayMember = "Name";

@@ -10,7 +10,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Task = CartoonMovieManagement.Models.Task;
 using Timer = System.Windows.Forms.Timer;
+using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CartoonMovieManagement
 {
@@ -23,6 +26,9 @@ namespace CartoonMovieManagement
 
         private int selectedId;
         private string selectedName;
+
+        private SortOrder sortOrder = SortOrder.None;
+        private string sortColumn = "";
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
@@ -40,7 +46,16 @@ namespace CartoonMovieManagement
             selectedId = 0;
             selectedName = "";
             string key = tbSearch.Text.ToLower();
-            bool del = checkActive.Checked;
+
+            bool all = checkAll.Checked;
+            bool del = checkDeleted.Checked;
+            bool exp = checkExpired.Checked;
+
+            btnCreateProject.Enabled = false;
+            btnCreateMovie.Enabled = false;
+            btnCreateTask.Enabled = false;
+            btnCreateEpisode.Enabled = false;
+            checkExpired.Enabled = false;
 
             // Assuming the DataGridView is named dgvDashboard
             if (!dgvDashboard.Columns.Contains("Countdown"))
@@ -49,14 +64,12 @@ namespace CartoonMovieManagement
                 countdownColumn.Name = "Countdown";
                 countdownColumn.HeaderText = "Time Remaining";
                 dgvDashboard.Columns.Insert(0, countdownColumn); // Insert at the first position
+                dgvDashboard.Columns["Countdown"].Width = 150;
             }
 
             if (type == "Project")
             {
                 btnCreateProject.Enabled = true;
-                btnCreateMovie.Enabled = false;
-                btnCreateTask.Enabled = false;
-                btnCreateEpisode.Enabled = false;
                 btnCreateProject.Text = "Create Project";
 
                 dgvDashboard.DataSource = null;
@@ -75,10 +88,22 @@ namespace CartoonMovieManagement
                     })
                     .ToList();
 
-                if (del)
-                    data = data.Where(p => p.DeletedDate != null).ToList();
-                else
-                    data = data.Where(p => p.DeletedDate == null).ToList();
+                if (!all)
+                {
+                    if (del)
+                        data = data.Where(p => p.DeletedDate != null).ToList();
+                    else
+                        data = data.Where(p => p.DeletedDate == null).ToList();
+                }
+
+                if (sortOrder != SortOrder.None)
+                {
+                    // Determine the sort direction
+                    string sortDirection = sortOrder == SortOrder.Ascending ? "ASC" : "DESC";
+
+                    // Use Dynamic LINQ to apply sorting
+                    data = data.AsQueryable().OrderBy($"{sortColumn} {sortDirection}").ToList();
+                }
 
                 dgvDashboard.DataSource = data;
 
@@ -88,14 +113,13 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["CategoryId"].Width = 150;
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["Name"].HeaderText = "Project Name";
+                dgvDashboard.Columns["Name"].Width = 150;
                 dgvDashboard.Columns["Description"].Width = 150;
             }
             else if (type == "Movie")
             {
-                btnCreateProject.Enabled = false;
                 btnCreateMovie.Enabled = true;
-                btnCreateTask.Enabled = false;
-                btnCreateEpisode.Enabled = false;
                 btnCreateMovie.Text = "Create Movie";
 
                 dgvDashboard.DataSource = null;
@@ -117,10 +141,22 @@ namespace CartoonMovieManagement
                     })
                     .ToList();
 
-                if (del)
-                    data = data.Where(p => p.DeletedDate != null).ToList();
-                else
-                    data = data.Where(p => p.DeletedDate == null).ToList();
+                if (!all)
+                {
+                    if (del)
+                        data = data.Where(p => p.DeletedDate != null).ToList();
+                    else
+                        data = data.Where(p => p.DeletedDate == null).ToList();
+                }
+
+                if (sortOrder != SortOrder.None)
+                {
+                    // Determine the sort direction
+                    string sortDirection = sortOrder == SortOrder.Ascending ? "ASC" : "DESC";
+
+                    // Use Dynamic LINQ to apply sorting
+                    data = data.AsQueryable().OrderBy($"{sortColumn} {sortDirection}").ToList();
+                }
 
                 dgvDashboard.DataSource = data;
 
@@ -128,15 +164,13 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["Countdown"].Visible = false;
                 dgvDashboard.Columns["ProjectId"].HeaderText = "Project Name";
                 dgvDashboard.Columns["ProjectId"].Width = 150;
+                dgvDashboard.Columns["Name"].HeaderText = "Movie Name";
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
                 dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
             }
             else if (type == "Episode")
             {
-                btnCreateProject.Enabled = false;
-                btnCreateMovie.Enabled = false;
-                btnCreateTask.Enabled = false;
                 btnCreateEpisode.Enabled = true;
                 btnCreateEpisode.Text = "Create Episode";
 
@@ -151,6 +185,7 @@ namespace CartoonMovieManagement
                         p.CartoonMovie.Name.ToLower().Contains(key)))
                     .Select(e => new
                     {
+                        ProjectId = e.CartoonMovie.ProjectId,
                         EpisodeMovieId = e.EpisodeMovieId,
                         CartoonMovieId = e.CartoonMovieId,
                         Name = e.Name,
@@ -163,15 +198,31 @@ namespace CartoonMovieManagement
                     })
                     .ToList();
 
-                if (del)
-                    data = data.Where(p => p.DeletedDate != null).ToList();
-                else
-                    data = data.Where(p => p.DeletedDate == null).ToList();
+                if (!all)
+                {
+                    if (del)
+                        data = data.Where(p => p.DeletedDate != null).ToList();
+                    else
+                        data = data.Where(p => p.DeletedDate == null).ToList();
+                }
+
+                if (sortOrder != SortOrder.None)
+                {
+                    // Determine the sort direction
+                    string sortDirection = sortOrder == SortOrder.Ascending ? "ASC" : "DESC";
+
+                    // Use Dynamic LINQ to apply sorting
+                    data = data.AsQueryable().OrderBy($"{sortColumn} {sortDirection}").ToList();
+                }
 
                 dgvDashboard.DataSource = data;
 
                 dgvDashboard.Columns["EpisodeMovieId"].Visible = false;
                 dgvDashboard.Columns["CartoonMovieId"].HeaderText = "Movie Name";
+                dgvDashboard.Columns["ProjectId"].HeaderText = "Project Name";
+                dgvDashboard.Columns["ProjectId"].Width = 150;
+                dgvDashboard.Columns["Name"].HeaderText = "Episode Name";
+                dgvDashboard.Columns["Name"].Width = 150;
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
                 dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
@@ -188,11 +239,9 @@ namespace CartoonMovieManagement
             }
             else if (type == "Task")
             {
-                btnCreateProject.Enabled = false;
-                btnCreateMovie.Enabled = false;
                 btnCreateTask.Enabled = true;
-                btnCreateEpisode.Enabled = false;
                 btnCreateTask.Text = "Create Task";
+                checkExpired.Enabled = true;
 
                 dgvDashboard.DataSource = null;
                 var data = context.Tasks
@@ -204,30 +253,53 @@ namespace CartoonMovieManagement
                         p.EpisodeMovie.CartoonMovie.DeletedDate == null &&
                         p.EpisodeMovie.CartoonMovie.Project.DeletedDate == null &&*/
                         (p.Name.ToLower().Contains(key) ||
-                        p.EpisodeMovie.Name.ToLower().Contains(key)))
+                        p.EpisodeMovie.Name.ToLower().Contains(key) ||
+                        (p.Receiver != null && p.Receiver.FullName.ToLower().Contains(key))))
                     .Select(t => new
                     {
-                        EpisodeMovieId = t.EpisodeMovieId,
                         Name = t.Name,
                         Description = t.Description,
-                        CreatedDate = t.CreatedDate,
-                        AssignedDate = t.AssignedDate,
-                        DeletedDate = t.DeletedDate,
-                        DeadlineDate = t.DeadlineDate,
                         ReceiverId = t.ReceiverId,
+                        DeadlineDate = t.DeadlineDate,
+                        AssignedDate = t.AssignedDate,
                         StatusId = t.StatusId,
                         Note = t.Note,
+                        CreatedDate = t.CreatedDate,
+                        DeletedDate = t.DeletedDate,
                         ResourceLink = t.ResourceLink,
                         SubmitLink = t.SubmitLink,
                         TaskParentId = t.TaskParentId,
+                        ProjectId = t.EpisodeMovie.CartoonMovie.ProjectId,
+                        CartoonMovieId = t.EpisodeMovie.CartoonMovieId,
+                        EpisodeMovieId = t.EpisodeMovieId,
                         TaskId = t.TaskId
                     })
                     .ToList();
 
-                if (del)
-                    data = data.Where(p => p.DeletedDate != null).ToList();
-                else
-                    data = data.Where(p => p.DeletedDate == null).ToList();
+                if (!all)
+                {
+                    if (del)
+                        data = data.Where(p => p.DeletedDate != null).ToList();
+                    else
+                        data = data.Where(p => p.DeletedDate == null).ToList();
+
+                    if (exp)
+                        data = data.Where(p => p.DeadlineDate < DateTime.Now).ToList();
+                    else
+                        data = data.Where(p => p.DeadlineDate > DateTime.Now).ToList();
+                }
+
+                if (sortOrder != SortOrder.None)
+                {
+                    // Determine the sort direction
+                    string sortDirection = sortOrder == SortOrder.Ascending ? "ASC" : "DESC";
+
+                    if (sortColumn == "Countdown")
+                        sortColumn = "DeadlineDate";
+
+                    // Use Dynamic LINQ to apply sorting
+                    data = data.AsQueryable().OrderBy($"{sortColumn} {sortDirection}").ToList();
+                }
 
                 dgvDashboard.DataSource = data;
 
@@ -236,21 +308,21 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["EpisodeMovieId"].Width = 150;
                 dgvDashboard.Columns["ReceiverId"].HeaderText = "Employee Name";
                 dgvDashboard.Columns["ReceiverId"].Width = 150;
+                dgvDashboard.Columns["Name"].HeaderText = "Task Name";
                 dgvDashboard.Columns["StatusId"].HeaderText = "Status";
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
                 dgvDashboard.Columns["AssignedDate"].HeaderText = "Submit Date";
                 dgvDashboard.Columns["DeadlineDate"].HeaderText = "Deadline Date";
+                dgvDashboard.Columns["DeadlineDate"].Width = 150;
                 dgvDashboard.Columns["TaskParentId"].HeaderText = "Task Parent";
-                dgvDashboard.Columns["ResourceLink"].HeaderText = "Resource Link";
-                dgvDashboard.Columns["SubmitLink"].HeaderText = "Submit Link";
 
                 dgvDashboard.Columns["ResourceLink"].Visible = false;
                 dgvDashboard.Columns["Countdown"].Visible = true;
 
                 DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
                 linkColumn.Name = "ResourceLink";
-                //linkColumn.HeaderText = "Download";
+                linkColumn.HeaderText = "Resource Link";
                 linkColumn.DataPropertyName = "ResourceLink"; // This should match your property name in the data source
                 linkColumn.LinkBehavior = LinkBehavior.AlwaysUnderline;
                 dgvDashboard.Columns.Add(linkColumn);
@@ -258,10 +330,18 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["SubmitLink"].Visible = false;
                 DataGridViewLinkColumn linkColumn2 = new DataGridViewLinkColumn();
                 linkColumn2.Name = "SubmitLink";
-                //linkColumn.HeaderText = "Download";
+                linkColumn2.HeaderText = "Submit Link";
                 linkColumn2.DataPropertyName = "SubmitLink"; // This should match your property name in the data source
                 linkColumn2.LinkBehavior = LinkBehavior.AlwaysUnderline;
                 dgvDashboard.Columns.Add(linkColumn2);
+
+                // Make TaskId the last column by setting its DisplayIndex
+                dgvDashboard.Columns["ProjectId"].DisplayIndex = dgvDashboard.Columns.Count - 1;
+                dgvDashboard.Columns["CartoonMovieId"].DisplayIndex = dgvDashboard.Columns.Count - 1;
+                dgvDashboard.Columns["EpisodeMovieId"].DisplayIndex = dgvDashboard.Columns.Count - 1;
+                dgvDashboard.Columns["TaskId"].DisplayIndex = dgvDashboard.Columns.Count - 1;
+                dgvDashboard.Columns["TaskId"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvDashboard.Columns["TaskId"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
 
                 foreach (DataGridViewRow row in dgvDashboard.Rows)
                 {
@@ -498,22 +578,30 @@ namespace CartoonMovieManagement
 
         private void btnProject_Click(object sender, EventArgs e)
         {
+            sortOrder = SortOrder.None;
+            sortColumn = "";
             LoadData("Project");
         }
 
         private void btnMovie_Click(object sender, EventArgs e)
         {
+            sortOrder = SortOrder.None;
+            sortColumn = "";
             LoadData("Movie");
-        }
-
-        private void btnTask_Click(object sender, EventArgs e)
-        {
-            LoadData("Task");
         }
 
         private void btnEpisode_Click(object sender, EventArgs e)
         {
+            sortOrder = SortOrder.None;
+            sortColumn = "";
             LoadData("Episode");
+        }
+
+        private void btnTask_Click(object sender, EventArgs e)
+        {
+            sortOrder = SortOrder.None;
+            sortColumn = "";
+            LoadData("Task");
         }
 
         private void dgvDashboard_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -700,6 +788,63 @@ namespace CartoonMovieManagement
         {
             FormHistoryLog formHistoryLog = new FormHistoryLog();
             formHistoryLog.Show();
+        }
+
+        private void dgvDashboard_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string columnName = dgvDashboard.Columns[e.ColumnIndex].Name;
+
+            if (columnName == "Countdown")
+                columnName = "DeadlineDate";
+
+            if (sortColumn == columnName)
+            {
+                // If the same column is clicked again, toggle the sort order
+                sortOrder = (sortOrder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+            }
+            else
+            {
+                // If a new column is clicked, default to ascending order
+                sortOrder = SortOrder.Ascending;
+                sortColumn = columnName;
+            }
+
+            if (btnCreateProject.Enabled)
+            {
+                LoadData("Project");
+            }
+            else if (btnCreateMovie.Enabled)
+            {
+                LoadData("Movie");
+            }
+            else if (btnCreateEpisode.Enabled)
+            {
+                LoadData("Episode");
+            }
+            else if (btnCreateTask.Enabled)
+            {
+                LoadData("Task");
+            }
+        }
+
+        private void checkAll_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkAll.Checked)
+                checkDeleted.Checked = false;
+            if (checkAll.Checked)
+                checkExpired.Checked = false;
+        }
+
+        private void checkDeleted_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkDeleted.Checked)
+                checkAll.Checked = false;
+        }
+
+        private void checkExpired_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkExpired.Checked)
+                checkAll.Checked = false;
         }
     }
 }
