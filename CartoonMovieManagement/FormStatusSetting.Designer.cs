@@ -52,7 +52,7 @@
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Location = new Point(12, 12);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(446, 426);
+            dataGridView1.Size = new Size(470, 426);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellClick += dataGridView1_CellClick;
             // 
@@ -72,9 +72,9 @@
             label2.Font = new Font("Segoe UI", 14.25F);
             label2.Location = new Point(13, 97);
             label2.Name = "label2";
-            label2.Size = new Size(92, 25);
+            label2.Size = new Size(117, 25);
             label2.TabIndex = 2;
-            label2.Text = "Status Id: ";
+            label2.Text = "Description: ";
             // 
             // label3
             // 
@@ -143,7 +143,7 @@
             btnDelete.Size = new Size(92, 41);
             btnDelete.TabIndex = 9;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = false;
+            btnDelete.UseVisualStyleBackColor = true;
             btnDelete.Click += btnDelete_Click;
             // 
             // btnRefresh
@@ -165,7 +165,7 @@
             label4.Name = "label4";
             label4.Size = new Size(152, 25);
             label4.TabIndex = 11;
-            label4.Text = "For Only Admin: ";
+            label4.Text = "For Admin Only: ";
             // 
             // checkForAdmin
             // 
@@ -193,7 +193,7 @@
             panel1.Controls.Add(btnEdit);
             panel1.Controls.Add(tbName);
             panel1.Controls.Add(btnCreate);
-            panel1.Location = new Point(464, 12);
+            panel1.Location = new Point(488, 12);
             panel1.Name = "panel1";
             panel1.Size = new Size(364, 387);
             panel1.TabIndex = 42;
@@ -202,7 +202,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(840, 450);
+            ClientSize = new Size(864, 450);
             Controls.Add(panel1);
             Controls.Add(dataGridView1);
             Name = "FormStatusSetting";

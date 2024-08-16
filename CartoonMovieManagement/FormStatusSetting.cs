@@ -44,6 +44,8 @@ namespace CartoonMovieManagement
                 })
                 .ToList();
             dataGridView1.DataSource = status;
+            dataGridView1.Columns["Description"].MinimumWidth = 100;
+            dataGridView1.Columns["Description"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)

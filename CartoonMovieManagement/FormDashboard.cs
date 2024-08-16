@@ -49,13 +49,13 @@ namespace CartoonMovieManagement
 
             bool all = checkAll.Checked;
             bool del = checkDeleted.Checked;
-            bool exp = checkExpired.Checked;
+            //bool exp = checkExpired.Checked;
 
             btnCreateProject.Enabled = false;
             btnCreateMovie.Enabled = false;
             btnCreateTask.Enabled = false;
             btnCreateEpisode.Enabled = false;
-            checkExpired.Enabled = false;
+            //checkExpired.Enabled = false;
 
             // Assuming the DataGridView is named dgvDashboard
             if (!dgvDashboard.Columns.Contains("Countdown"))
@@ -112,10 +112,13 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["CategoryId"].HeaderText = "Category Name";
                 dgvDashboard.Columns["CategoryId"].Width = 150;
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["CreatedDate"].Width = 150;
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["DeletedDate"].Width = 150;
                 dgvDashboard.Columns["Name"].HeaderText = "Project Name";
                 dgvDashboard.Columns["Name"].Width = 150;
-                dgvDashboard.Columns["Description"].Width = 150;
+                dgvDashboard.Columns["Description"].MinimumWidth = 150;
+                dgvDashboard.Columns["Description"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             else if (type == "Movie")
             {
@@ -165,9 +168,14 @@ namespace CartoonMovieManagement
                 dgvDashboard.Columns["ProjectId"].HeaderText = "Project Name";
                 dgvDashboard.Columns["ProjectId"].Width = 150;
                 dgvDashboard.Columns["Name"].HeaderText = "Movie Name";
+                dgvDashboard.Columns["Name"].Width = 150;
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["CreatedDate"].Width = 150;
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["DeletedDate"].Width = 150;
                 dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
+                dgvDashboard.Columns["Description"].MinimumWidth = 150;
+                dgvDashboard.Columns["Description"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             else if (type == "Episode")
             {
@@ -219,12 +227,15 @@ namespace CartoonMovieManagement
 
                 dgvDashboard.Columns["EpisodeMovieId"].Visible = false;
                 dgvDashboard.Columns["CartoonMovieId"].HeaderText = "Movie Name";
+                dgvDashboard.Columns["CartoonMovieId"].Width = 150;
                 dgvDashboard.Columns["ProjectId"].HeaderText = "Project Name";
                 dgvDashboard.Columns["ProjectId"].Width = 150;
                 dgvDashboard.Columns["Name"].HeaderText = "Episode Name";
                 dgvDashboard.Columns["Name"].Width = 150;
                 dgvDashboard.Columns["CreatedDate"].HeaderText = "Created Date";
+                dgvDashboard.Columns["CreatedDate"].Width = 150;
                 dgvDashboard.Columns["DeletedDate"].HeaderText = "Deleted Date";
+                dgvDashboard.Columns["DeletedDate"].Width = 150;
                 dgvDashboard.Columns["IsActive"].HeaderText = "Is Active";
                 dgvDashboard.Columns["MovieLink"].HeaderText = "Movie Link";
 
@@ -239,9 +250,11 @@ namespace CartoonMovieManagement
             }
             else if (type == "Task")
             {
+                LoadEmployee();
+
                 btnCreateTask.Enabled = true;
                 btnCreateTask.Text = "Create Task";
-                checkExpired.Enabled = true;
+                //checkExpired.Enabled = true;
 
                 dgvDashboard.DataSource = null;
                 var data = context.Tasks
@@ -257,18 +270,18 @@ namespace CartoonMovieManagement
                         (p.Receiver != null && p.Receiver.FullName.ToLower().Contains(key))))
                     .Select(t => new
                     {
+                        TaskParentId = t.TaskParentId,
                         Name = t.Name,
                         Description = t.Description,
                         ReceiverId = t.ReceiverId,
-                        DeadlineDate = t.DeadlineDate,
                         AssignedDate = t.AssignedDate,
                         StatusId = t.StatusId,
                         Note = t.Note,
+                        SubmitLink = t.SubmitLink,
+                        ResourceLink = t.ResourceLink,
+                        DeadlineDate = t.DeadlineDate,
                         CreatedDate = t.CreatedDate,
                         DeletedDate = t.DeletedDate,
-                        ResourceLink = t.ResourceLink,
-                        SubmitLink = t.SubmitLink,
-                        TaskParentId = t.TaskParentId,
                         ProjectId = t.EpisodeMovie.CartoonMovie.ProjectId,
                         CartoonMovieId = t.EpisodeMovie.CartoonMovieId,
                         EpisodeMovieId = t.EpisodeMovieId,
@@ -283,10 +296,10 @@ namespace CartoonMovieManagement
                     else
                         data = data.Where(p => p.DeletedDate == null).ToList();
 
-                    if (exp)
-                        data = data.Where(p => p.DeadlineDate < DateTime.Now).ToList();
-                    else
-                        data = data.Where(p => p.DeadlineDate > DateTime.Now).ToList();
+                    //if (exp)
+                    //    data = data.Where(p => p.DeadlineDate < DateTime.Now).ToList();
+                    //else
+                    //    data = data.Where(p => p.DeadlineDate > DateTime.Now).ToList();
                 }
 
                 if (sortOrder != SortOrder.None)
@@ -326,6 +339,7 @@ namespace CartoonMovieManagement
                 linkColumn.DataPropertyName = "ResourceLink"; // This should match your property name in the data source
                 linkColumn.LinkBehavior = LinkBehavior.AlwaysUnderline;
                 dgvDashboard.Columns.Add(linkColumn);
+                linkColumn.DisplayIndex = 10;
 
                 dgvDashboard.Columns["SubmitLink"].Visible = false;
                 DataGridViewLinkColumn linkColumn2 = new DataGridViewLinkColumn();
@@ -334,6 +348,7 @@ namespace CartoonMovieManagement
                 linkColumn2.DataPropertyName = "SubmitLink"; // This should match your property name in the data source
                 linkColumn2.LinkBehavior = LinkBehavior.AlwaysUnderline;
                 dgvDashboard.Columns.Add(linkColumn2);
+                linkColumn2.DisplayIndex = 9;
 
                 // Make TaskId the last column by setting its DisplayIndex
                 dgvDashboard.Columns["ProjectId"].DisplayIndex = dgvDashboard.Columns.Count - 1;
@@ -564,9 +579,59 @@ namespace CartoonMovieManagement
             }
         }
 
+        private void LoadEmployee()
+        {
+            // Fetch the employees first
+            var employees = context.Employees
+                .Include(e => e.Accounts)
+                .Where(e => e.Accounts.Any(a => a.RoleId != 1))
+                .ToList();
+
+            // Prepare a list to hold the customized employee data
+            var employeeStatusList = new List<dynamic>();
+
+            foreach (var employee in employees)
+            {
+                // Fetch tasks for the current employee
+                var tasks = context.Tasks.Include(t => t.Status).Where(t => t.ReceiverId == employee.EmployeeId).ToList();
+
+                // Default status is "Free"
+                string status = "Free";
+
+                // Check if the employee has any "On Going" tasks
+                if (tasks.Any(t => t.Status.Name == "On Going"))
+                {
+                    status = "On Task";
+                }
+
+                if (tasks.Any(t => t.Status.Name == "Finish"))
+                {
+                    status = "Wait for Approve";
+                }
+
+                // Add the customized employee data to the list
+                employeeStatusList.Add(new
+                {
+                    EmployeeName = employee.FullName,
+                    Status = status
+                });
+            }
+
+            // Bind the list to the DataGridView
+            dgvEmployee.DataSource = employeeStatusList;
+            dgvEmployee.Columns["EmployeeName"].HeaderText = "Employee";
+            dgvEmployee.Columns["Status"].HeaderText = "Status";
+            dgvEmployee.Columns["Status"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            dgvEmployee.ClearSelection();
+            dgvEmployee.SelectionChanged += (s, e) => dgvEmployee.ClearSelection();
+
+        }
+
 
         private void FormDashboard_Load(object sender, EventArgs e)
         {
+            LoadEmployee();
             LoadData("Project");
             InitializeCountdownTimer();
         }
@@ -786,7 +851,7 @@ namespace CartoonMovieManagement
 
         private void btnTaskLog_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog();
+            FormHistoryLog formHistoryLog = new FormHistoryLog("Task");
             formHistoryLog.Show();
         }
 
@@ -831,8 +896,8 @@ namespace CartoonMovieManagement
         {
             if (checkAll.Checked)
                 checkDeleted.Checked = false;
-            if (checkAll.Checked)
-                checkExpired.Checked = false;
+            //if (checkAll.Checked)
+            //    checkExpired.Checked = false;
         }
 
         private void checkDeleted_CheckedChanged(object sender, EventArgs e)
@@ -843,8 +908,14 @@ namespace CartoonMovieManagement
 
         private void checkExpired_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkExpired.Checked)
-                checkAll.Checked = false;
+            //if (checkExpired.Checked)
+            //    checkAll.Checked = false;
+        }
+
+        private void btnEmployee_Click(object sender, EventArgs e)
+        {
+            FormEmployee formEmployee = new FormEmployee(this);
+            formEmployee.Show();
         }
     }
 }

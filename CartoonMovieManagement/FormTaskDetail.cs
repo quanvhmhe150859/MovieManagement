@@ -393,7 +393,7 @@ namespace CartoonMovieManagement
             {
                 // Query the database to get movies based on the selected project ID
                 var dataTask = context.Tasks
-                    .Where(c => c.EpisodeMovieId == selectedProjectId && c.DeletedDate == null)
+                    .Where(c => c.EpisodeMovieId == selectedProjectId && c.DeletedDate == null && c.TaskId != taskId)
                     .ToList();
 
                 if (dataTask.Count > 0)

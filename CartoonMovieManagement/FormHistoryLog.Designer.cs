@@ -35,10 +35,11 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Location = new Point(12, 41);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(776, 397);
+            dataGridView1.Size = new Size(736, 397);
             dataGridView1.TabIndex = 0;
             // 
             // button1
@@ -55,7 +56,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(760, 450);
             Controls.Add(button1);
             Controls.Add(dataGridView1);
             Name = "FormHistoryLog";

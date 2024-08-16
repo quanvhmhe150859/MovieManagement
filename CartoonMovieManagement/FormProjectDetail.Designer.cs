@@ -144,10 +144,12 @@
             // 
             numBudget.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             numBudget.Location = new Point(135, 258);
+            numBudget.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             numBudget.Name = "numBudget";
             numBudget.Size = new Size(354, 33);
             numBudget.TabIndex = 11;
             numBudget.TextAlign = HorizontalAlignment.Right;
+            numBudget.ThousandsSeparator = true;
             // 
             // tbId
             // 

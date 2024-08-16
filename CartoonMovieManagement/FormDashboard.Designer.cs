@@ -40,13 +40,15 @@
             label1 = new Label();
             tbSearch = new TextBox();
             panel1 = new Panel();
-            checkExpired = new CheckBox();
             checkAll = new CheckBox();
             checkDeleted = new CheckBox();
             btnStatusSetting = new Button();
             btnTaskLog = new Button();
+            btnEmployee = new Button();
+            dgvEmployee = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             SuspendLayout();
             // 
             // dgvDashboard
@@ -55,7 +57,7 @@
             dgvDashboard.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDashboard.Location = new Point(12, 12);
             dgvDashboard.Name = "dgvDashboard";
-            dgvDashboard.Size = new Size(658, 426);
+            dgvDashboard.Size = new Size(645, 519);
             dgvDashboard.TabIndex = 0;
             dgvDashboard.CellClick += dgvDashboard_CellClick;
             dgvDashboard.CellContentClick += dgvDashboard_CellContentClick;
@@ -65,7 +67,7 @@
             // btnProject
             // 
             btnProject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnProject.Location = new Point(3, 0);
+            btnProject.Location = new Point(3, 3);
             btnProject.Name = "btnProject";
             btnProject.Size = new Size(89, 32);
             btnProject.TabIndex = 1;
@@ -76,7 +78,7 @@
             // btnMovie
             // 
             btnMovie.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnMovie.Location = new Point(3, 38);
+            btnMovie.Location = new Point(3, 41);
             btnMovie.Name = "btnMovie";
             btnMovie.Size = new Size(89, 32);
             btnMovie.TabIndex = 2;
@@ -87,7 +89,7 @@
             // btnTask
             // 
             btnTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnTask.Location = new Point(3, 114);
+            btnTask.Location = new Point(3, 117);
             btnTask.Name = "btnTask";
             btnTask.Size = new Size(89, 32);
             btnTask.TabIndex = 3;
@@ -98,7 +100,7 @@
             // btnCreateTask
             // 
             btnCreateTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCreateTask.Location = new Point(98, 114);
+            btnCreateTask.Location = new Point(98, 117);
             btnCreateTask.Name = "btnCreateTask";
             btnCreateTask.Size = new Size(106, 32);
             btnCreateTask.TabIndex = 6;
@@ -109,7 +111,7 @@
             // btnCreateMovie
             // 
             btnCreateMovie.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCreateMovie.Location = new Point(98, 38);
+            btnCreateMovie.Location = new Point(98, 41);
             btnCreateMovie.Name = "btnCreateMovie";
             btnCreateMovie.Size = new Size(106, 32);
             btnCreateMovie.TabIndex = 5;
@@ -120,7 +122,7 @@
             // btnCreateProject
             // 
             btnCreateProject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCreateProject.Location = new Point(98, 0);
+            btnCreateProject.Location = new Point(98, 3);
             btnCreateProject.Name = "btnCreateProject";
             btnCreateProject.Size = new Size(106, 32);
             btnCreateProject.TabIndex = 4;
@@ -131,7 +133,7 @@
             // btnCreateEpisode
             // 
             btnCreateEpisode.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCreateEpisode.Location = new Point(98, 76);
+            btnCreateEpisode.Location = new Point(98, 79);
             btnCreateEpisode.Name = "btnCreateEpisode";
             btnCreateEpisode.Size = new Size(106, 32);
             btnCreateEpisode.TabIndex = 8;
@@ -142,7 +144,7 @@
             // btnEpisode
             // 
             btnEpisode.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEpisode.Location = new Point(3, 76);
+            btnEpisode.Location = new Point(3, 79);
             btnEpisode.Name = "btnEpisode";
             btnEpisode.Size = new Size(89, 32);
             btnEpisode.TabIndex = 7;
@@ -155,7 +157,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            label1.Location = new Point(3, 153);
+            label1.Location = new Point(3, 156);
             label1.Name = "label1";
             label1.Size = new Size(54, 17);
             label1.TabIndex = 9;
@@ -164,7 +166,7 @@
             // tbSearch
             // 
             tbSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            tbSearch.Location = new Point(63, 152);
+            tbSearch.Location = new Point(63, 155);
             tbSearch.Name = "tbSearch";
             tbSearch.Size = new Size(141, 23);
             tbSearch.TabIndex = 10;
@@ -172,7 +174,7 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            panel1.Controls.Add(checkExpired);
+            panel1.BackColor = SystemColors.ActiveCaption;
             panel1.Controls.Add(checkAll);
             panel1.Controls.Add(checkDeleted);
             panel1.Controls.Add(btnCreateMovie);
@@ -185,24 +187,10 @@
             panel1.Controls.Add(btnEpisode);
             panel1.Controls.Add(btnCreateProject);
             panel1.Controls.Add(btnCreateTask);
-            panel1.Location = new Point(676, 12);
+            panel1.Location = new Point(663, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(207, 354);
+            panel1.Size = new Size(207, 216);
             panel1.TabIndex = 11;
-            // 
-            // checkExpired
-            // 
-            checkExpired.AutoSize = true;
-            checkExpired.Enabled = false;
-            checkExpired.Font = new Font("Segoe UI", 9F);
-            checkExpired.Location = new Point(131, 206);
-            checkExpired.Name = "checkExpired";
-            checkExpired.RightToLeft = RightToLeft.No;
-            checkExpired.Size = new Size(65, 19);
-            checkExpired.TabIndex = 42;
-            checkExpired.Text = "Expired";
-            checkExpired.UseVisualStyleBackColor = true;
-            checkExpired.CheckedChanged += checkExpired_CheckedChanged;
             // 
             // checkAll
             // 
@@ -210,7 +198,7 @@
             checkAll.Checked = true;
             checkAll.CheckState = CheckState.Checked;
             checkAll.Font = new Font("Segoe UI", 9F);
-            checkAll.Location = new Point(23, 181);
+            checkAll.Location = new Point(23, 184);
             checkAll.Name = "checkAll";
             checkAll.RightToLeft = RightToLeft.No;
             checkAll.Size = new Size(40, 19);
@@ -223,7 +211,7 @@
             // 
             checkDeleted.AutoSize = true;
             checkDeleted.Font = new Font("Segoe UI", 9F);
-            checkDeleted.Location = new Point(131, 181);
+            checkDeleted.Location = new Point(131, 184);
             checkDeleted.Name = "checkDeleted";
             checkDeleted.RightToLeft = RightToLeft.No;
             checkDeleted.Size = new Size(66, 19);
@@ -234,10 +222,10 @@
             // 
             // btnStatusSetting
             // 
-            btnStatusSetting.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnStatusSetting.Location = new Point(794, 406);
+            btnStatusSetting.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnStatusSetting.Location = new Point(663, 499);
             btnStatusSetting.Name = "btnStatusSetting";
-            btnStatusSetting.Size = new Size(89, 32);
+            btnStatusSetting.Size = new Size(99, 32);
             btnStatusSetting.TabIndex = 12;
             btnStatusSetting.Text = "Status Setting";
             btnStatusSetting.UseVisualStyleBackColor = true;
@@ -245,22 +233,45 @@
             // 
             // btnTaskLog
             // 
-            btnTaskLog.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnTaskLog.Location = new Point(679, 406);
+            btnTaskLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnTaskLog.Location = new Point(663, 461);
             btnTaskLog.Name = "btnTaskLog";
-            btnTaskLog.Size = new Size(89, 32);
+            btnTaskLog.Size = new Size(70, 32);
             btnTaskLog.TabIndex = 13;
             btnTaskLog.Text = "Task Log";
             btnTaskLog.UseVisualStyleBackColor = true;
             btnTaskLog.Click += btnTaskLog_Click;
             // 
+            // btnEmployee
+            // 
+            btnEmployee.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnEmployee.Location = new Point(787, 499);
+            btnEmployee.Name = "btnEmployee";
+            btnEmployee.Size = new Size(83, 32);
+            btnEmployee.TabIndex = 14;
+            btnEmployee.Text = "Employee";
+            btnEmployee.UseVisualStyleBackColor = true;
+            btnEmployee.Click += btnEmployee_Click;
+            // 
+            // dgvEmployee
+            // 
+            dgvEmployee.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            dgvEmployee.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvEmployee.Location = new Point(663, 234);
+            dgvEmployee.Name = "dgvEmployee";
+            dgvEmployee.RowHeadersVisible = false;
+            dgvEmployee.Size = new Size(207, 221);
+            dgvEmployee.TabIndex = 15;
+            // 
             // FormDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(895, 450);
+            ClientSize = new Size(882, 543);
+            Controls.Add(btnEmployee);
             Controls.Add(btnTaskLog);
             Controls.Add(btnStatusSetting);
+            Controls.Add(dgvEmployee);
             Controls.Add(panel1);
             Controls.Add(dgvDashboard);
             Name = "FormDashboard";
@@ -270,6 +281,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvEmployee).EndInit();
             ResumeLayout(false);
         }
 
@@ -290,7 +302,8 @@
         private CheckBox checkDeleted;
         private Button btnStatusSetting;
         private Button btnTaskLog;
-        private CheckBox checkExpired;
         private CheckBox checkAll;
+        private Button btnEmployee;
+        private DataGridView dgvEmployee;
     }
 }
