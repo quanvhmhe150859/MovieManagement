@@ -46,6 +46,7 @@
             btnTaskLog = new Button();
             btnEmployee = new Button();
             dgvEmployee = new DataGridView();
+            btnCategory = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
@@ -195,8 +196,6 @@
             // checkAll
             // 
             checkAll.AutoSize = true;
-            checkAll.Checked = true;
-            checkAll.CheckState = CheckState.Checked;
             checkAll.Font = new Font("Segoe UI", 9F);
             checkAll.Location = new Point(23, 184);
             checkAll.Name = "checkAll";
@@ -225,7 +224,7 @@
             btnStatusSetting.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnStatusSetting.Location = new Point(663, 499);
             btnStatusSetting.Name = "btnStatusSetting";
-            btnStatusSetting.Size = new Size(99, 32);
+            btnStatusSetting.Size = new Size(92, 32);
             btnStatusSetting.TabIndex = 12;
             btnStatusSetting.Text = "Status Setting";
             btnStatusSetting.UseVisualStyleBackColor = true;
@@ -236,7 +235,7 @@
             btnTaskLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnTaskLog.Location = new Point(663, 461);
             btnTaskLog.Name = "btnTaskLog";
-            btnTaskLog.Size = new Size(70, 32);
+            btnTaskLog.Size = new Size(92, 32);
             btnTaskLog.TabIndex = 13;
             btnTaskLog.Text = "Task Log";
             btnTaskLog.UseVisualStyleBackColor = true;
@@ -245,9 +244,9 @@
             // btnEmployee
             // 
             btnEmployee.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnEmployee.Location = new Point(787, 499);
+            btnEmployee.Location = new Point(761, 499);
             btnEmployee.Name = "btnEmployee";
-            btnEmployee.Size = new Size(83, 32);
+            btnEmployee.Size = new Size(109, 32);
             btnEmployee.TabIndex = 14;
             btnEmployee.Text = "Employee";
             btnEmployee.UseVisualStyleBackColor = true;
@@ -263,11 +262,23 @@
             dgvEmployee.Size = new Size(207, 221);
             dgvEmployee.TabIndex = 15;
             // 
+            // btnCategory
+            // 
+            btnCategory.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCategory.Location = new Point(761, 461);
+            btnCategory.Name = "btnCategory";
+            btnCategory.Size = new Size(109, 32);
+            btnCategory.TabIndex = 16;
+            btnCategory.Text = "Category Setting";
+            btnCategory.UseVisualStyleBackColor = true;
+            btnCategory.Click += btnCategory_Click;
+            // 
             // FormDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(882, 543);
+            Controls.Add(btnCategory);
             Controls.Add(btnEmployee);
             Controls.Add(btnTaskLog);
             Controls.Add(btnStatusSetting);
@@ -305,5 +316,6 @@
         private CheckBox checkAll;
         private Button btnEmployee;
         private DataGridView dgvEmployee;
+        private Button btnCategory;
     }
 }

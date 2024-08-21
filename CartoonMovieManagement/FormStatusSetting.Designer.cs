@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             dataGridView1 = new DataGridView();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
+            lbId = new Label();
+            lbDescription = new Label();
+            lbName = new Label();
             tbId = new TextBox();
             tbDescription = new TextBox();
             tbName = new TextBox();
@@ -39,7 +39,7 @@
             btnEdit = new Button();
             btnDelete = new Button();
             btnRefresh = new Button();
-            label4 = new Label();
+            lbBool = new Label();
             checkForAdmin = new CheckBox();
             panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -56,35 +56,35 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellClick += dataGridView1_CellClick;
             // 
-            // label1
+            // lbId
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 14.25F);
-            label1.Location = new Point(13, 6);
-            label1.Name = "label1";
-            label1.Size = new Size(92, 25);
-            label1.TabIndex = 1;
-            label1.Text = "Status Id: ";
+            lbId.AutoSize = true;
+            lbId.Font = new Font("Segoe UI", 14.25F);
+            lbId.Location = new Point(13, 6);
+            lbId.Name = "lbId";
+            lbId.Size = new Size(92, 25);
+            lbId.TabIndex = 1;
+            lbId.Text = "Status Id: ";
             // 
-            // label2
+            // lbDescription
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 14.25F);
-            label2.Location = new Point(13, 97);
-            label2.Name = "label2";
-            label2.Size = new Size(117, 25);
-            label2.TabIndex = 2;
-            label2.Text = "Description: ";
+            lbDescription.AutoSize = true;
+            lbDescription.Font = new Font("Segoe UI", 14.25F);
+            lbDescription.Location = new Point(13, 97);
+            lbDescription.Name = "lbDescription";
+            lbDescription.Size = new Size(117, 25);
+            lbDescription.TabIndex = 2;
+            lbDescription.Text = "Description: ";
             // 
-            // label3
+            // lbName
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 14.25F);
-            label3.Location = new Point(13, 49);
-            label3.Name = "label3";
-            label3.Size = new Size(126, 25);
-            label3.TabIndex = 3;
-            label3.Text = "Status Name: ";
+            lbName.AutoSize = true;
+            lbName.Font = new Font("Segoe UI", 14.25F);
+            lbName.Location = new Point(13, 49);
+            lbName.Name = "lbName";
+            lbName.Size = new Size(126, 25);
+            lbName.TabIndex = 3;
+            lbName.Text = "Status Name: ";
             // 
             // tbId
             // 
@@ -115,7 +115,7 @@
             // btnCreate
             // 
             btnCreate.Font = new Font("Segoe UI", 14.25F);
-            btnCreate.Location = new Point(37, 253);
+            btnCreate.Location = new Point(13, 314);
             btnCreate.Name = "btnCreate";
             btnCreate.Size = new Size(92, 41);
             btnCreate.TabIndex = 7;
@@ -126,9 +126,9 @@
             // btnEdit
             // 
             btnEdit.Font = new Font("Segoe UI", 14.25F);
-            btnEdit.Location = new Point(169, 253);
+            btnEdit.Location = new Point(171, 314);
             btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(92, 41);
+            btnEdit.Size = new Size(86, 41);
             btnEdit.TabIndex = 8;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = true;
@@ -138,9 +138,9 @@
             // 
             btnDelete.BackColor = SystemColors.Control;
             btnDelete.Font = new Font("Segoe UI", 14.25F);
-            btnDelete.Location = new Point(267, 253);
+            btnDelete.Location = new Point(263, 314);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(92, 41);
+            btnDelete.Size = new Size(98, 41);
             btnDelete.TabIndex = 9;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
@@ -149,23 +149,23 @@
             // btnRefresh
             // 
             btnRefresh.Font = new Font("Segoe UI", 14.25F);
-            btnRefresh.Location = new Point(37, 321);
+            btnRefresh.Location = new Point(13, 375);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(320, 41);
+            btnRefresh.Size = new Size(244, 41);
             btnRefresh.TabIndex = 10;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
-            // label4
+            // lbBool
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 14.25F);
-            label4.Location = new Point(13, 199);
-            label4.Name = "label4";
-            label4.Size = new Size(152, 25);
-            label4.TabIndex = 11;
-            label4.Text = "For Admin Only: ";
+            lbBool.AutoSize = true;
+            lbBool.Font = new Font("Segoe UI", 14.25F);
+            lbBool.Location = new Point(13, 199);
+            lbBool.Name = "lbBool";
+            lbBool.Size = new Size(152, 25);
+            lbBool.TabIndex = 11;
+            lbBool.Text = "For Admin Only: ";
             // 
             // checkForAdmin
             // 
@@ -183,11 +183,11 @@
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel1.Controls.Add(tbId);
             panel1.Controls.Add(checkForAdmin);
-            panel1.Controls.Add(label1);
-            panel1.Controls.Add(label4);
-            panel1.Controls.Add(label2);
+            panel1.Controls.Add(lbId);
+            panel1.Controls.Add(lbBool);
+            panel1.Controls.Add(lbDescription);
             panel1.Controls.Add(btnRefresh);
-            panel1.Controls.Add(label3);
+            panel1.Controls.Add(lbName);
             panel1.Controls.Add(btnDelete);
             panel1.Controls.Add(tbDescription);
             panel1.Controls.Add(btnEdit);
@@ -195,7 +195,7 @@
             panel1.Controls.Add(btnCreate);
             panel1.Location = new Point(488, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(364, 387);
+            panel1.Size = new Size(364, 426);
             panel1.TabIndex = 42;
             // 
             // FormStatusSetting
@@ -206,7 +206,7 @@
             Controls.Add(panel1);
             Controls.Add(dataGridView1);
             Name = "FormStatusSetting";
-            Text = "FormStatusSetting";
+            Text = "FormSetting";
             Load += FormStatusSetting_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
@@ -217,9 +217,9 @@
         #endregion
 
         private DataGridView dataGridView1;
-        private Label label1;
-        private Label label2;
-        private Label label3;
+        private Label lbId;
+        private Label lbDescription;
+        private Label lbName;
         private TextBox tbId;
         private TextBox tbDescription;
         private TextBox tbName;
@@ -227,7 +227,7 @@
         private Button btnEdit;
         private Button btnDelete;
         private Button btnRefresh;
-        private Label label4;
+        private Label lbBool;
         private CheckBox checkForAdmin;
         private Panel panel1;
     }

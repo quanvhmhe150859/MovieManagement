@@ -22,7 +22,7 @@ namespace CartoonMovieManagement
             if(projectId != 0)
                 CreateDeleteButton();
 
-            var category = context.Categories.ToList();
+            var category = context.Categories.Where(c => c.DeletedDate == null && c.IsActive).ToList();
             cbCategory.DataSource = category;
             cbCategory.DisplayMember = "Name";
             cbCategory.ValueMember = "CategoryId";

@@ -132,6 +132,7 @@
             cbStatus.Name = "cbStatus";
             cbStatus.Size = new Size(382, 33);
             cbStatus.TabIndex = 22;
+            cbStatus.SelectedIndexChanged += cbStatus_SelectedIndexChanged;
             // 
             // label7
             // 
@@ -192,6 +193,7 @@
             cbEmployee.Name = "cbEmployee";
             cbEmployee.Size = new Size(382, 33);
             cbEmployee.TabIndex = 28;
+            cbEmployee.SelectedIndexChanged += cbEmployee_SelectedIndexChanged;
             // 
             // label6
             // 
@@ -274,6 +276,7 @@
             cbTaskParent.Name = "cbTaskParent";
             cbTaskParent.Size = new Size(382, 33);
             cbTaskParent.TabIndex = 36;
+            cbTaskParent.SelectedIndexChanged += cbTaskParent_SelectedIndexChanged;
             // 
             // label11
             // 

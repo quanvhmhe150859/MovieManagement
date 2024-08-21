@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Button = System.Windows.Forms.Button;
+using Status = CartoonMovieManagement.Models.Status;
 using Task = CartoonMovieManagement.Models.Task;
 
 namespace CartoonMovieManagement
@@ -24,9 +25,11 @@ namespace CartoonMovieManagement
         private int? movieSelected;
         private int? episodeSelected;
 
+        private int? employeeId;
+
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormTaskDetail(int? id, FormDashboard formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected)
+        public FormTaskDetail(int? id, FormDashboard formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected, int? employeeId)
         {
             InitializeComponent();
             taskId = id;
@@ -36,13 +39,15 @@ namespace CartoonMovieManagement
             this.movieSelected = movieSelected;
             this.episodeSelected = episodeSelected;
 
+            this.employeeId = employeeId;
+
             dtbDeadLine.Format = DateTimePickerFormat.Custom;
             dtbDeadLine.CustomFormat = "dd/MM/yyyy hh:mm tt";
         }
 
         private void FormTaskDetail_Load(object sender, EventArgs e)
         {
-            if(taskId != 0)
+            if (taskId != 0)
                 CreateDeleteButton();
 
             //Error
@@ -52,34 +57,43 @@ namespace CartoonMovieManagement
             errorName.Text = "";
             errorDeadline.Text = "";
 
+
+
             //Employee
+            var noEmployee = new Employee { EmployeeId = -1, FullName = "Empty..." };
             var cbData = context.Employees
                 .Include(e => e.Accounts)
                 .Where(e => e.Accounts.Any(a => a.RoleId != 1))
                 .ToList();
+            cbData.Add(noEmployee);
             cbEmployee.DataSource = cbData;
             cbEmployee.DisplayMember = "FullName";
             cbEmployee.ValueMember = "EmployeeId";
 
             // Create a placeholder item
-            var placeholder = new Project { ProjectId = -1, Name = "Please select..." };
+            var placeholderProject = new Project { ProjectId = -1, Name = "Please select..." };
 
             // Retrieve the data and add the placeholder item
             var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
-            dataProject.Insert(0, placeholder); // Add placeholder to the beginning of the list
+            dataProject.Insert(0, placeholderProject); // Add placeholder to the beginning of the list
 
             // Set the data source and configure the ComboBox
             cbProject.DataSource = dataProject;
             cbProject.DisplayMember = "Name";
             cbProject.ValueMember = "ProjectId";
-
             //Status
             var statusData = context.Statuses.ToList();
+
+            if (taskId == 0)
+            {
+                statusData = statusData.Where(s => s.StatusId != 2 && s.StatusId != 6).ToList();
+            }
+
             cbStatus.DataSource = statusData;
             cbStatus.DisplayMember = "Name";
             cbStatus.ValueMember = "StatusId";
 
-            cbProject.SelectedValue = projectSelected;
+            cbProject.SelectedValue = projectSelected == 0 ? -1 : projectSelected;
             cbMovie.SelectedValue = movieSelected == 0 ? -1 : movieSelected;
             cbEpisode.SelectedValue = episodeSelected == 0 ? -1 : episodeSelected;
 
@@ -92,15 +106,15 @@ namespace CartoonMovieManagement
                 if (task != null)
                 {
                     tbId.Text = task.TaskId.ToString();
-                    cbEmployee.SelectedValue = task.ReceiverId;
+                    cbEmployee.SelectedValue = task.ReceiverId ?? employeeId;
                     cbProject.SelectedValue = movie.ProjectId;
                     cbMovie.SelectedValue = movie.CartoonMovieId;
                     cbEpisode.SelectedValue = episode.EpisodeMovieId;
-                    cbTaskParent.SelectedValue = task.TaskParentId ?? 0;
+                    cbTaskParent.SelectedValue = task.TaskParentId ?? -1;
                     tbName.Text = task.Name;
                     tbDescription.Text = task.Description;
                     dtbDeadLine.Value = task.DeadlineDate;
-                    cbStatus.SelectedIndex = task.StatusId - 1;
+                    cbStatus.SelectedValue = employeeId == 0 ? task.StatusId : 1;
                     tbFilePath.Text = task.ResourceLink;
                 }
             }
@@ -171,7 +185,7 @@ namespace CartoonMovieManagement
                 errorEpisode.Text = "Need Episode";
                 isValid = false;
             }
-            if (dtbDeadLine.Value < DateTime.Now)
+            if (dtbDeadLine.Value < DateTime.Now && ((int?)cbStatus.SelectedValue == 1 || (int?)cbStatus.SelectedValue == 7))
             {
                 errorDeadline.Text = "Deadline must be future date";
                 isValid = false;
@@ -184,7 +198,7 @@ namespace CartoonMovieManagement
                     Name = tbName.Text,
                     Description = tbDescription.Text,
                     CreatedDate = DateTime.Now,
-                    ReceiverId = (int?)cbEmployee.SelectedValue,
+                    ReceiverId = (int?)cbEmployee.SelectedValue != -1 ? (int?)cbEmployee.SelectedValue : null,
                     CreaterId = formDashboard.accountId, //dang fix cung
                     StatusId = (int)(cbStatus.SelectedValue ?? 0),
                     EpisodeMovieId = (int?)cbEpisode.SelectedValue ?? 0,
@@ -192,6 +206,7 @@ namespace CartoonMovieManagement
                     ResourceLink = tbFilePath.Text,
                     TaskParentId = (int?)cbTaskParent.SelectedValue
                 };
+
                 Task tempTask = new Task();
                 bool isLinkChange = false;
                 if (taskId != 0)
@@ -206,13 +221,17 @@ namespace CartoonMovieManagement
                         tempTask.StatusId = newTask.StatusId;
                         tempTask.EpisodeMovieId = newTask.EpisodeMovieId;
                         tempTask.TaskParentId = newTask.TaskParentId;
+                        tempTask.ReceiverId = newTask.ReceiverId;
+
+                        if (newTask.ResourceLink == "")
+                            newTask.ResourceLink = null;
 
                         if (tempTask.ResourceLink != newTask.ResourceLink)
                             isLinkChange = true;
                     }
                 }
 
-                if (newTask.TaskParentId == 0)
+                if (newTask.TaskParentId == -1)
                 {
                     newTask.TaskParentId = null;
                     tempTask.TaskParentId = null;
@@ -401,7 +420,7 @@ namespace CartoonMovieManagement
                     cbTaskParent.Enabled = true;
 
                     // Create a placeholder item
-                    var placeholder = new Task { EpisodeMovieId = -1, Name = "No Parent" };
+                    var placeholder = new Task { TaskId = -1, Name = "No Parent" };
 
                     dataTask.Insert(0, placeholder); // Add placeholder to the beginning of the list
 
@@ -463,6 +482,75 @@ namespace CartoonMovieManagement
                 // Deletion was canceled
                 MessageBox.Show("Deletion canceled.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void cbEmployee_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedEmployee = cbEmployee.SelectedItem as Employee;
+            if (selectedEmployee != null)
+            {
+                cbStatus.SelectedIndexChanged -= cbStatus_SelectedIndexChanged; // Unsubscribe from the event
+
+                if (selectedEmployee.EmployeeId == -1)
+                {
+                    cbStatus.SelectedValue = 7;
+                }
+                else if (selectedEmployee.EmployeeId != 1 && (int?)cbStatus.SelectedValue == 7)
+                {
+                    if (cbStatus.Items.Count > 0)
+                    {
+                        cbStatus.SelectedIndex = 0;
+                    }
+                }
+
+                cbStatus.SelectedIndexChanged += cbStatus_SelectedIndexChanged; // Re-subscribe to the event
+            }
+        }
+
+        private void cbStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedStatus = cbStatus.SelectedItem as Status;
+            if (selectedStatus != null)
+            {
+                cbEmployee.SelectedIndexChanged -= cbEmployee_SelectedIndexChanged; // Unsubscribe from the event
+
+                if (selectedStatus.StatusId == 7)
+                {
+                    cbEmployee.SelectedValue = -1;
+                }
+                else if (selectedStatus.StatusId != 7 && (int?)cbEmployee.SelectedValue == -1)
+                {
+                    cbEmployee.SelectedIndex = 0;
+                }
+
+                cbEmployee.SelectedIndexChanged += cbEmployee_SelectedIndexChanged; // Re-subscribe to the event
+            }
+        }
+
+        private void cbTaskParent_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Safely cast the SelectedValue to a nullable int (int?)
+            int? selectedValue = cbTaskParent.SelectedValue as int?;
+
+            if (selectedValue != null)
+            {
+                if (selectedValue != -1)
+                {
+                    var task = context.Tasks
+                        .FirstOrDefault(t => t.TaskId == (int?)cbTaskParent.SelectedValue);
+                    if (task != null && task.StatusId != 6)
+                    {
+                        cbStatus.SelectedValue = 3;
+                        cbStatus.Enabled = false;
+                    }
+                    else
+                        cbStatus.Enabled = true;
+                }
+                else
+                    cbStatus.Enabled = true;
+            }
+            else
+                cbStatus.Enabled = true;
         }
     }
 }

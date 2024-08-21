@@ -79,7 +79,6 @@ namespace CartoonMovieManagement
                     TaskId = t.TaskId,
                     Name = t.Name,
                     Description = t.Description,
-                    CreatedDate = t.CreatedDate,
                     //AssignedDate = t.AssignedDate,
                     DeadlineDate = t.DeadlineDate,
                     ReceiverId = t.ReceiverId,
@@ -97,14 +96,12 @@ namespace CartoonMovieManagement
 
             dataGridView1.DataSource = data;
 
-            dataGridView1.Columns["CreatedDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
             dataGridView1.Columns["DeadlineDate"].DefaultCellStyle.Format = "dd/MM/yyyy";
             dataGridView1.Columns["TaskId"].Visible = false;
             dataGridView1.Columns["EpisodeMovieId"].Visible = false;
             dataGridView1.Columns["ReceiverId"].Visible = false;
             dataGridView1.Columns["ResourceLink"].Visible = false;
             dataGridView1.Columns["SubmitLink"].Visible = false;
-            dataGridView1.Columns["CreatedDate"].HeaderText = "Created Date";
             dataGridView1.Columns["DeadlineDate"].HeaderText = "Deadline Date";
             dataGridView1.Columns["EpisodeMovie"].HeaderText = "Episode Movie";
 
@@ -445,6 +442,12 @@ namespace CartoonMovieManagement
             {
                 MessageBox.Show("Task not found");
             }
+        }
+
+        private void btnGetTask_Click(object sender, EventArgs e)
+        {
+            FormTaskRegister formTaskRegister = new FormTaskRegister(employeeId);
+            formTaskRegister.Show();
         }
     }
 }

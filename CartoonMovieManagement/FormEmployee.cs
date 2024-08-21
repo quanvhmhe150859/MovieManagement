@@ -155,7 +155,7 @@ namespace CartoonMovieManagement
 
         private void btnSalaryLog_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog("Salary");
+            FormHistoryLog formHistoryLog = new FormHistoryLog("Salary", formDashboard);
             formHistoryLog.Show();
         }
     }

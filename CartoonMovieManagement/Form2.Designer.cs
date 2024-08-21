@@ -47,6 +47,7 @@
             tbFile = new TextBox();
             lbId = new Label();
             label6 = new Label();
+            btnGetTask = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -55,9 +56,9 @@
             // 
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(12, 84);
+            dataGridView1.Location = new Point(12, 64);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(776, 394);
+            dataGridView1.Size = new Size(776, 497);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellClick += dataGridView1_CellClick;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
@@ -141,8 +142,9 @@
             lTaskName.AutoSize = true;
             lTaskName.Location = new Point(51, 38);
             lTaskName.Name = "lTaskName";
-            lTaskName.Size = new Size(0, 15);
+            lTaskName.Size = new Size(39, 15);
             lTaskName.TabIndex = 11;
+            lTaskName.Text = "Name";
             // 
             // label4
             // 
@@ -165,6 +167,7 @@
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel1.Controls.Add(btnGetTask);
             panel1.Controls.Add(cbEpisode);
             panel1.Controls.Add(btnSubmit);
             panel1.Controls.Add(label5);
@@ -179,9 +182,9 @@
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(cbStatus);
-            panel1.Location = new Point(794, 84);
+            panel1.Location = new Point(794, 64);
             panel1.Name = "panel1";
-            panel1.Size = new Size(152, 394);
+            panel1.Size = new Size(152, 497);
             panel1.TabIndex = 15;
             // 
             // cbEpisode
@@ -238,11 +241,22 @@
             label6.TabIndex = 15;
             label6.Text = "Task Id: ";
             // 
+            // btnGetTask
+            // 
+            btnGetTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnGetTask.Location = new Point(36, 469);
+            btnGetTask.Name = "btnGetTask";
+            btnGetTask.Size = new Size(75, 25);
+            btnGetTask.TabIndex = 21;
+            btnGetTask.Text = "Get Task";
+            btnGetTask.UseVisualStyleBackColor = true;
+            btnGetTask.Click += btnGetTask_Click;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(958, 490);
+            ClientSize = new Size(958, 573);
             Controls.Add(panel1);
             Controls.Add(label1);
             Controls.Add(linkLabel1);
@@ -279,5 +293,6 @@
         private TextBox tbFile;
         private Button btnSubmit;
         private ComboBox cbEpisode;
+        private Button btnGetTask;
     }
 }

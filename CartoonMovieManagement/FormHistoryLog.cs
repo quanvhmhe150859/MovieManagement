@@ -1,4 +1,5 @@
 ﻿using CartoonMovieManagement.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,11 +16,15 @@ namespace CartoonMovieManagement
     public partial class FormHistoryLog : Form
     {
         CartoonProductManagementContext context = new CartoonProductManagementContext();
-        string type;
+        private FormDashboard formDashboard;
+        private string type;
+        private Button btnEditTask = new Button();
+        private int selectedId;
 
-        public FormHistoryLog(string type)
+        public FormHistoryLog(string type, FormDashboard formDashboard)
         {
             InitializeComponent();
+            this.formDashboard = formDashboard;
             this.type = type;
         }
 
@@ -32,8 +37,22 @@ namespace CartoonMovieManagement
         {
             if (type == "Task")
             {
+                this.Controls.Remove(btnEditTask);
+
+                Button btnRequestList = new Button();
+                btnRequestList.Location = new Point(93, 12);
+                btnRequestList.Name = "btnRequestList";
+                btnRequestList.Size = new Size(102, 23);
+                btnRequestList.TabIndex = 2;
+                btnRequestList.Text = "Request List";
+                btnRequestList.UseVisualStyleBackColor = true;
+                btnRequestList.Click += btnRequestList_Click;
+                this.Controls.Add(btnRequestList);
+
                 dataGridView1.DataSource = null;
-                var data = context.TaskHistoryLogs.ToList();
+                var data = context.TaskHistoryLogs
+                    .OrderByDescending(t => t.TaskHistoryLogId)
+                    .ToList();
                 dataGridView1.DataSource = data;
 
                 dataGridView1.Columns["Task"].Visible = false;
@@ -81,7 +100,9 @@ namespace CartoonMovieManagement
                         CreatedDate = m.CreatedDate,
                         Provider = m.Account.Email,
                         Note = m.Note
-                    }).ToList();
+                    })
+                    .OrderByDescending(m => m.SalaryChangeLogId)
+                    .ToList();
                 dataGridView1.DataSource = data;
 
                 dataGridView1.Columns["SalaryChangeLogId"].Visible = false;
@@ -90,6 +111,88 @@ namespace CartoonMovieManagement
                 dataGridView1.Columns["CreatedDate"].HeaderText = "Created Date";
                 dataGridView1.Columns["CreatedDate"].Width = 150;
 
+            }
+        }
+
+        private void btnRequestList_Click(object? sender, EventArgs e)
+        {
+            btnEditTask.Enabled = false;
+            btnEditTask.Location = new Point(673, 12);
+            btnEditTask.Name = "btnEditTask";
+            btnEditTask.Size = new Size(75, 23);
+            btnEditTask.TabIndex = 3;
+            btnEditTask.Text = "Edit Task";
+            btnEditTask.UseVisualStyleBackColor = true;
+            btnEditTask.Click += btnEditTask_Click;
+            this.Controls.Add(btnEditTask);
+
+            dataGridView1.DataSource = null;
+            var data = context.TaskHistoryLogs
+                .Include(d => d.Task)
+                .Where(d => d.LogAction == "Request taking" && d.Task.ReceiverId == null && 
+                    d.Task.DeletedDate == null)
+                .OrderByDescending(t => t.TaskHistoryLogId)
+                .ToList();
+            dataGridView1.DataSource = data;
+
+            dataGridView1.Columns["Task"].Visible = false;
+            dataGridView1.Columns["TaskHistoryLogId"].Visible = false;
+            dataGridView1.Columns["TaskId"].HeaderText = "Task Id";
+            dataGridView1.Columns["LogAction"].HeaderText = "Log Action";
+            dataGridView1.Columns["UpdatedDate"].HeaderText = "Updated Date";
+            dataGridView1.Columns["EpisodeName"].HeaderText = "Episode";
+            dataGridView1.Columns["ReceiverName"].HeaderText = "Receiver";
+            dataGridView1.Columns["DeadlineDate"].HeaderText = "Deadline Date";
+            dataGridView1.Columns["SubmitLink"].HeaderText = "Submit Link";
+            dataGridView1.Columns["SubmitedDate"].Visible = false;
+            dataGridView1.Columns["ResourceLink"].Visible = false;
+            dataGridView1.Columns["UpdatedDate"].Width = 150;
+            dataGridView1.Columns["DeadlineDate"].Width = 150;
+
+            DataGridViewLinkColumn linkColumn = new DataGridViewLinkColumn();
+            linkColumn.Name = "ResourceLink";
+            linkColumn.HeaderText = "Resource Link";
+            linkColumn.DataPropertyName = "ResourceLink"; // This should match your property name in the data source
+            linkColumn.LinkBehavior = LinkBehavior.AlwaysUnderline;
+            dataGridView1.Columns.Add(linkColumn);
+            linkColumn.DisplayIndex = 12;
+
+            dataGridView1.Columns["SubmitLink"].Visible = false;
+            DataGridViewLinkColumn linkColumn2 = new DataGridViewLinkColumn();
+            linkColumn2.Name = "SubmitLink";
+            linkColumn2.HeaderText = "Submit Link";
+            linkColumn2.DataPropertyName = "SubmitLink"; // This should match your property name in the data source
+            linkColumn2.LinkBehavior = LinkBehavior.AlwaysUnderline;
+            dataGridView1.Columns.Add(linkColumn2);
+            linkColumn2.DisplayIndex = 13;
+
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+
+            dataGridView1.CellClick += dataGridView1_CellClick;
+        }
+
+        private void btnEditTask_Click(object? sender, EventArgs e)
+        {
+            var taskHistory = context.TaskHistoryLogs
+                .Include(t => t.Task)
+                .ThenInclude(t => t.EpisodeMovie)
+                .ThenInclude(t => t.CartoonMovie)
+                .FirstOrDefault(t => t.TaskHistoryLogId == selectedId);
+            if (taskHistory != null)
+            {
+                var employee = context.Employees.FirstOrDefault(e => e.FullName == taskHistory.ReceiverName);
+                //var task = context.Tasks.FirstOrDefault(t => t.TaskId == taskHistory.TaskId);
+                //var episode = context.EpisodeMovies.FirstOrDefault(e => e.EpisodeMovieId == task.EpisodeMovieId);
+                //var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == episode.CartoonMovieId);
+                if (employee != null)
+                {
+                    FormTaskDetail formTaskDetail = new FormTaskDetail(taskHistory.TaskId, formDashboard,
+                        taskHistory.Task.EpisodeMovie.CartoonMovie.ProjectId,
+                        taskHistory.Task.EpisodeMovie.CartoonMovieId,
+                        taskHistory.Task.EpisodeMovieId,
+                        employee.EmployeeId);
+                    formTaskDetail.Show();
+                }
             }
         }
 
@@ -160,6 +263,17 @@ namespace CartoonMovieManagement
                         }
                     }
                 }
+            }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                selectedId = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["TaskHistoryLogId"].Value);
+                if (selectedId != 0)
+                    btnEditTask.Enabled = true;
+                else btnEditTask.Enabled = false;
             }
         }
     }

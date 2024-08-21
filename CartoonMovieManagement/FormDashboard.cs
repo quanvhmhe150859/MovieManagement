@@ -702,7 +702,7 @@ namespace CartoonMovieManagement
 
         private void btnCreateTask_Click(object sender, EventArgs e)
         {
-            FormTaskDetail formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0);
+            FormTaskDetail formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0, 0);
             formTaskDetail.Show();
         }
 
@@ -824,7 +824,13 @@ namespace CartoonMovieManagement
 
         private void btnStatusSetting_Click(object sender, EventArgs e)
         {
-            FormStatusSetting formStatusSetting = new FormStatusSetting();
+            FormStatusSetting formStatusSetting = new FormStatusSetting("Status");
+            formStatusSetting.Show();
+        }
+
+        private void btnCategory_Click(object sender, EventArgs e)
+        {
+            FormStatusSetting formStatusSetting = new FormStatusSetting("Category");
             formStatusSetting.Show();
         }
 
@@ -832,26 +838,26 @@ namespace CartoonMovieManagement
         {
             if (selectedName == "Project")
             {
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0);
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0, 0);
                 formTaskDetail.Show();
             }
             else if (selectedName == "Movie")
             {
                 var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == selectedId);
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0);
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0, 0);
                 formTaskDetail.Show();
             }
             else if (selectedName == "Episode")
             {
                 var episode = context.EpisodeMovies.Include(e => e.CartoonMovie).FirstOrDefault(e => e.EpisodeMovieId == selectedId);
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId);
+                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId, 0);
                 formTaskDetail.Show();
             }
         }
 
         private void btnTaskLog_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog("Task");
+            FormHistoryLog formHistoryLog = new FormHistoryLog("Task", this);
             formHistoryLog.Show();
         }
 
