@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             dgvEmployee = new DataGridView();
-            btnAccountDetail = new Button();
+            btnEmployee = new Button();
             numChange = new NumericUpDown();
             tbNote = new TextBox();
             btnSalaryLog = new Button();
@@ -45,6 +45,7 @@
             label4 = new Label();
             numOld = new NumericUpDown();
             label7 = new Label();
+            btnRefresh = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numChange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numNew).BeginInit();
@@ -61,15 +62,16 @@
             dgvEmployee.TabIndex = 1;
             dgvEmployee.CellClick += dgvEmployee_CellClick;
             // 
-            // btnAccountDetail
+            // btnEmployee
             // 
-            btnAccountDetail.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAccountDetail.Location = new Point(631, 406);
-            btnAccountDetail.Name = "btnAccountDetail";
-            btnAccountDetail.Size = new Size(121, 32);
-            btnAccountDetail.TabIndex = 15;
-            btnAccountDetail.Text = "Account Detail";
-            btnAccountDetail.UseVisualStyleBackColor = true;
+            btnEmployee.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnEmployee.Location = new Point(763, 406);
+            btnEmployee.Name = "btnEmployee";
+            btnEmployee.Size = new Size(111, 32);
+            btnEmployee.TabIndex = 15;
+            btnEmployee.Text = "Create Employee";
+            btnEmployee.UseVisualStyleBackColor = true;
+            btnEmployee.Click += btnEmployee_Click;
             // 
             // numChange
             // 
@@ -99,7 +101,7 @@
             // btnSalaryLog
             // 
             btnSalaryLog.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSalaryLog.Location = new Point(776, 406);
+            btnSalaryLog.Location = new Point(776, 12);
             btnSalaryLog.Name = "btnSalaryLog";
             btnSalaryLog.Size = new Size(98, 32);
             btnSalaryLog.TabIndex = 18;
@@ -246,11 +248,23 @@
             label7.TabIndex = 30;
             label7.Text = "Change Salary";
             // 
+            // btnRefresh
+            // 
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRefresh.Location = new Point(631, 406);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(66, 32);
+            btnRefresh.TabIndex = 31;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
             // FormEmployee
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(886, 450);
+            Controls.Add(btnRefresh);
             Controls.Add(label7);
             Controls.Add(label4);
             Controls.Add(numOld);
@@ -266,7 +280,7 @@
             Controls.Add(btnSalaryLog);
             Controls.Add(tbNote);
             Controls.Add(numChange);
-            Controls.Add(btnAccountDetail);
+            Controls.Add(btnEmployee);
             Controls.Add(dgvEmployee);
             Name = "FormEmployee";
             Text = "FormEmployee";
@@ -282,7 +296,7 @@
         #endregion
 
         private DataGridView dgvEmployee;
-        private Button btnAccountDetail;
+        private Button btnEmployee;
         private NumericUpDown numChange;
         private TextBox tbNote;
         private Button btnSalaryLog;
@@ -298,5 +312,6 @@
         private Label label4;
         private NumericUpDown numOld;
         private Label label7;
+        private Button btnRefresh;
     }
 }

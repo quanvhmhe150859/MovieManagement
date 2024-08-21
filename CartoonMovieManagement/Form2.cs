@@ -449,5 +449,11 @@ namespace CartoonMovieManagement
             FormTaskRegister formTaskRegister = new FormTaskRegister(employeeId);
             formTaskRegister.Show();
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            FormProfile formProfile = new FormProfile(employeeId, "Employee");
+            formProfile.Show();
+        }
     }
 }

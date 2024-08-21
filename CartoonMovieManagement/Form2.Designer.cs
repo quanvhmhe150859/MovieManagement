@@ -41,13 +41,13 @@
             label4 = new Label();
             tbNote = new TextBox();
             panel1 = new Panel();
+            btnGetTask = new Button();
             cbEpisode = new ComboBox();
             btnSubmit = new Button();
             label5 = new Label();
             tbFile = new TextBox();
             lbId = new Label();
             label6 = new Label();
-            btnGetTask = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -73,6 +73,7 @@
             linkLabel1.TabIndex = 2;
             linkLabel1.TabStop = true;
             linkLabel1.Text = "Email";
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
             // 
             // label1
             // 
@@ -187,6 +188,17 @@
             panel1.Size = new Size(152, 497);
             panel1.TabIndex = 15;
             // 
+            // btnGetTask
+            // 
+            btnGetTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnGetTask.Location = new Point(36, 469);
+            btnGetTask.Name = "btnGetTask";
+            btnGetTask.Size = new Size(75, 25);
+            btnGetTask.TabIndex = 21;
+            btnGetTask.Text = "Get Task";
+            btnGetTask.UseVisualStyleBackColor = true;
+            btnGetTask.Click += btnGetTask_Click;
+            // 
             // cbEpisode
             // 
             cbEpisode.FormattingEnabled = true;
@@ -240,17 +252,6 @@
             label6.Size = new Size(48, 15);
             label6.TabIndex = 15;
             label6.Text = "Task Id: ";
-            // 
-            // btnGetTask
-            // 
-            btnGetTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnGetTask.Location = new Point(36, 469);
-            btnGetTask.Name = "btnGetTask";
-            btnGetTask.Size = new Size(75, 25);
-            btnGetTask.TabIndex = 21;
-            btnGetTask.Text = "Get Task";
-            btnGetTask.UseVisualStyleBackColor = true;
-            btnGetTask.Click += btnGetTask_Click;
             // 
             // Form2
             // 

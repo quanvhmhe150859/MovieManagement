@@ -16,7 +16,7 @@ namespace CartoonMovieManagement
     {
         CartoonProductManagementContext context = new CartoonProductManagementContext();
         private FormDashboard formDashboard;
-
+        private int selectedId;
         public FormEmployee(FormDashboard formDashboard)
         {
             InitializeComponent();
@@ -25,6 +25,8 @@ namespace CartoonMovieManagement
 
         private void LoadData()
         {
+            selectedId = 0;
+
             var employee = context.Employees
                 .Include(e => e.Accounts)
                 .Where(e => e.Accounts.Any(a => a.RoleId != 1))
@@ -116,6 +118,8 @@ namespace CartoonMovieManagement
                 DataGridViewRow row = dgvEmployee.Rows[e.RowIndex];
 
                 lbId.Text = row.Cells["EmployeeId"].Value.ToString();
+                selectedId = Int32.Parse(row.Cells["EmployeeId"].Value.ToString());
+
                 lbName.Text = row.Cells["FullName"].Value.ToString();
                 if (row.Cells["Salary"].Value != null && Decimal.TryParse(row.Cells["Salary"].Value.ToString(), out decimal salary))
                 {
@@ -157,6 +161,20 @@ namespace CartoonMovieManagement
         {
             FormHistoryLog formHistoryLog = new FormHistoryLog("Salary", formDashboard);
             formHistoryLog.Show();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+
+        private void btnEmployee_Click(object sender, EventArgs e)
+        {
+            if(selectedId == 0)
+            {
+                FormProfile formProfile = new FormProfile(selectedId, "Admin");
+                formProfile.Show();
+            }
         }
     }
 }
