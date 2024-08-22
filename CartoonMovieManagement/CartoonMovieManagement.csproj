@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="Uploads\Movies\" />
+    <Folder Include="Uploads\Avatar\" />
     <Folder Include="Uploads\Results\" />
     <Folder Include="Uploads\Resources\" />
   </ItemGroup>

@@ -46,6 +46,7 @@
             numOld = new NumericUpDown();
             label7 = new Label();
             btnRefresh = new Button();
+            btnCreateAccount = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numChange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numNew).BeginInit();
@@ -259,11 +260,24 @@
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // btnCreateAccount
+            // 
+            btnCreateAccount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnCreateAccount.Enabled = false;
+            btnCreateAccount.Location = new Point(763, 368);
+            btnCreateAccount.Name = "btnCreateAccount";
+            btnCreateAccount.Size = new Size(111, 32);
+            btnCreateAccount.TabIndex = 32;
+            btnCreateAccount.Text = "Create Account";
+            btnCreateAccount.UseVisualStyleBackColor = true;
+            btnCreateAccount.Click += btnCreateAccount_Click;
+            // 
             // FormEmployee
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(886, 450);
+            Controls.Add(btnCreateAccount);
             Controls.Add(btnRefresh);
             Controls.Add(label7);
             Controls.Add(label4);
@@ -313,5 +327,6 @@
         private NumericUpDown numOld;
         private Label label7;
         private Button btnRefresh;
+        private Button btnCreateAccount;
     }
 }

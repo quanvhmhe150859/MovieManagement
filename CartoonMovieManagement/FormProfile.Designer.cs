@@ -191,6 +191,7 @@
             pbAvatar.Location = new Point(589, 12);
             pbAvatar.Name = "pbAvatar";
             pbAvatar.Size = new Size(199, 199);
+            pbAvatar.SizeMode = PictureBoxSizeMode.Zoom;
             pbAvatar.TabIndex = 14;
             pbAvatar.TabStop = false;
             // 
@@ -293,6 +294,7 @@
             btnUploadAvatar.TabIndex = 26;
             btnUploadAvatar.Text = "Upload Avatar";
             btnUploadAvatar.UseVisualStyleBackColor = true;
+            btnUploadAvatar.Click += btnUploadAvatar_Click;
             // 
             // btnSave
             // 

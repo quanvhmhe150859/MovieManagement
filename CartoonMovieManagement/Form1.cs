@@ -25,7 +25,9 @@ namespace CartoonMovieManagement
             string email = textBox1.Text;
             string password = textBox2.Text;
 
-            var account = context.Accounts.FirstOrDefault(a => a.Email == email && a.Password == password);
+            var account = context.Accounts
+                .FirstOrDefault(a => a.Email == email && a.Password == password && 
+                a.DeletedDate == null);
             
             if (account == null)
             {
@@ -33,19 +35,26 @@ namespace CartoonMovieManagement
             }
             else
             {
-                int accountId = account.AccountId;
-                MessageBox.Show("Login successful");
-                if(account.RoleId == 1)
+                if(account.IsActive)
                 {
-                    //this.Hide();
-                    FormDashboard formDashboard = new FormDashboard(accountId, this);
-                    formDashboard.Show();
+                    int accountId = account.AccountId;
+                    MessageBox.Show("Login successful");
+                    if (account.RoleId == 1)
+                    {
+                        //this.Hide();
+                        FormDashboard formDashboard = new FormDashboard(accountId, this);
+                        formDashboard.Show();
+                    }
+                    else
+                    {
+                        //this.Hide();
+                        Form2 form2 = new Form2(account.EmployeeId, this);
+                        form2.Show();
+                    }
                 }
                 else
                 {
-                    //this.Hide();
-                    Form2 form2 = new Form2(accountId, this);
-                    form2.Show();
+                    MessageBox.Show("Account not active");
                 }
             }
         }

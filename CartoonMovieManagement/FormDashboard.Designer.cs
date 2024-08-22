@@ -286,7 +286,7 @@
             Controls.Add(panel1);
             Controls.Add(dgvDashboard);
             Name = "FormDashboard";
-            Text = "FormDashboard";
+            Text = "FormAdmin";
             FormClosed += FormDashboard_FormClosed;
             Load += FormDashboard_Load;
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).EndInit();

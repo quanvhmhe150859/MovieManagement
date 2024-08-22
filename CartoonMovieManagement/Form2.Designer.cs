@@ -263,7 +263,7 @@
             Controls.Add(linkLabel1);
             Controls.Add(dataGridView1);
             Name = "Form2";
-            Text = "Form2";
+            Text = "FormEmployee";
             FormClosed += Form2_FormClosed;
             Load += Form2_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();

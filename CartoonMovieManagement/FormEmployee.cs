@@ -26,10 +26,13 @@ namespace CartoonMovieManagement
         private void LoadData()
         {
             selectedId = 0;
+            btnEmployee.Text = "Create Employee";
+            btnCreateAccount.Enabled = false;
 
             var employee = context.Employees
                 .Include(e => e.Accounts)
-                .Where(e => e.Accounts.Any(a => a.RoleId != 1))
+                .AsNoTracking()
+                .Where(e => e.Accounts.Any(a => a.RoleId != 1) || !e.Accounts.Any())
                 .ToList();
 
             dgvEmployee.DataSource = employee;
@@ -118,7 +121,6 @@ namespace CartoonMovieManagement
                 DataGridViewRow row = dgvEmployee.Rows[e.RowIndex];
 
                 lbId.Text = row.Cells["EmployeeId"].Value.ToString();
-                selectedId = Int32.Parse(row.Cells["EmployeeId"].Value.ToString());
 
                 lbName.Text = row.Cells["FullName"].Value.ToString();
                 if (row.Cells["Salary"].Value != null && Decimal.TryParse(row.Cells["Salary"].Value.ToString(), out decimal salary))
@@ -134,6 +136,18 @@ namespace CartoonMovieManagement
                 numChange.Value = numNew.Value - numOld.Value;
 
                 btnSubmit.Enabled = true;
+
+                //Manage Account and Employee
+                selectedId = Int32.Parse(row.Cells["EmployeeId"].Value.ToString());
+                btnEmployee.Text = "Edit Employee";
+
+                btnCreateAccount.Enabled = true;
+                var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == selectedId);
+                if (account != null)
+                    btnCreateAccount.Text = "Edit Account";
+                else
+                    btnCreateAccount.Text = "Create Account";
+
             }
         }
 
@@ -170,11 +184,14 @@ namespace CartoonMovieManagement
 
         private void btnEmployee_Click(object sender, EventArgs e)
         {
-            if(selectedId == 0)
-            {
-                FormProfile formProfile = new FormProfile(selectedId, "Admin");
-                formProfile.Show();
-            }
+            FormProfile formProfile = new FormProfile(selectedId, "Admin", this);
+            formProfile.Show();
+        }
+
+        private void btnCreateAccount_Click(object sender, EventArgs e)
+        {
+            FormAccount formAccount = new FormAccount(selectedId, "Admin");
+            formAccount.Show();
         }
     }
 }

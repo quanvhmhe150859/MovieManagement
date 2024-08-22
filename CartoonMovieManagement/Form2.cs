@@ -452,7 +452,7 @@ namespace CartoonMovieManagement
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            FormProfile formProfile = new FormProfile(employeeId, "Employee");
+            FormProfile formProfile = new FormProfile(employeeId, "Employee", null);
             formProfile.Show();
         }
     }
