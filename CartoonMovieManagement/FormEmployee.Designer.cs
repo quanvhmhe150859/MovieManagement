@@ -47,6 +47,8 @@
             label7 = new Label();
             btnRefresh = new Button();
             btnCreateAccount = new Button();
+            btnHistory = new Button();
+            btnSettings = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numChange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numNew).BeginInit();
@@ -66,9 +68,9 @@
             // btnEmployee
             // 
             btnEmployee.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEmployee.Location = new Point(763, 406);
+            btnEmployee.Location = new Point(631, 368);
             btnEmployee.Name = "btnEmployee";
-            btnEmployee.Size = new Size(111, 32);
+            btnEmployee.Size = new Size(126, 32);
             btnEmployee.TabIndex = 15;
             btnEmployee.Text = "Create Employee";
             btnEmployee.UseVisualStyleBackColor = true;
@@ -180,9 +182,9 @@
             // 
             btnSubmit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnSubmit.Enabled = false;
-            btnSubmit.Location = new Point(703, 313);
+            btnSubmit.Location = new Point(763, 313);
             btnSubmit.Name = "btnSubmit";
-            btnSubmit.Size = new Size(98, 32);
+            btnSubmit.Size = new Size(111, 32);
             btnSubmit.TabIndex = 25;
             btnSubmit.Text = "Submit";
             btnSubmit.UseVisualStyleBackColor = true;
@@ -252,9 +254,9 @@
             // btnRefresh
             // 
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRefresh.Location = new Point(631, 406);
+            btnRefresh.Location = new Point(631, 313);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(66, 32);
+            btnRefresh.Size = new Size(126, 32);
             btnRefresh.TabIndex = 31;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -272,11 +274,35 @@
             btnCreateAccount.UseVisualStyleBackColor = true;
             btnCreateAccount.Click += btnCreateAccount_Click;
             // 
+            // btnHistory
+            // 
+            btnHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnHistory.Location = new Point(631, 406);
+            btnHistory.Name = "btnHistory";
+            btnHistory.Size = new Size(126, 32);
+            btnHistory.TabIndex = 33;
+            btnHistory.Text = "Employee History";
+            btnHistory.UseVisualStyleBackColor = true;
+            btnHistory.Click += btnHistory_Click;
+            // 
+            // btnSettings
+            // 
+            btnSettings.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnSettings.Location = new Point(763, 406);
+            btnSettings.Name = "btnSettings";
+            btnSettings.Size = new Size(111, 32);
+            btnSettings.TabIndex = 34;
+            btnSettings.Text = "Others";
+            btnSettings.UseVisualStyleBackColor = true;
+            btnSettings.Click += btnSettings_Click;
+            // 
             // FormEmployee
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(886, 450);
+            Controls.Add(btnSettings);
+            Controls.Add(btnHistory);
             Controls.Add(btnCreateAccount);
             Controls.Add(btnRefresh);
             Controls.Add(label7);
@@ -297,7 +323,7 @@
             Controls.Add(btnEmployee);
             Controls.Add(dgvEmployee);
             Name = "FormEmployee";
-            Text = "FormEmployee";
+            Text = "FormEmployeeManagement";
             Load += FormEmployee_Load;
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).EndInit();
             ((System.ComponentModel.ISupportInitialize)numChange).EndInit();
@@ -328,5 +354,7 @@
         private Label label7;
         private Button btnRefresh;
         private Button btnCreateAccount;
+        private Button btnHistory;
+        private Button btnSettings;
     }
 }

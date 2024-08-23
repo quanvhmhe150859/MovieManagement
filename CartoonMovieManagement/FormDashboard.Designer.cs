@@ -46,7 +46,7 @@
             btnTaskLog = new Button();
             btnEmployee = new Button();
             dgvEmployee = new DataGridView();
-            btnCategory = new Button();
+            btnCategorySetting = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
@@ -262,23 +262,23 @@
             dgvEmployee.Size = new Size(207, 221);
             dgvEmployee.TabIndex = 15;
             // 
-            // btnCategory
+            // btnCategorySetting
             // 
-            btnCategory.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCategory.Location = new Point(761, 461);
-            btnCategory.Name = "btnCategory";
-            btnCategory.Size = new Size(109, 32);
-            btnCategory.TabIndex = 16;
-            btnCategory.Text = "Category Setting";
-            btnCategory.UseVisualStyleBackColor = true;
-            btnCategory.Click += btnCategory_Click;
+            btnCategorySetting.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCategorySetting.Location = new Point(761, 461);
+            btnCategorySetting.Name = "btnCategorySetting";
+            btnCategorySetting.Size = new Size(109, 32);
+            btnCategorySetting.TabIndex = 16;
+            btnCategorySetting.Text = "Category Setting";
+            btnCategorySetting.UseVisualStyleBackColor = true;
+            btnCategorySetting.Click += btnCategory_Click;
             // 
             // FormDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(882, 543);
-            Controls.Add(btnCategory);
+            Controls.Add(btnCategorySetting);
             Controls.Add(btnEmployee);
             Controls.Add(btnTaskLog);
             Controls.Add(btnStatusSetting);
@@ -287,6 +287,7 @@
             Controls.Add(dgvDashboard);
             Name = "FormDashboard";
             Text = "FormAdmin";
+            FormClosing += FormDashboard_FormClosing;
             FormClosed += FormDashboard_FormClosed;
             Load += FormDashboard_Load;
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).EndInit();
@@ -316,6 +317,6 @@
         private CheckBox checkAll;
         private Button btnEmployee;
         private DataGridView dgvEmployee;
-        private Button btnCategory;
+        private Button btnCategorySetting;
     }
 }

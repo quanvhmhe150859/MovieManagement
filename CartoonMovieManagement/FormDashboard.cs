@@ -20,7 +20,7 @@ namespace CartoonMovieManagement
     public partial class FormDashboard : Form
     {
         public int accountId;
-        private Form1 loginForm;
+        private Form1? loginForm;
 
         private Timer countdownTimer;
 
@@ -32,7 +32,7 @@ namespace CartoonMovieManagement
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormDashboard(int accountId, Form1 form1)
+        public FormDashboard(int accountId, Form1? form1)
         {
             InitializeComponent();
             this.accountId = accountId;
@@ -631,6 +631,15 @@ namespace CartoonMovieManagement
 
         private void FormDashboard_Load(object sender, EventArgs e)
         {
+            var account = context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
+            if (account == null || account.RoleId != 1)
+            {
+                btnCategorySetting.Enabled = false;
+                btnStatusSetting.Enabled = false;
+                btnEmployee.Enabled = false;
+                btnTaskLog.Enabled = false;
+            }
+
             LoadEmployee();
             LoadData("Project");
             InitializeCountdownTimer();
@@ -638,7 +647,7 @@ namespace CartoonMovieManagement
 
         private void FormDashboard_FormClosed(object sender, FormClosedEventArgs e)
         {
-            loginForm.Close();
+            loginForm?.Close();
         }
 
         private void btnProject_Click(object sender, EventArgs e)
@@ -922,6 +931,20 @@ namespace CartoonMovieManagement
         {
             FormEmployee formEmployee = new FormEmployee(this);
             formEmployee.Show();
+        }
+
+        private void FormDashboard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to close this form?",
+                                          "Confirm Close",
+                                          MessageBoxButtons.YesNo,
+                                          MessageBoxIcon.Warning);
+
+            // If the user selects "No", cancel the form close
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

@@ -193,5 +193,17 @@ namespace CartoonMovieManagement
             FormAccount formAccount = new FormAccount(selectedId, "Admin");
             formAccount.Show();
         }
+
+        private void btnHistory_Click(object sender, EventArgs e)
+        {
+            FormHistoryLog formHistoryLog = new FormHistoryLog("EmployeeHistory", formDashboard);
+            formHistoryLog.Show();
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            FormManagement formManagement = new FormManagement();
+            formManagement.Show();
+        }
     }
 }

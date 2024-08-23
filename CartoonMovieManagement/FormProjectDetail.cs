@@ -19,8 +19,19 @@ namespace CartoonMovieManagement
 
         private void FormProjectDetail_Load(object sender, EventArgs e)
         {
-            if(projectId != 0)
-                CreateDeleteButton();
+            var account = context.Accounts.FirstOrDefault(a => a.AccountId == formDashboard.accountId);
+            if (account != null)
+            {
+                var permission = context.Permissions
+                    .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
+                if (permission != null && permission.Delete && projectId != 0)
+                    CreateDeleteButton();
+            }
+            else
+            {
+                MessageBox.Show("Error");
+                this.Close();
+            }
 
             var category = context.Categories.Where(c => c.DeletedDate == null && c.IsActive).ToList();
             cbCategory.DataSource = category;

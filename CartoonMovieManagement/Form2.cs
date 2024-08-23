@@ -127,6 +127,44 @@ namespace CartoonMovieManagement
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
+            if (account != null)
+            {
+                var permission = context.Permissions
+                    .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
+                if(permission != null)
+                {
+                    if (permission.Create)
+                    {
+                        Button btnDashboard = new Button();
+                        btnDashboard.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                        btnDashboard.Location = new Point(794, 17);
+                        btnDashboard.Name = "btnDashboard";
+                        btnDashboard.Size = new Size(152, 23);
+                        btnDashboard.TabIndex = 16;
+                        btnDashboard.Text = "Dashboard";
+                        btnDashboard.UseVisualStyleBackColor = true;
+                        btnDashboard.Click += btnDashboard_Click;
+                        this.Controls.Add(btnDashboard);
+                    }
+                    if (!permission.Read)
+                    {
+                        btnGetTask.Enabled = false;
+                        dataGridView1.Enabled = false;
+                    }
+                    if (!permission.Update)
+                    {
+                        btnGetTask.Enabled = false;
+                        btnSubmit.Enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error");
+                this.Close();
+            }
+
             var employee = context.Employees.FirstOrDefault(a => a.EmployeeId == employeeId);
             if (employee != null)
             {
@@ -454,6 +492,30 @@ namespace CartoonMovieManagement
         {
             FormProfile formProfile = new FormProfile(employeeId, "Employee", null);
             formProfile.Show();
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to close this form?",
+                                          "Confirm Close",
+                                          MessageBoxButtons.YesNo,
+                                          MessageBoxIcon.Warning);
+
+            // If the user selects "No", cancel the form close
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void btnDashboard_Click(object sender, EventArgs e)
+        {
+            var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
+            if (account != null)
+            {
+                FormDashboard formDashboard = new FormDashboard(account.AccountId, null);
+                formDashboard.Show();
+            }
         }
     }
 }

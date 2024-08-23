@@ -47,8 +47,19 @@ namespace CartoonMovieManagement
 
         private void FormTaskDetail_Load(object sender, EventArgs e)
         {
-            if (taskId != 0)
-                CreateDeleteButton();
+            var account = context.Accounts.FirstOrDefault(a => a.AccountId == formDashboard.accountId);
+            if (account != null)
+            {
+                var permission = context.Permissions
+                    .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
+                if(permission != null && permission.Delete && taskId != 0)
+                    CreateDeleteButton();
+            }
+            else
+            {
+                MessageBox.Show("Error");
+                this.Close();
+            }
 
             //Error
             errorProject.Text = "";
@@ -199,7 +210,7 @@ namespace CartoonMovieManagement
                     Description = tbDescription.Text,
                     CreatedDate = DateTime.Now,
                     ReceiverId = (int?)cbEmployee.SelectedValue != -1 ? (int?)cbEmployee.SelectedValue : null,
-                    CreaterId = formDashboard.accountId, //dang fix cung
+                    CreaterId = formDashboard.accountId,
                     StatusId = (int)(cbStatus.SelectedValue ?? 0),
                     EpisodeMovieId = (int?)cbEpisode.SelectedValue ?? 0,
                     DeadlineDate = dtbDeadLine.Value,
