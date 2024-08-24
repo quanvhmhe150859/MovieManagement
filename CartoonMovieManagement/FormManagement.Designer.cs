@@ -59,6 +59,7 @@
             btnChange = new Button();
             btnPermission = new Button();
             btnRefresh = new Button();
+            btnRole = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvData).BeginInit();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -379,11 +380,23 @@
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // btnRole
+            // 
+            btnRole.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRole.Location = new Point(749, 41);
+            btnRole.Name = "btnRole";
+            btnRole.Size = new Size(89, 23);
+            btnRole.TabIndex = 30;
+            btnRole.Text = "Role";
+            btnRole.UseVisualStyleBackColor = true;
+            btnRole.Click += btnRole_Click;
+            // 
             // FormManagement
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(947, 476);
+            Controls.Add(btnRole);
             Controls.Add(btnChange);
             Controls.Add(btnRefresh);
             Controls.Add(panel2);
@@ -436,5 +449,6 @@
         private Button btnChange;
         private Label lbId;
         private Button btnRefresh;
+        private Button btnRole;
     }
 }

@@ -10,6 +10,8 @@ namespace CartoonMovieManagement
         private int? projectId;
         private FormDashboard formDashboard;
 
+        Button btnDelete = new Button();
+
         public FormProjectDetail(int? id, FormDashboard formDashboard)
         {
             InitializeComponent();
@@ -17,7 +19,15 @@ namespace CartoonMovieManagement
             projectId = id;
         }
 
-        private void FormProjectDetail_Load(object sender, EventArgs e)
+        public void UpdateData(int selectedId)
+        {
+            // Update the form's data based on the new selectedId
+            projectId = selectedId;
+            // Refresh the form with the new data as needed
+            LoadData();
+        }
+
+        private void LoadData()
         {
             var account = context.Accounts.FirstOrDefault(a => a.AccountId == formDashboard.accountId);
             if (account != null)
@@ -26,17 +36,14 @@ namespace CartoonMovieManagement
                     .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
                 if (permission != null && permission.Delete && projectId != 0)
                     CreateDeleteButton();
+                else
+                    DeleteDeleteButton();
             }
             else
             {
                 MessageBox.Show("Error");
                 this.Close();
             }
-
-            var category = context.Categories.Where(c => c.DeletedDate == null && c.IsActive).ToList();
-            cbCategory.DataSource = category;
-            cbCategory.DisplayMember = "Name";
-            cbCategory.ValueMember = "CategoryId";
 
             if (projectId != 0)
             {
@@ -50,13 +57,29 @@ namespace CartoonMovieManagement
                     numBudget.Value = project.Budget ?? 0;
                 }
             }
+            else
+            {
+                tbId.Text = string.Empty;
+                tbName.Text = string.Empty;
+                tbDescription.Text = string.Empty;
+                cbCategory.SelectedIndex = 0;
+                numBudget.Value = 0;
+            }
+        }
+
+        private void FormProjectDetail_Load(object sender, EventArgs e)
+        {
+            var category = context.Categories.Where(c => c.DeletedDate == null && c.IsActive).ToList();
+            cbCategory.DataSource = category;
+            cbCategory.DisplayMember = "Name";
+            cbCategory.ValueMember = "CategoryId";
+
+            LoadData();
         }
 
         private void CreateDeleteButton()
         {
             // Create a new button
-            Button btnDelete = new Button();
-
             btnDelete.BackColor = Color.Red;
             btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             btnDelete.ForeColor = SystemColors.ActiveCaptionText;
@@ -70,6 +93,11 @@ namespace CartoonMovieManagement
 
             // Add the button to the form
             this.Controls.Add(btnDelete);
+        }
+
+        private void DeleteDeleteButton()
+        {
+            this.Controls.Remove(btnDelete);
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -121,7 +149,7 @@ namespace CartoonMovieManagement
             if (result == DialogResult.Yes)
             {
                 var project = context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
-                if(project != null)
+                if (project != null)
                 {
                     project.DeletedDate = DateTime.Now;
 

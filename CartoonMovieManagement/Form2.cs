@@ -23,6 +23,10 @@ namespace CartoonMovieManagement
 
         private Timer countdownTimer;
 
+        private FormDashboard formDashboard;
+        private FormTaskRegister formTaskRegister;
+        private FormProfile formProfile;
+
         public Form2(int employeeId, Form1 form1)
         {
             InitializeComponent();
@@ -127,6 +131,10 @@ namespace CartoonMovieManagement
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            btnGetTask.Enabled = false;
+            dataGridView1.Enabled = false;
+            btnSubmit.Enabled = false;
+
             var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
             if (account != null)
             {
@@ -147,16 +155,20 @@ namespace CartoonMovieManagement
                         btnDashboard.Click += btnDashboard_Click;
                         this.Controls.Add(btnDashboard);
                     }
-                    if (!permission.Read)
+                    if (permission.Read)
                     {
-                        btnGetTask.Enabled = false;
-                        dataGridView1.Enabled = false;
+                        btnGetTask.Enabled = true;
+                        dataGridView1.Enabled = true;
                     }
-                    if (!permission.Update)
+                    if (permission.Update)
                     {
-                        btnGetTask.Enabled = false;
-                        btnSubmit.Enabled = false;
+                        btnGetTask.Enabled = true;
+                        btnSubmit.Enabled = true;
                     }
+                }
+                else
+                {
+                    MessageBox.Show("No Permission");
                 }
             }
             else
@@ -484,14 +496,30 @@ namespace CartoonMovieManagement
 
         private void btnGetTask_Click(object sender, EventArgs e)
         {
-            FormTaskRegister formTaskRegister = new FormTaskRegister(employeeId);
-            formTaskRegister.Show();
+            if (formTaskRegister == null || formTaskRegister.IsDisposed)
+            {
+                formTaskRegister = new FormTaskRegister(employeeId);
+                formTaskRegister.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formTaskRegister.BringToFront();
+            }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            FormProfile formProfile = new FormProfile(employeeId, "Employee", null);
-            formProfile.Show();
+            if (formProfile == null || formProfile.IsDisposed)
+            {
+                formProfile = new FormProfile(employeeId, "Employee", null);
+                formProfile.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formProfile.BringToFront();
+            }
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
@@ -513,8 +541,16 @@ namespace CartoonMovieManagement
             var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
             if (account != null)
             {
-                FormDashboard formDashboard = new FormDashboard(account.AccountId, null);
-                formDashboard.Show();
+                if (formDashboard == null || formDashboard.IsDisposed)
+                {
+                    formDashboard = new FormDashboard(account.AccountId, null);
+                    formDashboard.Show();
+                }
+                else
+                {
+                    // If the form is already open, bring it to the front
+                    formDashboard.BringToFront();
+                }
             }
         }
     }

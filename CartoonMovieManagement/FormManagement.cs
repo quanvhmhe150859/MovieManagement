@@ -94,6 +94,14 @@ namespace CartoonMovieManagement
                 dgvData.Columns["Description"].MinimumWidth = 100;
                 dgvData.Columns["Description"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+            else if(type == "Role")
+            {
+                panel1.Enabled = true;
+                panel2.Enabled = false;
+
+                var roles = context.Roles.ToList();
+                dgvData.DataSource = roles;
+            }
             else if (type == "Permission")
             {
                 panel1.Enabled = false;
@@ -162,6 +170,19 @@ namespace CartoonMovieManagement
                     btnUpdate.Enabled = true;
                     btnDelete.Enabled = true;
                 }
+                else if (type == "Role")
+                {
+                    // Display the data in the labels
+                    lbId.Text = row.Cells["RoleId"].Value.ToString();
+                    tbName.Text = row.Cells["Name"].Value.ToString();
+                    tbDescription.Text = row.Cells["Description"].Value != null
+                         ? row.Cells["Description"].Value.ToString()
+                         : "";
+                    btnCreate.Enabled = false;
+                    btnUpdate.Enabled = true;
+                    if(lbId.Text != "1" && lbId.Text != "2")
+                        btnDelete.Enabled = true;
+                }
                 else if (type == "Permission")
                 {
                     // Display the data in the labels
@@ -173,7 +194,7 @@ namespace CartoonMovieManagement
                     checkUpdate.Checked = (bool)row.Cells["Update"].Value;
                     checkDelete.Checked = (bool)row.Cells["Delete"].Value;
 
-                    if(lbRole.Text != "Admin")
+                    if (lbRole.Text != "Admin")
                         btnChange.Enabled = true;
                     else
                         btnChange.Enabled = false;
@@ -224,6 +245,37 @@ namespace CartoonMovieManagement
                     {
                         Name = tbName.Text.Trim(),
                         Description = tbDescription.Text.Trim()
+                    });
+                    context.SaveChanges();
+                    MessageBox.Show("Create success");
+                    LoadData();
+                }
+            }
+            else if (type == "Role")
+            {
+                var role = context.Roles.FirstOrDefault(d => d.Name == tbName.Text.Trim());
+                if (role != null)
+                {
+                    MessageBox.Show("Already have this Role");
+                }
+                else
+                {
+                    var newRole = new Role
+                    {
+                        Name = tbName.Text.Trim(),
+                        Description = tbDescription.Text.Trim()
+                    };
+                    context.Roles.Add(newRole);
+                    context.SaveChanges();
+
+                    context.Permissions.Add(new Permission
+                    {
+                        RoleId = newRole.RoleId,
+                        TypeId = 1,
+                        Create = false,
+                        Read = false,
+                        Update = false,
+                        Delete = false
                     });
                     context.SaveChanges();
                     MessageBox.Show("Create success");
@@ -282,6 +334,31 @@ namespace CartoonMovieManagement
                         temp.Description = tbDescription.Text.Trim();
 
                         context.Studios.Update(temp);
+                        context.SaveChanges();
+                        MessageBox.Show("Update success");
+                        LoadData();
+                    }
+                }
+            }
+            else if (type == "Role")
+            {
+                var role = context.Roles
+                    .FirstOrDefault(d => d.Name == tbName.Text.Trim() &&
+                    d.RoleId != Int32.Parse(lbId.Text));
+                if (role != null)
+                {
+                    MessageBox.Show("Already have this Role");
+                }
+                else
+                {
+                    var temp = context.Roles
+                        .FirstOrDefault(t => t.RoleId == Int32.Parse(lbId.Text));
+                    if (temp != null)
+                    {
+                        temp.Name = tbName.Text.Trim();
+                        temp.Description = tbDescription.Text.Trim();
+
+                        context.Roles.Update(temp);
                         context.SaveChanges();
                         MessageBox.Show("Update success");
                         LoadData();
@@ -348,6 +425,38 @@ namespace CartoonMovieManagement
                         MessageBox.Show("Not found");
                     }
                 }
+                else if (type == "Role")
+                {
+                    var role = context.Roles
+                        .FirstOrDefault(d => d.RoleId == Int32.Parse(lbId.Text));
+                    if (role != null)
+                    {
+                        var account = context.Accounts
+                            .FirstOrDefault(e => e.RoleId == role.RoleId);
+                        if (account != null)
+                        {
+                            MessageBox.Show("Still have account have this role");
+                        }
+                        else
+                        {
+                            var permission = context.Permissions
+                                .Where(p => p.RoleId == role.RoleId).ToList();
+                            foreach (var item in permission)
+                            {
+                                context.Permissions.Remove(item);
+                            }
+
+                            context.Roles.Remove(role);
+                            context.SaveChanges();
+                            MessageBox.Show("Delete success");
+                            LoadData();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not found");
+                    }
+                }
             }
         }
 
@@ -377,6 +486,12 @@ namespace CartoonMovieManagement
             {
                 MessageBox.Show("Not found Permission");
             }
+        }
+
+        private void btnRole_Click(object sender, EventArgs e)
+        {
+            type = "Role";
+            LoadData();
         }
     }
 }

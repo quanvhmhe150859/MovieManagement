@@ -1,5 +1,8 @@
-﻿using CartoonMovieManagement.Models;
+﻿using AxWMPLib;
+using CartoonMovieManagement.Models;
+using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +30,8 @@ namespace CartoonMovieManagement
 
         private int? employeeId;
 
+        Button btnDelete = new Button();
+
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
         public FormTaskDetail(int? id, FormDashboard formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected, int? employeeId)
@@ -45,15 +50,25 @@ namespace CartoonMovieManagement
             dtbDeadLine.CustomFormat = "dd/MM/yyyy hh:mm tt";
         }
 
-        private void FormTaskDetail_Load(object sender, EventArgs e)
+        public void UpdateData(int selectedId)
+        {
+            // Update the form's data based on the new selectedId
+            taskId = selectedId;
+            // Refresh the form with the new data as needed
+            LoadData();
+        }
+
+        private void LoadData()
         {
             var account = context.Accounts.FirstOrDefault(a => a.AccountId == formDashboard.accountId);
             if (account != null)
             {
                 var permission = context.Permissions
                     .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
-                if(permission != null && permission.Delete && taskId != 0)
+                if (permission != null && permission.Delete && taskId != 0)
                     CreateDeleteButton();
+                else
+                    DeleteDeleteButton();
             }
             else
             {
@@ -68,45 +83,15 @@ namespace CartoonMovieManagement
             errorName.Text = "";
             errorDeadline.Text = "";
 
-
-
-            //Employee
-            var noEmployee = new Employee { EmployeeId = -1, FullName = "Empty..." };
-            var cbData = context.Employees
-                .Include(e => e.Accounts)
-                .Where(e => e.Accounts.Any(a => a.RoleId != 1))
-                .ToList();
-            cbData.Add(noEmployee);
-            cbEmployee.DataSource = cbData;
-            cbEmployee.DisplayMember = "FullName";
-            cbEmployee.ValueMember = "EmployeeId";
-
-            // Create a placeholder item
-            var placeholderProject = new Project { ProjectId = -1, Name = "Please select..." };
-
-            // Retrieve the data and add the placeholder item
-            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
-            dataProject.Insert(0, placeholderProject); // Add placeholder to the beginning of the list
-
-            // Set the data source and configure the ComboBox
-            cbProject.DataSource = dataProject;
-            cbProject.DisplayMember = "Name";
-            cbProject.ValueMember = "ProjectId";
             //Status
             var statusData = context.Statuses.ToList();
-
             if (taskId == 0)
             {
                 statusData = statusData.Where(s => s.StatusId != 2 && s.StatusId != 6).ToList();
             }
-
             cbStatus.DataSource = statusData;
             cbStatus.DisplayMember = "Name";
             cbStatus.ValueMember = "StatusId";
-
-            cbProject.SelectedValue = projectSelected == 0 ? -1 : projectSelected;
-            cbMovie.SelectedValue = movieSelected == 0 ? -1 : movieSelected;
-            cbEpisode.SelectedValue = episodeSelected == 0 ? -1 : episodeSelected;
 
             if (taskId != 0)
             {
@@ -129,13 +114,54 @@ namespace CartoonMovieManagement
                     tbFilePath.Text = task.ResourceLink;
                 }
             }
+            else
+            {
+                tbId.Text = string.Empty;
+                cbEmployee.SelectedIndex = 0;
+
+                cbProject.SelectedValue = projectSelected == 0 ? -1 : projectSelected;
+                cbMovie.SelectedValue = movieSelected == 0 ? -1 : movieSelected;
+                cbEpisode.SelectedValue = episodeSelected == 0 ? -1 : episodeSelected;
+
+                tbName.Text = string.Empty;
+                tbDescription.Text = string.Empty;
+                dtbDeadLine.Value = new DateTime(1900, 1, 1);
+                cbStatus.SelectedIndex = 0;
+                tbFilePath.Text = string.Empty;
+            }
+        }
+
+        private void FormTaskDetail_Load(object sender, EventArgs e)
+        {
+            //Employee
+            var noEmployee = new Employee { EmployeeId = -1, FullName = "Empty..." };
+            var cbData = context.Employees
+                .Include(e => e.Accounts)
+                .Where(e => e.Accounts.Any(a => a.RoleId != 1))
+                .ToList();
+            cbData.Add(noEmployee);
+            cbEmployee.DataSource = cbData;
+            cbEmployee.DisplayMember = "FullName";
+            cbEmployee.ValueMember = "EmployeeId";
+
+            // Create a placeholder item
+            var placeholderProject = new Project { ProjectId = -1, Name = "Please select..." };
+
+            // Retrieve the data and add the placeholder item
+            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
+            dataProject.Insert(0, placeholderProject); // Add placeholder to the beginning of the list
+
+            // Set the data source and configure the ComboBox
+            cbProject.DataSource = dataProject;
+            cbProject.DisplayMember = "Name";
+            cbProject.ValueMember = "ProjectId";
+
+            LoadData();
         }
 
         private void CreateDeleteButton()
         {
             // Create a new button
-            Button btnDelete = new Button();
-
             btnDelete.BackColor = Color.Red;
             btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             btnDelete.ForeColor = SystemColors.ActiveCaptionText;
@@ -149,6 +175,11 @@ namespace CartoonMovieManagement
 
             // Add the button to the form
             this.Controls.Add(btnDelete);
+        }
+
+        private void DeleteDeleteButton()
+        {
+            this.Controls.Remove(btnDelete);
         }
 
         private void btnUpload_Click(object sender, EventArgs e)

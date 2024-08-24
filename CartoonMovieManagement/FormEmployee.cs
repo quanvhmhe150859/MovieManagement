@@ -17,6 +17,13 @@ namespace CartoonMovieManagement
         CartoonProductManagementContext context = new CartoonProductManagementContext();
         private FormDashboard formDashboard;
         private int selectedId;
+
+        private FormHistoryLog formHistoryLog;
+        private FormProfile formProfile;
+        private FormAccount formAccount;
+        private FormHistoryLog formEmployeeHistoryLog;
+        private FormManagement formManagement;
+
         public FormEmployee(FormDashboard formDashboard)
         {
             InitializeComponent();
@@ -173,8 +180,17 @@ namespace CartoonMovieManagement
 
         private void btnSalaryLog_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog("Salary", formDashboard);
-            formHistoryLog.Show();
+            if (formHistoryLog == null || formHistoryLog.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formHistoryLog = new FormHistoryLog("Salary", formDashboard);
+                formHistoryLog.Show();
+            }
+            else
+            {
+                formHistoryLog.BringToFront();
+            }
+
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -184,26 +200,60 @@ namespace CartoonMovieManagement
 
         private void btnEmployee_Click(object sender, EventArgs e)
         {
-            FormProfile formProfile = new FormProfile(selectedId, "Admin", this);
-            formProfile.Show();
+            if (formProfile == null || formProfile.IsDisposed)
+            {
+                formProfile = new FormProfile(selectedId, "Admin", this);
+                formProfile.Show();
+            }
+            else
+            {
+                formProfile.Close();
+                formProfile = new FormProfile(selectedId, "Admin", this);
+                formProfile.Show();
+            }
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
         {
-            FormAccount formAccount = new FormAccount(selectedId, "Admin");
-            formAccount.Show();
+            if (formAccount == null || formAccount.IsDisposed)
+            {
+                formAccount = new FormAccount(selectedId, "Admin");
+                formAccount.Show();
+            }
+            else
+            {
+                formAccount.Close();
+                formAccount = new FormAccount(selectedId, "Admin");
+                formAccount.Show();
+            }
         }
 
         private void btnHistory_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog("EmployeeHistory", formDashboard);
-            formHistoryLog.Show();
+            if (formEmployeeHistoryLog == null || formEmployeeHistoryLog.IsDisposed)
+            {
+                formEmployeeHistoryLog = new FormHistoryLog("EmployeeHistory", formDashboard);
+                formEmployeeHistoryLog.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formEmployeeHistoryLog.BringToFront();
+            }
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            FormManagement formManagement = new FormManagement();
-            formManagement.Show();
+            if (formManagement == null || formManagement.IsDisposed)
+            {
+                formManagement = new FormManagement();
+                formManagement.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formManagement.BringToFront();
+            }
         }
     }
 }

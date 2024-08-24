@@ -1,4 +1,6 @@
 ﻿using CartoonMovieManagement.Models;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +20,8 @@ namespace CartoonMovieManagement
         private string? selectedVideoPath;
         private double videoDuration;
 
+        Button btnDelete = new Button();
+
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
         public FormEpisodeDetail(int? id, FormDashboard formDashboard)
@@ -27,7 +31,15 @@ namespace CartoonMovieManagement
             this.formDashboard = formDashboard;
         }
 
-        private void FormEpisodeDetail_Load(object sender, EventArgs e)
+        public void UpdateData(int selectedId)
+        {
+            // Update the form's data based on the new selectedId
+            episodeId = selectedId;
+            // Refresh the form with the new data as needed
+            LoadData();
+        }
+
+        private void LoadData()
         {
             var account = context.Accounts.FirstOrDefault(a => a.AccountId == formDashboard.accountId);
             if (account != null)
@@ -36,24 +48,14 @@ namespace CartoonMovieManagement
                     .FirstOrDefault(p => p.RoleId == account.RoleId && p.TypeId == 1);
                 if (permission != null && permission.Delete && episodeId != 0)
                     CreateDeleteButton();
+                else
+                    DeleteDeleteButton();
             }
             else
             {
                 MessageBox.Show("Error");
                 this.Close();
             }
-
-            // Create a placeholder item
-            var placeholder = new Project { ProjectId = -1, Name = "Please select..." };
-
-            // Retrieve the data and add the placeholder item
-            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
-            dataProject.Insert(0, placeholder); // Add placeholder to the beginning of the list
-
-            // Set the data source and configure the ComboBox
-            cbProject.DataSource = dataProject;
-            cbProject.DisplayMember = "Name";
-            cbProject.ValueMember = "ProjectId";
 
             if (episodeId != 0)
             {
@@ -68,20 +70,53 @@ namespace CartoonMovieManagement
                 tbDuration.Text = $"{TimeSpan.FromSeconds((double?)episode?.Duration ?? 0):hh\\:mm\\:ss}";
 
                 // Load and play the video
-                string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                string uploadsFolder = Path.Combine("Uploads", "Movies");
-                string fullVideoPath = Path.Combine(projectRootPath, uploadsFolder, episode.MovieLink);
+                if (!episode.MovieLink.IsNullOrEmpty())
+                {
+                    string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                    string uploadsFolder = Path.Combine("Uploads", "Movies");
+                    string fullVideoPath = Path.Combine(projectRootPath, uploadsFolder, episode.MovieLink);
 
-                axWindowsMediaPlayer1.URL = fullVideoPath;
-                axWindowsMediaPlayer1.Ctlcontrols.play();
+                    axWindowsMediaPlayer1.URL = fullVideoPath;
+                    axWindowsMediaPlayer1.Ctlcontrols.play();
+                }
             }
+            else
+            {
+                tbId.Text = string.Empty;
+                tbName.Text = string.Empty;
+                tbDescription.Text = string.Empty;
+                cbProject.SelectedIndex = 0;
+                tbDuration.Text = string.Empty;
+
+                selectedVideoPath = string.Empty;
+                //// Stop the current video
+                //axWindowsMediaPlayer1.Ctlcontrols.stop();
+
+                //// Clear the URL to remove the loaded video
+                //axWindowsMediaPlayer1.URL = string.Empty;
+            }
+        }
+
+        private void FormEpisodeDetail_Load(object sender, EventArgs e)
+        {
+            // Create a placeholder item
+            var placeholder = new Project { ProjectId = -1, Name = "Please select..." };
+
+            // Retrieve the data and add the placeholder item
+            var dataProject = context.Projects.Where(p => p.DeletedDate == null).ToList();
+            dataProject.Insert(0, placeholder); // Add placeholder to the beginning of the list
+
+            // Set the data source and configure the ComboBox
+            cbProject.DataSource = dataProject;
+            cbProject.DisplayMember = "Name";
+            cbProject.ValueMember = "ProjectId";
+
+            LoadData();
         }
 
         private void CreateDeleteButton()
         {
             // Create a new button
-            Button btnDelete = new Button();
-
             btnDelete.BackColor = Color.Red;
             btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             btnDelete.ForeColor = SystemColors.ActiveCaptionText;
@@ -95,6 +130,11 @@ namespace CartoonMovieManagement
 
             // Add the button to the form
             this.Controls.Add(btnDelete);
+        }
+
+        private void DeleteDeleteButton()
+        {
+            this.Controls.Remove(btnDelete);
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -137,8 +177,8 @@ namespace CartoonMovieManagement
         {
             if (tbName.Text.Trim() == "")
                 MessageBox.Show("Need Name");
-            else if (string.IsNullOrEmpty(selectedVideoPath) && episodeId == 0)
-                MessageBox.Show("Please upload a video before submitting.");
+            //else if (string.IsNullOrEmpty(selectedVideoPath) && episodeId == 0)
+            //    MessageBox.Show("Please upload a video before submitting.");
             else
             {
                 EpisodeMovie episodeMovie = new EpisodeMovie

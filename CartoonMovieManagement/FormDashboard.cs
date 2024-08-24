@@ -30,6 +30,16 @@ namespace CartoonMovieManagement
         private SortOrder sortOrder = SortOrder.None;
         private string sortColumn = "";
 
+        private FormEmployee formEmployee;
+        private FormHistoryLog formHistoryLog;
+        private FormStatusSetting formStatusSetting;
+        private FormStatusSetting formCategorySetting;
+
+        private FormProjectDetail formProjectDetail;
+        private FormMovieDetail formMovieDetail;
+        private FormEpisodeDetail formEpisodeDetail;
+        private FormTaskDetail formTaskDetail;
+
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
         public FormDashboard(int accountId, Form1? form1)
@@ -709,29 +719,67 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void btnCreateTask_Click(object sender, EventArgs e)
-        {
-            FormTaskDetail formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0, 0);
-            formTaskDetail.Show();
-        }
-
-
         private void btnCreateProject_Click(object sender, EventArgs e)
         {
-            FormProjectDetail formProjectDetail = new FormProjectDetail(selectedId, this);
-            formProjectDetail.Show();
+            if (formProjectDetail == null || formProjectDetail.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formProjectDetail = new FormProjectDetail(selectedId, this);
+                formProjectDetail.Show();
+            }
+            else
+            {
+                formProjectDetail.UpdateData(selectedId);
+                formProjectDetail.BringToFront();
+            }
         }
 
         private void btnCreateMovie_Click(object sender, EventArgs e)
         {
-            FormMovieDetail formMovieDetail = new FormMovieDetail(selectedId, this);
-            formMovieDetail.Show();
+            if (formMovieDetail == null || formMovieDetail.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formMovieDetail = new FormMovieDetail(selectedId, this);
+                formMovieDetail.Show();
+            }
+            else
+            {
+                formMovieDetail.UpdateData(selectedId);
+                formMovieDetail.BringToFront();
+            }
         }
 
         private void btnCreateEpisode_Click(object sender, EventArgs e)
         {
-            FormEpisodeDetail formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
-            formEpisodeDetail.Show();
+            if (formEpisodeDetail == null || formEpisodeDetail.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
+                formEpisodeDetail.Show();
+            }
+            else
+            {
+                formEpisodeDetail.Close();
+                formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
+                formEpisodeDetail.Show();
+                //formEpisodeDetail.UpdateData(selectedId);
+                //formEpisodeDetail.BringToFront();
+            }
+        }
+
+        private void btnCreateTask_Click(object sender, EventArgs e)
+        {
+            if (formTaskDetail == null || formTaskDetail.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0, 0);
+                formTaskDetail.Show();
+            }
+            else
+            {
+                formTaskDetail.UpdateData(selectedId);
+                formTaskDetail.BringToFront();
+            }
         }
 
         private void dgvDashboard_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -833,41 +881,73 @@ namespace CartoonMovieManagement
 
         private void btnStatusSetting_Click(object sender, EventArgs e)
         {
-            FormStatusSetting formStatusSetting = new FormStatusSetting("Status");
-            formStatusSetting.Show();
+            if (formStatusSetting == null || formStatusSetting.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formStatusSetting = new FormStatusSetting("Status");
+                formStatusSetting.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formStatusSetting.BringToFront();
+            }
         }
 
         private void btnCategory_Click(object sender, EventArgs e)
         {
-            FormStatusSetting formStatusSetting = new FormStatusSetting("Category");
-            formStatusSetting.Show();
+            if (formCategorySetting == null || formCategorySetting.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formCategorySetting = new FormStatusSetting("Category");
+                formCategorySetting.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formCategorySetting.BringToFront();
+            }
         }
 
         private void dgvDashboard_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (formTaskDetail != null && !formTaskDetail.IsDisposed)
+            {
+                formTaskDetail.Close();
+            }
+
             if (selectedName == "Project")
             {
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0, 0);
+                formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0, 0);
                 formTaskDetail.Show();
             }
             else if (selectedName == "Movie")
             {
                 var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == selectedId);
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0, 0);
+                formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0, 0);
                 formTaskDetail.Show();
             }
             else if (selectedName == "Episode")
             {
                 var episode = context.EpisodeMovies.Include(e => e.CartoonMovie).FirstOrDefault(e => e.EpisodeMovieId == selectedId);
-                FormTaskDetail formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId, 0);
+                formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId, 0);
                 formTaskDetail.Show();
             }
         }
 
         private void btnTaskLog_Click(object sender, EventArgs e)
         {
-            FormHistoryLog formHistoryLog = new FormHistoryLog("Task", this);
-            formHistoryLog.Show();
+            if (formHistoryLog == null || formHistoryLog.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formHistoryLog = new FormHistoryLog("Task", this);
+                formHistoryLog.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formHistoryLog.BringToFront();
+            }
         }
 
         private void dgvDashboard_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -929,21 +1009,33 @@ namespace CartoonMovieManagement
 
         private void btnEmployee_Click(object sender, EventArgs e)
         {
-            FormEmployee formEmployee = new FormEmployee(this);
-            formEmployee.Show();
+            if (formEmployee == null || formEmployee.IsDisposed)
+            {
+                // If the form does not exist or was closed, create a new instance
+                formEmployee = new FormEmployee(this);
+                formEmployee.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formEmployee.BringToFront();
+            }
         }
 
         private void FormDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to close this form?",
+            if(loginForm != null)
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to close this form?",
                                           "Confirm Close",
                                           MessageBoxButtons.YesNo,
                                           MessageBoxIcon.Warning);
 
-            // If the user selects "No", cancel the form close
-            if (result == DialogResult.No)
-            {
-                e.Cancel = true;
+                // If the user selects "No", cancel the form close
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
         }
     }

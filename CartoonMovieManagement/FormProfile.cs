@@ -18,7 +18,9 @@ namespace CartoonMovieManagement
         CartoonProductManagementContext context = new CartoonProductManagementContext();
         private int employeeId;
         private string type;
-        FormEmployee? formEmployee;
+        private FormEmployee? formEmployee;
+
+        private FormAccount formAccount;
 
         public FormProfile(int employeeId, string type, FormEmployee? formEmployee)
         {
@@ -307,8 +309,16 @@ namespace CartoonMovieManagement
 
         private void btnAccount_Click(object sender, EventArgs e)
         {
-            FormAccount formAccount = new FormAccount(employeeId, "Employee");
-            formAccount.Show();
+            if (formAccount == null || formAccount.IsDisposed)
+            {
+                formAccount = new FormAccount(employeeId, "Employee");
+                formAccount.Show();
+            }
+            else
+            {
+                // If the form is already open, bring it to the front
+                formAccount.BringToFront();
+            }
         }
     }
 }
