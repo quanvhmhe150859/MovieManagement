@@ -16,7 +16,7 @@ namespace CartoonMovieManagement
     public partial class FormEpisodeDetail : Form
     {
         private int? episodeId;
-        private FormDashboard formDashboard;
+        private FormMain formDashboard;
         private string? selectedVideoPath;
         private double videoDuration;
 
@@ -24,7 +24,7 @@ namespace CartoonMovieManagement
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormEpisodeDetail(int? id, FormDashboard formDashboard)
+        public FormEpisodeDetail(int? id, FormMain formDashboard)
         {
             InitializeComponent();
             episodeId = id;
@@ -60,24 +60,30 @@ namespace CartoonMovieManagement
             if (episodeId != 0)
             {
                 var episode = context.EpisodeMovies.FirstOrDefault(e => e.EpisodeMovieId == episodeId);
-                var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == episode.CartoonMovieId);
-
-                tbId.Text = episode?.EpisodeMovieId.ToString();
-                tbName.Text = episode?.Name;
-                tbDescription.Text = episode?.Description;
-                cbProject.SelectedValue = movie?.ProjectId;
-                cbMovie.SelectedValue = episode?.CartoonMovieId;
-                tbDuration.Text = $"{TimeSpan.FromSeconds((double?)episode?.Duration ?? 0):hh\\:mm\\:ss}";
-
-                // Load and play the video
-                if (!episode.MovieLink.IsNullOrEmpty())
+                if(episode != null)
                 {
-                    string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                    string uploadsFolder = Path.Combine("Uploads", "Movies");
-                    string fullVideoPath = Path.Combine(projectRootPath, uploadsFolder, episode.MovieLink);
+                    var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == episode.CartoonMovieId);
 
-                    axWindowsMediaPlayer1.URL = fullVideoPath;
-                    axWindowsMediaPlayer1.Ctlcontrols.play();
+                    tbId.Text = episode?.EpisodeMovieId.ToString();
+                    tbName.Text = episode?.Name;
+                    tbDescription.Text = episode?.Description;
+                    cbProject.SelectedValue = movie?.ProjectId;
+                    cbMovie.SelectedValue = episode?.CartoonMovieId;
+                    tbDuration.Text = $"{TimeSpan.FromSeconds((double?)episode?.Duration ?? 0):hh\\:mm\\:ss}";
+
+                    // Load and play the video
+                    if (episode != null && !episode.MovieLink.IsNullOrEmpty())
+                    {
+                        string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                        string uploadsFolder = Path.Combine("Uploads", "Movies");
+                        if(projectRootPath != null)
+                        {
+                            string fullVideoPath = Path.Combine(projectRootPath, uploadsFolder, episode.MovieLink ?? "");
+
+                            axWindowsMediaPlayer1.URL = fullVideoPath;
+                            axWindowsMediaPlayer1.Ctlcontrols.play();
+                        }
+                    }
                 }
             }
             else
@@ -194,19 +200,21 @@ namespace CartoonMovieManagement
                 if (!string.IsNullOrEmpty(selectedVideoPath))
                 {
                     // Ensure the Uploads folder exists
-                    string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
+                    string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                    if(projectRootPath != null)
+                    {
+                        string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Movies");
 
-                    string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Movies");
+                        // Generate the destination file path
+                        string fileName = Path.GetFileName(selectedVideoPath);
+                        string destinationPath = Path.Combine(uploadsFolderPath, fileName);
 
-                    // Generate the destination file path
-                    string fileName = Path.GetFileName(selectedVideoPath);
-                    string destinationPath = Path.Combine(uploadsFolderPath, fileName);
+                        // Save the file to the Uploads folder
+                        File.Copy(selectedVideoPath, destinationPath, true);
 
-                    // Save the file to the Uploads folder
-                    File.Copy(selectedVideoPath, destinationPath, true);
-
-                    episodeMovie.MovieLink = fileName;//destinationPath;
-                    episodeMovie.Duration = Convert.ToInt32(videoDuration);
+                        episodeMovie.MovieLink = fileName;//destinationPath;
+                        episodeMovie.Duration = Convert.ToInt32(videoDuration);
+                    }
                 }
 
                 if (episodeId == 0)
@@ -233,7 +241,10 @@ namespace CartoonMovieManagement
                     }
                 }
                 context.SaveChanges();
-                MessageBox.Show("Video uploaded and saved successfully!");
+                MessageBox.Show("Save successfully");
+
+                formDashboard.LoadData("Episode", formDashboard.dgvDataEpisode);
+                formDashboard.LoadTreeView("Project");
                 this.Close();
             }
         }
@@ -272,7 +283,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object? sender, EventArgs e)
         {
             // Show a confirmation message box
             var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirm Deletion",
@@ -298,7 +309,7 @@ namespace CartoonMovieManagement
 
                     context.SaveChanges();
                     MessageBox.Show("Deletion complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    formDashboard.LoadData("Episode");
+                    //formDashboard.LoadData("Episode");
                     this.Close();
                 }
             }

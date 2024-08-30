@@ -47,8 +47,6 @@
             label7 = new Label();
             btnRefresh = new Button();
             btnCreateAccount = new Button();
-            btnHistory = new Button();
-            btnSettings = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numChange).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numNew).BeginInit();
@@ -61,14 +59,14 @@
             dgvEmployee.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvEmployee.Location = new Point(12, 12);
             dgvEmployee.Name = "dgvEmployee";
-            dgvEmployee.Size = new Size(613, 426);
+            dgvEmployee.Size = new Size(611, 426);
             dgvEmployee.TabIndex = 1;
             dgvEmployee.CellClick += dgvEmployee_CellClick;
             // 
             // btnEmployee
             // 
             btnEmployee.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEmployee.Location = new Point(631, 368);
+            btnEmployee.Location = new Point(629, 406);
             btnEmployee.Name = "btnEmployee";
             btnEmployee.Size = new Size(126, 32);
             btnEmployee.TabIndex = 15;
@@ -81,7 +79,7 @@
             numChange.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             numChange.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             numChange.Increment = new decimal(new int[] { 100, 0, 0, 0 });
-            numChange.Location = new Point(703, 274);
+            numChange.Location = new Point(701, 274);
             numChange.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             numChange.Minimum = new decimal(new int[] { 100000000, 0, 0, int.MinValue });
             numChange.Name = "numChange";
@@ -95,7 +93,7 @@
             // 
             tbNote.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             tbNote.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            tbNote.Location = new Point(703, 106);
+            tbNote.Location = new Point(701, 106);
             tbNote.Multiline = true;
             tbNote.Name = "tbNote";
             tbNote.Size = new Size(171, 84);
@@ -104,7 +102,7 @@
             // btnSalaryLog
             // 
             btnSalaryLog.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSalaryLog.Location = new Point(776, 12);
+            btnSalaryLog.Location = new Point(774, 12);
             btnSalaryLog.Name = "btnSalaryLog";
             btnSalaryLog.Size = new Size(98, 32);
             btnSalaryLog.TabIndex = 18;
@@ -117,7 +115,7 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 11.25F);
-            label3.Location = new Point(631, 47);
+            label3.Location = new Point(629, 47);
             label3.Name = "label3";
             label3.Size = new Size(99, 20);
             label3.TabIndex = 19;
@@ -128,7 +126,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 11.25F);
-            label1.Location = new Point(631, 77);
+            label1.Location = new Point(629, 77);
             label1.Name = "label1";
             label1.Size = new Size(83, 20);
             label1.TabIndex = 20;
@@ -139,7 +137,7 @@
             lbId.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbId.AutoSize = true;
             lbId.Font = new Font("Segoe UI", 11.25F);
-            lbId.Location = new Point(736, 47);
+            lbId.Location = new Point(734, 47);
             lbId.Name = "lbId";
             lbId.Size = new Size(22, 20);
             lbId.TabIndex = 21;
@@ -150,7 +148,7 @@
             lbName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbName.AutoSize = true;
             lbName.Font = new Font("Segoe UI", 11.25F);
-            lbName.Location = new Point(720, 77);
+            lbName.Location = new Point(718, 77);
             lbName.Name = "lbName";
             lbName.Size = new Size(49, 20);
             lbName.TabIndex = 22;
@@ -161,7 +159,7 @@
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 11.25F);
-            label5.Location = new Point(631, 106);
+            label5.Location = new Point(629, 106);
             label5.Name = "label5";
             label5.Size = new Size(49, 20);
             label5.TabIndex = 23;
@@ -172,7 +170,7 @@
             label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 11.25F);
-            label6.Location = new Point(631, 280);
+            label6.Location = new Point(629, 280);
             label6.Name = "label6";
             label6.Size = new Size(66, 20);
             label6.TabIndex = 24;
@@ -182,7 +180,7 @@
             // 
             btnSubmit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnSubmit.Enabled = false;
-            btnSubmit.Location = new Point(763, 313);
+            btnSubmit.Location = new Point(761, 313);
             btnSubmit.Name = "btnSubmit";
             btnSubmit.Size = new Size(111, 32);
             btnSubmit.TabIndex = 25;
@@ -195,7 +193,7 @@
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 11.25F);
-            label2.Location = new Point(631, 241);
+            label2.Location = new Point(629, 241);
             label2.Name = "label2";
             label2.Size = new Size(46, 20);
             label2.TabIndex = 27;
@@ -206,7 +204,7 @@
             numNew.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             numNew.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             numNew.Increment = new decimal(new int[] { 100, 0, 0, 0 });
-            numNew.Location = new Point(703, 235);
+            numNew.Location = new Point(701, 235);
             numNew.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             numNew.Minimum = new decimal(new int[] { 100000000, 0, 0, int.MinValue });
             numNew.Name = "numNew";
@@ -221,7 +219,7 @@
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 11.25F);
-            label4.Location = new Point(631, 202);
+            label4.Location = new Point(629, 202);
             label4.Name = "label4";
             label4.Size = new Size(40, 20);
             label4.TabIndex = 29;
@@ -232,7 +230,7 @@
             numOld.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             numOld.Enabled = false;
             numOld.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            numOld.Location = new Point(703, 196);
+            numOld.Location = new Point(701, 196);
             numOld.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             numOld.Name = "numOld";
             numOld.Size = new Size(171, 33);
@@ -245,7 +243,7 @@
             label7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 163);
-            label7.Location = new Point(631, 12);
+            label7.Location = new Point(629, 12);
             label7.Name = "label7";
             label7.Size = new Size(139, 25);
             label7.TabIndex = 30;
@@ -254,7 +252,7 @@
             // btnRefresh
             // 
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRefresh.Location = new Point(631, 313);
+            btnRefresh.Location = new Point(629, 313);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(126, 32);
             btnRefresh.TabIndex = 31;
@@ -266,7 +264,7 @@
             // 
             btnCreateAccount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateAccount.Enabled = false;
-            btnCreateAccount.Location = new Point(763, 368);
+            btnCreateAccount.Location = new Point(761, 406);
             btnCreateAccount.Name = "btnCreateAccount";
             btnCreateAccount.Size = new Size(111, 32);
             btnCreateAccount.TabIndex = 32;
@@ -274,35 +272,11 @@
             btnCreateAccount.UseVisualStyleBackColor = true;
             btnCreateAccount.Click += btnCreateAccount_Click;
             // 
-            // btnHistory
-            // 
-            btnHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnHistory.Location = new Point(631, 406);
-            btnHistory.Name = "btnHistory";
-            btnHistory.Size = new Size(126, 32);
-            btnHistory.TabIndex = 33;
-            btnHistory.Text = "Employee History";
-            btnHistory.UseVisualStyleBackColor = true;
-            btnHistory.Click += btnHistory_Click;
-            // 
-            // btnSettings
-            // 
-            btnSettings.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSettings.Location = new Point(763, 406);
-            btnSettings.Name = "btnSettings";
-            btnSettings.Size = new Size(111, 32);
-            btnSettings.TabIndex = 34;
-            btnSettings.Text = "Others";
-            btnSettings.UseVisualStyleBackColor = true;
-            btnSettings.Click += btnSettings_Click;
-            // 
             // FormEmployee
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(886, 450);
-            Controls.Add(btnSettings);
-            Controls.Add(btnHistory);
+            ClientSize = new Size(884, 450);
             Controls.Add(btnCreateAccount);
             Controls.Add(btnRefresh);
             Controls.Add(label7);
@@ -354,7 +328,5 @@
         private Label label7;
         private Button btnRefresh;
         private Button btnCreateAccount;
-        private Button btnHistory;
-        private Button btnSettings;
     }
 }

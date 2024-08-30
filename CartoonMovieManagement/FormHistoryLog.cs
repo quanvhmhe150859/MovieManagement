@@ -9,12 +9,12 @@ namespace CartoonMovieManagement
     public partial class FormHistoryLog : Form
     {
         CartoonProductManagementContext context = new CartoonProductManagementContext();
-        private FormDashboard formDashboard;
+        private FormMain formDashboard;
         private string type;
         private Button btnEditTask = new Button();
         private int selectedId;
 
-        public FormHistoryLog(string type, FormDashboard formDashboard)
+        public FormHistoryLog(string type, FormMain formDashboard)
         {
             InitializeComponent();
             this.formDashboard = formDashboard;
@@ -134,7 +134,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void dataGridView1_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dataGridView1.Columns[e.ColumnIndex].Name == "Change")
             {
@@ -237,11 +237,11 @@ namespace CartoonMovieManagement
             LoadData();
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (dataGridView1.Columns[e.ColumnIndex].Name == "ResourceLink")
             {
-                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
+                string? resourceLink = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -253,18 +253,21 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
@@ -272,7 +275,7 @@ namespace CartoonMovieManagement
 
             if (dataGridView1.Columns[e.ColumnIndex].Name == "SubmitLink")
             {
-                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
+                string? resourceLink = dataGridView1.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -284,25 +287,28 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
@@ -313,7 +319,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void btnDownloadTemplate_Click(object sender, EventArgs e)
+        private void btnDownloadTemplate_Click(object? sender, EventArgs e)
         {
             var employeesList = context.Employees.ToList(); 
             List<Employee> employees = employeesList; // Replace this with your actual data retrieval method
@@ -322,60 +328,60 @@ namespace CartoonMovieManagement
             {
                 if (folderDialog.ShowDialog() == DialogResult.OK)
                 {
-                    using (var workbook = new XLWorkbook())
-                    {
-                        var worksheet = workbook.Worksheets.Add("Employee History");
+                    //using (var workbook = new XLWorkbook())
+                    //{
+                    //    var worksheet = workbook.Worksheets.Add("Employee History");
 
-                        // Define the headers
-                        worksheet.Cell(1, 1).Value = "Company Name";
-                        worksheet.Cell(1, 2).Value = "Start Date";
-                        worksheet.Cell(1, 3).Value = "End Date";
-                        worksheet.Cell(1, 4).Value = "Employee"; // New column for the combo box
+                    //    // Define the headers
+                    //    worksheet.Cell(1, 1).Value = "Company Name";
+                    //    worksheet.Cell(1, 2).Value = "Start Date";
+                    //    worksheet.Cell(1, 3).Value = "End Date";
+                    //    worksheet.Cell(1, 4).Value = "Employee"; // New column for the combo box
 
-                        // Apply date validation to the Start Date and End Date columns
-                        var startDateRange = worksheet.Range("B2:B1048576");
-                        var endDateRange = worksheet.Range("C2:C1048576");
+                    //    // Apply date validation to the Start Date and End Date columns
+                    //    var startDateRange = worksheet.Range("B2:B1048576");
+                    //    var endDateRange = worksheet.Range("C2:C1048576");
 
-                        // Apply date validation to the Start Date and End Date columns
-                        var startDateValidation = startDateRange.SetDataValidation();
-                        startDateValidation.AllowedValues = XLAllowedValues.Date;
-                        startDateValidation.ErrorMessage = "Please enter a valid date.";
-                        startDateValidation.ErrorTitle = "Invalid Date";
+                    //    // Apply date validation to the Start Date and End Date columns
+                    //    var startDateValidation = startDateRange.SetDataValidation();
+                    //    startDateValidation.AllowedValues = XLAllowedValues.Date;
+                    //    startDateValidation.ErrorMessage = "Please enter a valid date.";
+                    //    startDateValidation.ErrorTitle = "Invalid Date";
 
-                        var endDateValidation = endDateRange.SetDataValidation();
-                        endDateValidation.AllowedValues = XLAllowedValues.Date;
-                        endDateValidation.ErrorMessage = "Please enter a valid date.";
-                        endDateValidation.ErrorTitle = "Invalid Date";
+                    //    var endDateValidation = endDateRange.SetDataValidation();
+                    //    endDateValidation.AllowedValues = XLAllowedValues.Date;
+                    //    endDateValidation.ErrorMessage = "Please enter a valid date.";
+                    //    endDateValidation.ErrorTitle = "Invalid Date";
 
-                        // Create a hidden sheet for the Employee list
-                        var hiddenSheet = workbook.Worksheets.Add("EmployeeList");
-                        hiddenSheet.Cell(1, 1).Value = "EmployeeId";
-                        hiddenSheet.Cell(1, 2).Value = "EmployeeName";
+                    //    // Create a hidden sheet for the Employee list
+                    //    var hiddenSheet = workbook.Worksheets.Add("EmployeeList");
+                    //    hiddenSheet.Cell(1, 1).Value = "EmployeeId";
+                    //    hiddenSheet.Cell(1, 2).Value = "EmployeeName";
 
-                        for (int i = 0; i < employees.Count; i++)
-                        {
-                            hiddenSheet.Cell(i + 2, 1).Value = employees[i].EmployeeId;
-                            hiddenSheet.Cell(i + 2, 2).Value = employees[i].FullName;
-                        }
+                    //    for (int i = 0; i < employees.Count; i++)
+                    //    {
+                    //        hiddenSheet.Cell(i + 2, 1).Value = employees[i].EmployeeId;
+                    //        hiddenSheet.Cell(i + 2, 2).Value = employees[i].FullName;
+                    //    }
 
-                        // Create data validation list (combo box) in the new "Employee" column
-                        var employeeRange = worksheet.Range("D2:D1048576");
-                        var employeeListRange = hiddenSheet.Range($"B2:B{employees.Count + 1}");
-                        // Create data validation list (combo box) in the new "Employee" column
-                        var employeeValidation = employeeRange.SetDataValidation();
-                        employeeValidation.AllowedValues = XLAllowedValues.List;
-                        employeeValidation.List(employeeListRange);
-                        employeeValidation.InCellDropdown = true;
+                    //    // Create data validation list (combo box) in the new "Employee" column
+                    //    var employeeRange = worksheet.Range("D2:D1048576");
+                    //    var employeeListRange = hiddenSheet.Range($"B2:B{employees.Count + 1}");
+                    //    // Create data validation list (combo box) in the new "Employee" column
+                    //    var employeeValidation = employeeRange.SetDataValidation();
+                    //    employeeValidation.AllowedValues = XLAllowedValues.List;
+                    //    employeeValidation.List(employeeListRange);
+                    //    employeeValidation.InCellDropdown = true;
 
-                        // Hide the EmployeeList sheet
-                        hiddenSheet.Hide();
+                    //    // Hide the EmployeeList sheet
+                    //    hiddenSheet.Hide();
 
-                        // Save the workbook to the selected folder
-                        string filePath = System.IO.Path.Combine(folderDialog.SelectedPath, "Template.xlsx");
-                        workbook.SaveAs(filePath);
+                    //    // Save the workbook to the selected folder
+                    //    string filePath = System.IO.Path.Combine(folderDialog.SelectedPath, "Template.xlsx");
+                    //    workbook.SaveAs(filePath);
 
-                        MessageBox.Show("Excel file saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    //    MessageBox.Show("Excel file saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //}
                 }
             }
         }

@@ -15,16 +15,16 @@ namespace CartoonMovieManagement
     public partial class FormEmployee : Form
     {
         CartoonProductManagementContext context = new CartoonProductManagementContext();
-        private FormDashboard formDashboard;
+        private FormMain formDashboard;
         private int selectedId;
 
-        private FormHistoryLog formHistoryLog;
-        private FormProfile formProfile;
-        private FormAccount formAccount;
-        private FormHistoryLog formEmployeeHistoryLog;
-        private FormManagement formManagement;
+        private FormHistoryLog? formHistoryLog;
+        private FormProfile? formProfile;
+        private FormAccount? formAccount;
+        private FormHistoryLog? formEmployeeHistoryLog;
+        private FormManagement? formManagement;
 
-        public FormEmployee(FormDashboard formDashboard)
+        public FormEmployee(FormMain formDashboard)
         {
             InitializeComponent();
             this.formDashboard = formDashboard;
@@ -145,7 +145,7 @@ namespace CartoonMovieManagement
                 btnSubmit.Enabled = true;
 
                 //Manage Account and Employee
-                selectedId = Int32.Parse(row.Cells["EmployeeId"].Value.ToString());
+                selectedId = Int32.Parse(row.Cells["EmployeeId"].Value.ToString() ?? "0");
                 btnEmployee.Text = "Edit Employee";
 
                 btnCreateAccount.Enabled = true;

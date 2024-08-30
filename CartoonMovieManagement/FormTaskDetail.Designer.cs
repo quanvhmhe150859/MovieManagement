@@ -57,6 +57,7 @@
             errorName = new Label();
             errorDeadline = new Label();
             tbId = new TextBox();
+            btnClear = new Button();
             SuspendLayout();
             // 
             // tbDescription
@@ -347,11 +348,23 @@
             tbId.Size = new Size(90, 33);
             tbId.TabIndex = 42;
             // 
+            // btnClear
+            // 
+            btnClear.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            btnClear.Location = new Point(681, 425);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new Size(79, 33);
+            btnClear.TabIndex = 43;
+            btnClear.Text = "Clear";
+            btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
+            // 
             // FormTaskDetail
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 625);
+            Controls.Add(btnClear);
             Controls.Add(tbId);
             Controls.Add(errorDeadline);
             Controls.Add(errorName);
@@ -418,5 +431,6 @@
         private Label errorName;
         private Label errorDeadline;
         private TextBox tbId;
+        private Button btnClear;
     }
 }

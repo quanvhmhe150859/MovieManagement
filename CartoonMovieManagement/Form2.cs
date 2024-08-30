@@ -12,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Task = System.Threading.Tasks.Task;
 using Timer = System.Windows.Forms.Timer;
 
 namespace CartoonMovieManagement
@@ -19,15 +20,15 @@ namespace CartoonMovieManagement
     public partial class Form2 : Form
     {
         private int employeeId;
-        private Form1 loginForm;
+        private FormLogin loginForm;
 
-        private Timer countdownTimer;
+        private Timer? countdownTimer;
 
-        private FormDashboard formDashboard;
-        private FormTaskRegister formTaskRegister;
-        private FormProfile formProfile;
+        private FormDashboard? formDashboard;
+        private FormTaskRegister? formTaskRegister;
+        private FormProfile? formProfile;
 
-        public Form2(int employeeId, Form1 form1)
+        public Form2(int employeeId, FormLogin form1)
         {
             InitializeComponent();
             this.employeeId = employeeId;
@@ -253,26 +254,27 @@ namespace CartoonMovieManagement
                 var status = context.Statuses.FirstOrDefault(s => s.Name == row.Cells["Status"].Value.ToString());
                 cbStatus.SelectedValue = status?.StatusId;
 
-                if (status.Name == "Passed" ||
+                if(status != null)
+                {
+                    if (status.Name == "Passed" ||
                     (row.Cells["DeadlineDate"].Value != null &&
                     Convert.ToDateTime(row.Cells["DeadlineDate"].Value) < DateTime.Now) ||
                     (row.Cells["ReceiverId"].Value != null &&
                     employeeId != Convert.ToInt32(row.Cells["ReceiverId"].Value)))
-                {
-                    cbStatus.Enabled = false;
-                    tbNote.Enabled = false;
-                    btnUploadFile.Enabled = false;
-                    btnSubmit.Enabled = false;
+                    {
+                        cbStatus.Enabled = false;
+                        tbNote.Enabled = false;
+                        btnUploadFile.Enabled = false;
+                        btnSubmit.Enabled = false;
+                    }
+                    else
+                    {
+                        cbStatus.Enabled = true;
+                        tbNote.Enabled = true;
+                        btnUploadFile.Enabled = true;
+                        btnSubmit.Enabled = true;
+                    }
                 }
-                else
-                {
-                    cbStatus.Enabled = true;
-                    tbNote.Enabled = true;
-                    btnUploadFile.Enabled = true;
-                    btnSubmit.Enabled = true;
-                }
-
-
             }
         }
 
@@ -302,7 +304,7 @@ namespace CartoonMovieManagement
             countdownTimer.Start();
         }
 
-        private void CountdownTimer_Tick(object sender, EventArgs e)
+        private void CountdownTimer_Tick(object? sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -322,9 +324,9 @@ namespace CartoonMovieManagement
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "ResourceLink")
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "Resource Link")
             {
-                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
+                string? resourceLink = dataGridView1.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -336,26 +338,31 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
+                                //await DownloadFileAsync(fullFilePath, destinationPath);
+
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
             }
 
-            if (dataGridView1.Columns[e.ColumnIndex].Name == "SubmitLink")
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "Submit Link")
             {
-                string resourceLink = dataGridView1.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
+                string? resourceLink = dataGridView1.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -367,18 +374,21 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
@@ -406,32 +416,32 @@ namespace CartoonMovieManagement
         //    }
         //}
 
-        private void DownloadFile(string fileUrl)
-        {
-            try
-            {
-                using (WebClient webClient = new WebClient())
-                {
-                    // Extract the file name from the URL
-                    string fileName = Path.GetFileName(new Uri(fileUrl).AbsolutePath);
+        //private void DownloadFile(string fileUrl)
+        //{
+        //    try
+        //    {
+        //        using (WebClient webClient = new WebClient())
+        //        {
+        //            // Extract the file name from the URL
+        //            string fileName = Path.GetFileName(new Uri(fileUrl).AbsolutePath);
 
-                    // Define the local path, for example, on the Desktop
-                    string localPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+        //            // Define the local path, for example, on the Desktop
+        //            string localPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
 
-                    // Download the file with its original name
-                    webClient.DownloadFile(fileUrl, localPath);
+        //            // Download the file with its original name
+        //            webClient.DownloadFile(fileUrl, localPath);
 
-                    // Optionally, open the downloaded file
-                    System.Diagnostics.Process.Start(new ProcessStartInfo(localPath) { UseShellExecute = true });
+        //            // Optionally, open the downloaded file
+        //            System.Diagnostics.Process.Start(new ProcessStartInfo(localPath) { UseShellExecute = true });
 
-                    MessageBox.Show($"Download completed. File saved to: {localPath}");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred: " + ex.Message);
-            }
-        }
+        //            MessageBox.Show($"Download completed. File saved to: {localPath}");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("An error occurred: " + ex.Message);
+        //    }
+        //}
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
@@ -444,22 +454,25 @@ namespace CartoonMovieManagement
                 if (!fileName.IsNullOrEmpty())
                 {
                     // Get the path to the "Uploads" folder
-                    string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-                    string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads", "Results");
-
-                    // Ensure the "Uploads" folder exists
-                    if (!Directory.Exists(uploadsFolderPath))
+                    string? projectDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
+                    if(projectDirectory != null)
                     {
-                        Directory.CreateDirectory(uploadsFolderPath);
+                        string uploadsFolderPath = Path.Combine(projectDirectory, "Uploads", "Results");
+
+                        // Ensure the "Uploads" folder exists
+                        if (!Directory.Exists(uploadsFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadsFolderPath);
+                        }
+
+                        // Combine the destination folder path and file name
+                        string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
+
+                        // Copy the file to the "Uploads" folder
+                        File.Copy(tbFile.Text, destinationFilePath, true);
+
+                        task.SubmitLink = fileName;
                     }
-
-                    // Combine the destination folder path and file name
-                    string destinationFilePath = Path.Combine(uploadsFolderPath, fileName);
-
-                    // Copy the file to the "Uploads" folder
-                    File.Copy(tbFile.Text, destinationFilePath, true);
-
-                    task.SubmitLink = fileName;
                 }
 
                 task.StatusId = (int?)cbStatus.SelectedValue ?? 0;
@@ -536,7 +549,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void btnDashboard_Click(object sender, EventArgs e)
+        private void btnDashboard_Click(object? sender, EventArgs e)
         {
             var account = context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
             if (account != null)

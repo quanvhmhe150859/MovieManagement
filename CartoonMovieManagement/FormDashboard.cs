@@ -20,29 +20,29 @@ namespace CartoonMovieManagement
     public partial class FormDashboard : Form
     {
         public int accountId;
-        private Form1? loginForm;
+        private FormLogin? loginForm;
 
-        private Timer countdownTimer;
+        private Timer? countdownTimer;
 
         private int selectedId;
-        private string selectedName;
+        private string? selectedName;
 
         private SortOrder sortOrder = SortOrder.None;
         private string sortColumn = "";
 
-        private FormEmployee formEmployee;
-        private FormHistoryLog formHistoryLog;
-        private FormStatusSetting formStatusSetting;
-        private FormStatusSetting formCategorySetting;
+        private FormEmployee? formEmployee;
+        private FormHistoryLog? formHistoryLog;
+        private FormStatusSetting? formStatusSetting;
+        private FormStatusSetting? formCategorySetting;
 
-        private FormProjectDetail formProjectDetail;
-        private FormMovieDetail formMovieDetail;
-        private FormEpisodeDetail formEpisodeDetail;
-        private FormTaskDetail formTaskDetail;
+        private FormProjectDetail? formProjectDetail;
+        private FormMovieDetail? formMovieDetail;
+        private FormEpisodeDetail? formEpisodeDetail;
+        private FormTaskDetail? formTaskDetail;
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormDashboard(int accountId, Form1? form1)
+        public FormDashboard(int accountId, FormLogin? form1)
         {
             InitializeComponent();
             this.accountId = accountId;
@@ -399,7 +399,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void dgvDashboard_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void dgvDashboard_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dgvDashboard.Columns[e.ColumnIndex].Name == "Duration")
             {
@@ -721,72 +721,72 @@ namespace CartoonMovieManagement
 
         private void btnCreateProject_Click(object sender, EventArgs e)
         {
-            if (formProjectDetail == null || formProjectDetail.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formProjectDetail = new FormProjectDetail(selectedId, this);
-                formProjectDetail.Show();
-            }
-            else
-            {
-                formProjectDetail.UpdateData(selectedId);
-                formProjectDetail.BringToFront();
-            }
+            //if (formProjectDetail == null || formProjectDetail.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formProjectDetail = new FormProjectDetail(selectedId, this);
+            //    formProjectDetail.Show();
+            //}
+            //else
+            //{
+            //    formProjectDetail.UpdateData(selectedId);
+            //    formProjectDetail.BringToFront();
+            //}
         }
 
         private void btnCreateMovie_Click(object sender, EventArgs e)
         {
-            if (formMovieDetail == null || formMovieDetail.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formMovieDetail = new FormMovieDetail(selectedId, this);
-                formMovieDetail.Show();
-            }
-            else
-            {
-                formMovieDetail.UpdateData(selectedId);
-                formMovieDetail.BringToFront();
-            }
+            //if (formMovieDetail == null || formMovieDetail.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formMovieDetail = new FormMovieDetail(selectedId, this);
+            //    formMovieDetail.Show();
+            //}
+            //else
+            //{
+            //    formMovieDetail.UpdateData(selectedId);
+            //    formMovieDetail.BringToFront();
+            //}
         }
 
         private void btnCreateEpisode_Click(object sender, EventArgs e)
         {
-            if (formEpisodeDetail == null || formEpisodeDetail.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
-                formEpisodeDetail.Show();
-            }
-            else
-            {
-                formEpisodeDetail.Close();
-                formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
-                formEpisodeDetail.Show();
-                //formEpisodeDetail.UpdateData(selectedId);
-                //formEpisodeDetail.BringToFront();
-            }
+            //if (formEpisodeDetail == null || formEpisodeDetail.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
+            //    formEpisodeDetail.Show();
+            //}
+            //else
+            //{
+            //    formEpisodeDetail.Close();
+            //    formEpisodeDetail = new FormEpisodeDetail(selectedId, this);
+            //    formEpisodeDetail.Show();
+            //    //formEpisodeDetail.UpdateData(selectedId);
+            //    //formEpisodeDetail.BringToFront();
+            //}
         }
 
         private void btnCreateTask_Click(object sender, EventArgs e)
         {
-            if (formTaskDetail == null || formTaskDetail.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0, 0);
-                formTaskDetail.Show();
-            }
-            else
-            {
-                formTaskDetail.UpdateData(selectedId);
-                formTaskDetail.BringToFront();
-            }
+            //if (formTaskDetail == null || formTaskDetail.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formTaskDetail = new FormTaskDetail(selectedId, this, 0, 0, 0, 0);
+            //    formTaskDetail.Show();
+            //}
+            //else
+            //{
+            //    formTaskDetail.UpdateData(selectedId);
+            //    formTaskDetail.BringToFront();
+            //}
         }
 
         private void dgvDashboard_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvDashboard.Columns[e.ColumnIndex].Name == "ResourceLink")
             {
-                string resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
+                string? resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["ResourceLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -798,18 +798,21 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Resources");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
@@ -817,7 +820,7 @@ namespace CartoonMovieManagement
 
             if (dgvDashboard.Columns[e.ColumnIndex].Name == "SubmitLink")
             {
-                string resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
+                string? resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["SubmitLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -829,18 +832,21 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Results");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
@@ -848,7 +854,7 @@ namespace CartoonMovieManagement
 
             if (dgvDashboard.Columns[e.ColumnIndex].Name == "MovieLink")
             {
-                string resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["MovieLink"].Value.ToString();
+                string? resourceLink = dgvDashboard.Rows[e.RowIndex].Cells["MovieLink"].Value.ToString();
                 if (!string.IsNullOrEmpty(resourceLink))
                 {
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -860,19 +866,22 @@ namespace CartoonMovieManagement
                         {
                             string destinationPath = saveFileDialog.FileName;
 
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Movies");
-                            string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
-                            string fullFilePath = Path.Combine(uploadsFolder, fileName);
-
-                            // Here you would implement the logic to download the file to the selected path
-                            // For example, using WebClient or HttpClient to download the file from resourceLink
-                            using (var client = new WebClient())
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                client.DownloadFile(fullFilePath, destinationPath);
-                            }
+                                string uploadsFolder = Path.Combine(projectRootPath, "Uploads", "Movies");
+                                string fileName = Path.GetFileName(resourceLink); // Get the file name from resourceLink
+                                string fullFilePath = Path.Combine(uploadsFolder, fileName);
 
-                            MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                // Here you would implement the logic to download the file to the selected path
+                                // For example, using WebClient or HttpClient to download the file from resourceLink
+                                using (var client = new WebClient())
+                                {
+                                    client.DownloadFile(fullFilePath, destinationPath);
+                                }
+
+                                MessageBox.Show("File downloaded successfully.", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
@@ -911,43 +920,43 @@ namespace CartoonMovieManagement
 
         private void dgvDashboard_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (formTaskDetail != null && !formTaskDetail.IsDisposed)
-            {
-                formTaskDetail.Close();
-            }
+            //if (formTaskDetail != null && !formTaskDetail.IsDisposed)
+            //{
+            //    formTaskDetail.Close();
+            //}
 
-            if (selectedName == "Project")
-            {
-                formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0, 0);
-                formTaskDetail.Show();
-            }
-            else if (selectedName == "Movie")
-            {
-                var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == selectedId);
-                formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0, 0);
-                formTaskDetail.Show();
-            }
-            else if (selectedName == "Episode")
-            {
-                var episode = context.EpisodeMovies.Include(e => e.CartoonMovie).FirstOrDefault(e => e.EpisodeMovieId == selectedId);
-                formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId, 0);
-                formTaskDetail.Show();
-            }
+            //if (selectedName == "Project")
+            //{
+            //    formTaskDetail = new FormTaskDetail(0, this, selectedId, 0, 0, 0);
+            //    formTaskDetail.Show();
+            //}
+            //else if (selectedName == "Movie")
+            //{
+            //    var movie = context.CartoonMovies.FirstOrDefault(m => m.CartoonMovieId == selectedId);
+            //    formTaskDetail = new FormTaskDetail(0, this, movie?.ProjectId, selectedId, 0, 0);
+            //    formTaskDetail.Show();
+            //}
+            //else if (selectedName == "Episode")
+            //{
+            //    var episode = context.EpisodeMovies.Include(e => e.CartoonMovie).FirstOrDefault(e => e.EpisodeMovieId == selectedId);
+            //    formTaskDetail = new FormTaskDetail(0, this, episode?.CartoonMovie.ProjectId, episode?.CartoonMovieId, selectedId, 0);
+            //    formTaskDetail.Show();
+            //}
         }
 
         private void btnTaskLog_Click(object sender, EventArgs e)
         {
-            if (formHistoryLog == null || formHistoryLog.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formHistoryLog = new FormHistoryLog("Task", this);
-                formHistoryLog.Show();
-            }
-            else
-            {
-                // If the form is already open, bring it to the front
-                formHistoryLog.BringToFront();
-            }
+            //if (formHistoryLog == null || formHistoryLog.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formHistoryLog = new FormHistoryLog("Task", this);
+            //    formHistoryLog.Show();
+            //}
+            //else
+            //{
+            //    // If the form is already open, bring it to the front
+            //    formHistoryLog.BringToFront();
+            //}
         }
 
         private void dgvDashboard_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -1009,17 +1018,17 @@ namespace CartoonMovieManagement
 
         private void btnEmployee_Click(object sender, EventArgs e)
         {
-            if (formEmployee == null || formEmployee.IsDisposed)
-            {
-                // If the form does not exist or was closed, create a new instance
-                formEmployee = new FormEmployee(this);
-                formEmployee.Show();
-            }
-            else
-            {
-                // If the form is already open, bring it to the front
-                formEmployee.BringToFront();
-            }
+            //if (formEmployee == null || formEmployee.IsDisposed)
+            //{
+            //    // If the form does not exist or was closed, create a new instance
+            //    formEmployee = new FormEmployee(this);
+            //    formEmployee.Show();
+            //}
+            //else
+            //{
+            //    // If the form is already open, bring it to the front
+            //    formEmployee.BringToFront();
+            //}
         }
 
         private void FormDashboard_FormClosing(object sender, FormClosingEventArgs e)

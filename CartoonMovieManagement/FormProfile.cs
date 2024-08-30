@@ -20,7 +20,7 @@ namespace CartoonMovieManagement
         private string type;
         private FormEmployee? formEmployee;
 
-        private FormAccount formAccount;
+        private FormAccount? formAccount;
 
         public FormProfile(int employeeId, string type, FormEmployee? formEmployee)
         {
@@ -110,15 +110,18 @@ namespace CartoonMovieManagement
                 {
                     pbAvatar.Name = employee.Avatar;
 
-                    string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                    string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
-                    string filePath = Path.Combine(uploadsFolderPath, employee.Avatar);
-
-                    // Check if the file exists
-                    if (File.Exists(filePath))
+                    string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                    if(projectRootPath != null)
                     {
-                        // Load the image into the PictureBox
-                        pbAvatar.Image = Image.FromFile(filePath);
+                        string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
+                        string filePath = Path.Combine(uploadsFolderPath, employee.Avatar);
+
+                        // Check if the file exists
+                        if (File.Exists(filePath))
+                        {
+                            // Load the image into the PictureBox
+                            pbAvatar.Image = Image.FromFile(filePath);
+                        }
                     }
                 }
             }
@@ -180,30 +183,33 @@ namespace CartoonMovieManagement
 
                 if (pbAvatar.Image != null && tbId.Text == "")
                 {
-                    string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                    string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
-
-                    // Ensure the Uploads folder exists
-                    if (!Directory.Exists(uploadsFolderPath))
+                    string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                    if(projectRootPath != null)
                     {
-                        Directory.CreateDirectory(uploadsFolderPath);
+                        string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
+
+                        // Ensure the Uploads folder exists
+                        if (!Directory.Exists(uploadsFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadsFolderPath);
+                        }
+
+                        // Define the full path including the image name
+                        //string fileName = "your_image_name_here.jpg"; // Or use a dynamic name
+                        //string fullImagePath = Path.Combine(uploadsFolderPath, fileName);
+                        // Save the image
+                        //pbAvatar.Image.Save(fullImagePath);
+
+                        string fileName = Guid.NewGuid().ToString() + ".jpg"; // Or ".png" depending on your image format
+
+                        // Combine the folder path and file name
+                        string filePath = Path.Combine(uploadsFolderPath, fileName);
+
+                        // Save the image from the PictureBox
+                        pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
+
+                        employee.Avatar = fileName;
                     }
-
-                    // Define the full path including the image name
-                    //string fileName = "your_image_name_here.jpg"; // Or use a dynamic name
-                    //string fullImagePath = Path.Combine(uploadsFolderPath, fileName);
-                    // Save the image
-                    //pbAvatar.Image.Save(fullImagePath);
-
-                    string fileName = Guid.NewGuid().ToString() + ".jpg"; // Or ".png" depending on your image format
-
-                    // Combine the folder path and file name
-                    string filePath = Path.Combine(uploadsFolderPath, fileName);
-
-                    // Save the image from the PictureBox
-                    pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
-
-                    employee.Avatar = fileName;
                 }
 
                 if (tbId.Text == "")
@@ -228,47 +234,50 @@ namespace CartoonMovieManagement
 
                         if (pbAvatar.Image != null && pbAvatar.Name != tempEmployee.Avatar)
                         {
-                            string projectRootPath = Directory.GetParent(Application.StartupPath).Parent.Parent.Parent.FullName;
-                            string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
-
-                            // Ensure the Uploads folder exists
-                            if (!Directory.Exists(uploadsFolderPath))
+                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+                            if(projectRootPath != null)
                             {
-                                Directory.CreateDirectory(uploadsFolderPath);
-                            }
+                                string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
 
-                            // Define the full path including the image name
-                            //string fileName = "your_image_name_here.jpg"; // Or use a dynamic name
-                            //string fullImagePath = Path.Combine(uploadsFolderPath, fileName);
-                            // Save the image
-                            //pbAvatar.Image.Save(fullImagePath);
-
-                            string fileName = Guid.NewGuid().ToString() + ".jpg"; // Or ".png" depending on your image format
-
-                            // Combine the folder path and file name
-                            string filePath = Path.Combine(uploadsFolderPath, fileName);
-
-                            // Save the image from the PictureBox
-                            pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
-
-                            if (tempEmployee.Avatar != null)
-                            {
-                                string deleteOldfilePath = Path.Combine(uploadsFolderPath, tempEmployee.Avatar);
-                                if (File.Exists(deleteOldfilePath))
+                                // Ensure the Uploads folder exists
+                                if (!Directory.Exists(uploadsFolderPath))
                                 {
-                                    try
+                                    Directory.CreateDirectory(uploadsFolderPath);
+                                }
+
+                                // Define the full path including the image name
+                                //string fileName = "your_image_name_here.jpg"; // Or use a dynamic name
+                                //string fullImagePath = Path.Combine(uploadsFolderPath, fileName);
+                                // Save the image
+                                //pbAvatar.Image.Save(fullImagePath);
+
+                                string fileName = Guid.NewGuid().ToString() + ".jpg"; // Or ".png" depending on your image format
+
+                                // Combine the folder path and file name
+                                string filePath = Path.Combine(uploadsFolderPath, fileName);
+
+                                // Save the image from the PictureBox
+                                pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
+
+                                if (tempEmployee.Avatar != null)
+                                {
+                                    string deleteOldfilePath = Path.Combine(uploadsFolderPath, tempEmployee.Avatar);
+                                    if (File.Exists(deleteOldfilePath))
                                     {
-                                        // Delete the file
-                                        File.Delete(deleteOldfilePath);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        MessageBox.Show($"An error occurred while deleting the file: {ex.Message}");
+                                        try
+                                        {
+                                            // Delete the file
+                                            File.Delete(deleteOldfilePath);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            MessageBox.Show($"An error occurred while deleting the file: {ex.Message}");
+                                        }
                                     }
                                 }
-                            }
 
-                            tempEmployee.Avatar = fileName;
+                                tempEmployee.Avatar = fileName;
+                            }
                         }
 
                         context.Employees.Update(tempEmployee);
@@ -307,7 +316,7 @@ namespace CartoonMovieManagement
             }
         }
 
-        private void btnAccount_Click(object sender, EventArgs e)
+        private void btnAccount_Click(object? sender, EventArgs e)
         {
             if (formAccount == null || formAccount.IsDisposed)
             {

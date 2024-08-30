@@ -8,11 +8,11 @@ namespace CartoonMovieManagement
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
         private int? projectId;
-        private FormDashboard formDashboard;
+        private FormMain formDashboard;
 
         Button btnDelete = new Button();
 
-        public FormProjectDetail(int? id, FormDashboard formDashboard)
+        public FormProjectDetail(int? id, FormMain formDashboard)
         {
             InitializeComponent();
             this.formDashboard = formDashboard;
@@ -125,7 +125,6 @@ namespace CartoonMovieManagement
                 {
                     tempProject.Name = project.Name;
                     tempProject.Description = project.Description;
-                    tempProject.CreatedDate = DateTime.Now;
                     tempProject.Budget = project.Budget;
                     tempProject.CategoryId = project.CategoryId;
 
@@ -134,12 +133,12 @@ namespace CartoonMovieManagement
             }
             context.SaveChanges();
 
-            formDashboard.LoadData("Project");
-
+            formDashboard.LoadData("Project", formDashboard.dgvDataProject);
+            formDashboard.LoadTreeView("Project");
             this.Close();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object? sender, EventArgs e)
         {
             // Show a confirmation message box
             var result = MessageBox.Show("Are you sure you want to delete this item?", "Confirm Deletion",
@@ -180,7 +179,7 @@ namespace CartoonMovieManagement
 
                     context.SaveChanges();
                     MessageBox.Show("Deletion complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    formDashboard.LoadData("Project");
+                    //formDashboard.LoadData("Project");
                     this.Close();
                 }
             }

@@ -22,7 +22,7 @@ namespace CartoonMovieManagement
     public partial class FormTaskDetail : Form
     {
         private int? taskId;
-        private FormDashboard formDashboard;
+        private FormMain formDashboard;
 
         private int? projectSelected;
         private int? movieSelected;
@@ -34,7 +34,7 @@ namespace CartoonMovieManagement
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
-        public FormTaskDetail(int? id, FormDashboard formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected, int? employeeId)
+        public FormTaskDetail(int? id, FormMain formDashboard, int? projectSelected, int? movieSelected, int? episodeSelected, int? employeeId)
         {
             InitializeComponent();
             taskId = id;
@@ -265,8 +265,8 @@ namespace CartoonMovieManagement
                         tempTask.TaskParentId = newTask.TaskParentId;
                         tempTask.ReceiverId = newTask.ReceiverId;
 
-                        if (newTask.ResourceLink == "")
-                            newTask.ResourceLink = null;
+                        if (tempTask.ResourceLink == null)
+                            tempTask.ResourceLink = "";
 
                         if (tempTask.ResourceLink != newTask.ResourceLink)
                             isLinkChange = true;
@@ -280,7 +280,7 @@ namespace CartoonMovieManagement
                 }
 
                 // Ensure a file is selected
-                if ((!string.IsNullOrEmpty(tbFilePath.Text) && taskId == 0) || isLinkChange)
+                if (!string.IsNullOrEmpty(tbFilePath.Text) && (taskId == 0 || isLinkChange))
                 {
                     try
                     {
@@ -311,6 +311,8 @@ namespace CartoonMovieManagement
                         MessageBox.Show("An error occurred: " + ex.Message);
                     }
                 }
+                else if (isLinkChange)
+                    tempTask.ResourceLink = newTask.ResourceLink;
 
                 if (tbId.Text != "")
                 {
@@ -359,7 +361,8 @@ namespace CartoonMovieManagement
 
                 MessageBox.Show("Save changes successfully.");
 
-                formDashboard.LoadData("Task");
+                formDashboard.LoadData("Task", formDashboard.dgvDataTask);
+                formDashboard.LoadTreeView("Employee");
 
                 this.Close();
             }
@@ -515,7 +518,7 @@ namespace CartoonMovieManagement
 
                     context.SaveChanges();
                     MessageBox.Show("Deletion complete.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    formDashboard.LoadData("Task");
+                    //formDashboard.LoadData("Task");
                     this.Close();
                 }
             }
@@ -593,6 +596,11 @@ namespace CartoonMovieManagement
             }
             else
                 cbStatus.Enabled = true;
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            tbFilePath.Text = string.Empty;
         }
     }
 }

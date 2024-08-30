@@ -240,12 +240,18 @@ namespace CartoonMovieManagement
                 else
                 {
                     var s = context.Statuses.FirstOrDefault(s => s.StatusId == Int32.Parse(tbId.Text));
-                    s.Name = tbName.Text.Trim();
-                    s.Description = tbDescription.Text.Trim();
-                    s.ForAdmin = checkForAdmin.Checked;
-                    context.Statuses.Update(s);
-                    context.SaveChanges();
-                    LoadData();
+                    if (s != null)
+                    {
+                        s.Name = tbName.Text.Trim();
+                        s.Description = tbDescription.Text.Trim();
+                        s.ForAdmin = checkForAdmin.Checked;
+                        context.Statuses.Update(s);
+                        context.SaveChanges();
+                        MessageBox.Show("Success");
+                        LoadData();
+                    }
+                    else
+                        MessageBox.Show("Not found");
                 }
             }
             else if (type == "Category")
@@ -263,13 +269,19 @@ namespace CartoonMovieManagement
                 else
                 {
                     var s = context.Categories.FirstOrDefault(s => s.CategoryId == Int32.Parse(tbId.Text));
-                    s.Name = tbName.Text.Trim();
-                    s.Description = tbDescription.Text.Trim();
-                    s.IsActive = checkForAdmin.Checked;
-                    s.CategoryParentId = (int?)cbCategory.SelectedValue == -1 ? null : (int?)cbCategory.SelectedValue;
-                    context.Categories.Update(s);
-                    context.SaveChanges();
-                    LoadData();
+                    if (s != null)
+                    {
+                        s.Name = tbName.Text.Trim();
+                        s.Description = tbDescription.Text.Trim();
+                        s.IsActive = checkForAdmin.Checked;
+                        s.CategoryParentId = (int?)cbCategory.SelectedValue == -1 ? null : (int?)cbCategory.SelectedValue;
+                        context.Categories.Update(s);
+                        context.SaveChanges();
+                        MessageBox.Show("Success");
+                        LoadData();
+                    }
+                    else
+                        MessageBox.Show("Not found");
                 }
             }
         }
