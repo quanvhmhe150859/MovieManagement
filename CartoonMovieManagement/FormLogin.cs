@@ -18,8 +18,11 @@ namespace CartoonMovieManagement
 
             FormMain formMain = new FormMain(2, this);
             formMain.Show();
-            //hard code
-        }
+
+			FormMain formMain2 = new FormMain(3, this);
+			formMain2.Show();
+			//hard code
+		}
 
         CartoonProductManagementContext context = new CartoonProductManagementContext();
 
@@ -56,7 +59,8 @@ namespace CartoonMovieManagement
 
                     FormMain formMain = new FormMain(accountId, this);
                     formMain.Show();
-                    this.Hide();
+
+					this.Hide();
                 }
                 else
                 {

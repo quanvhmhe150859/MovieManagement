@@ -130,8 +130,8 @@ namespace CartoonMovieManagement
 
                 MessageBox.Show("Submit successfully");
 
-                formMain.LoadData("TaskEmployee", formMain.dgvDataProject);
-                formMain.LoadTreeView("Employee");
+                formMain.LoadTaskEmployee(task.ReceiverId ?? 0);
+				formMain.LoadTreeView("Employee");
                 this.Close();
             }
             else
