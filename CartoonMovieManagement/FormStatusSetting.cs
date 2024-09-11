@@ -299,7 +299,7 @@ namespace CartoonMovieManagement
                     var status = context.Statuses.FirstOrDefault(s => s.StatusId == Int32.Parse(tbId.Text));
                     if (status != null)
                     {
-                        context.Remove(status);
+                        context.Statuses.Remove(status);
                         context.SaveChanges();
                         LoadData();
                     }

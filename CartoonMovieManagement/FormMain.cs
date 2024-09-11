@@ -98,7 +98,7 @@ namespace CartoonMovieManagement
 
 			if (dgvData != null)
 			{
-				// Check if the 'Status' column exists before proceeding
+				//Check if the 'Status' column exists before proceeding
 				if (dgvData.Columns.Contains("Status"))
 				{
 					var account = context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
@@ -129,7 +129,7 @@ namespace CartoonMovieManagement
 						// Now it's safe to access the 'Status' column
 						string deletedDate = row.Cells["DeletedDate"].Value?.ToString() ?? string.Empty;
 
-						if (deletedDate != null)
+						if (deletedDate != "")
 						{
 							// Replace the button with a text cell to remove it
 							row.Cells["Edit"] = new DataGridViewTextBoxCell();

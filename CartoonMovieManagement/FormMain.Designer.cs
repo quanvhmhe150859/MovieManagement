@@ -81,7 +81,7 @@
 			menuStrip1.Location = new Point(0, 0);
 			menuStrip1.Name = "menuStrip1";
 			menuStrip1.Padding = new Padding(15, 5, 0, 5);
-			menuStrip1.Size = new Size(1943, 58);
+			menuStrip1.Size = new Size(1943, 55);
 			menuStrip1.TabIndex = 1;
 			menuStrip1.Text = "menuStrip1";
 			// 
@@ -89,7 +89,7 @@
 			// 
 			projectToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewProjectToolStripMenuItem, editProjectToolStripMenuItem, viewProjectTreeToolStripMenuItem, projectDataToolStripMenuItem });
 			projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-			projectToolStripMenuItem.Size = new Size(134, 48);
+			projectToolStripMenuItem.Size = new Size(134, 45);
 			projectToolStripMenuItem.Text = "Project";
 			// 
 			// createNewProjectToolStripMenuItem
@@ -128,7 +128,7 @@
 			// 
 			movieToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewMovieToolStripMenuItem, editMovieToolStripMenuItem, movieDataToolStripMenuItem });
 			movieToolStripMenuItem.Name = "movieToolStripMenuItem";
-			movieToolStripMenuItem.Size = new Size(124, 48);
+			movieToolStripMenuItem.Size = new Size(124, 45);
 			movieToolStripMenuItem.Text = "Movie";
 			// 
 			// createNewMovieToolStripMenuItem
@@ -159,7 +159,7 @@
 			// 
 			episodeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewEpisodeToolStripMenuItem, editEpisodeToolStripMenuItem, episodeDataToolStripMenuItem });
 			episodeToolStripMenuItem.Name = "episodeToolStripMenuItem";
-			episodeToolStripMenuItem.Size = new Size(147, 48);
+			episodeToolStripMenuItem.Size = new Size(147, 45);
 			episodeToolStripMenuItem.Text = "Episode";
 			// 
 			// createNewEpisodeToolStripMenuItem
@@ -190,14 +190,14 @@
 			// 
 			taskToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createNewTaskToolStripMenuItem, editTaskToolStripMenuItem, taskDataToolStripMenuItem, taskLogToolStripMenuItem, taskSubmitToolStripMenuItem });
 			taskToolStripMenuItem.Name = "taskToolStripMenuItem";
-			taskToolStripMenuItem.Size = new Size(98, 48);
+			taskToolStripMenuItem.Size = new Size(98, 45);
 			taskToolStripMenuItem.Text = "Task";
 			// 
 			// createNewTaskToolStripMenuItem
 			// 
 			createNewTaskToolStripMenuItem.Image = Properties.Resources.icons8_edit;
 			createNewTaskToolStripMenuItem.Name = "createNewTaskToolStripMenuItem";
-			createNewTaskToolStripMenuItem.Size = new Size(448, 54);
+			createNewTaskToolStripMenuItem.Size = new Size(402, 54);
 			createNewTaskToolStripMenuItem.Text = "Create New Task";
 			createNewTaskToolStripMenuItem.Click += createNewTaskToolStripMenuItem_Click;
 			// 
@@ -205,7 +205,7 @@
 			// 
 			editTaskToolStripMenuItem.Enabled = false;
 			editTaskToolStripMenuItem.Name = "editTaskToolStripMenuItem";
-			editTaskToolStripMenuItem.Size = new Size(448, 54);
+			editTaskToolStripMenuItem.Size = new Size(402, 54);
 			editTaskToolStripMenuItem.Text = "Edit Task";
 			editTaskToolStripMenuItem.Click += editTaskToolStripMenuItem_Click;
 			// 
@@ -213,7 +213,7 @@
 			// 
 			taskDataToolStripMenuItem.Image = Properties.Resources.Icons8_Ios7_Data_Database_512;
 			taskDataToolStripMenuItem.Name = "taskDataToolStripMenuItem";
-			taskDataToolStripMenuItem.Size = new Size(448, 54);
+			taskDataToolStripMenuItem.Size = new Size(402, 54);
 			taskDataToolStripMenuItem.Text = "Task Data";
 			taskDataToolStripMenuItem.Click += taskDataToolStripMenuItem_Click;
 			// 
@@ -221,7 +221,7 @@
 			// 
 			taskLogToolStripMenuItem.Image = Properties.Resources.Github_Octicons_Log_24_512;
 			taskLogToolStripMenuItem.Name = "taskLogToolStripMenuItem";
-			taskLogToolStripMenuItem.Size = new Size(448, 54);
+			taskLogToolStripMenuItem.Size = new Size(402, 54);
 			taskLogToolStripMenuItem.Text = "Task Log";
 			taskLogToolStripMenuItem.Click += taskLogToolStripMenuItem_Click;
 			// 
@@ -230,7 +230,7 @@
 			taskSubmitToolStripMenuItem.Enabled = false;
 			taskSubmitToolStripMenuItem.Image = Properties.Resources.icons8_submit_document_50;
 			taskSubmitToolStripMenuItem.Name = "taskSubmitToolStripMenuItem";
-			taskSubmitToolStripMenuItem.Size = new Size(448, 54);
+			taskSubmitToolStripMenuItem.Size = new Size(402, 54);
 			taskSubmitToolStripMenuItem.Text = "Task Submit";
 			taskSubmitToolStripMenuItem.Click += taskSubmitToolStripMenuItem_Click;
 			// 
@@ -238,7 +238,7 @@
 			// 
 			employeeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { viewEmployeeTreeToolStripMenuItem, employeeDataToolStripMenuItem });
 			employeeToolStripMenuItem.Name = "employeeToolStripMenuItem";
-			employeeToolStripMenuItem.Size = new Size(173, 48);
+			employeeToolStripMenuItem.Size = new Size(173, 45);
 			employeeToolStripMenuItem.Text = "Employee";
 			// 
 			// viewEmployeeTreeToolStripMenuItem
@@ -261,7 +261,7 @@
 			// 
 			settingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { statusSettingToolStripMenuItem, categorySettingToolStripMenuItem, otherSettingToolStripMenuItem });
 			settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-			settingToolStripMenuItem.Size = new Size(136, 48);
+			settingToolStripMenuItem.Size = new Size(136, 45);
 			settingToolStripMenuItem.Text = "Setting";
 			// 
 			// statusSettingToolStripMenuItem
@@ -341,10 +341,10 @@
 			// 
 			panel1.Controls.Add(treeViewData);
 			panel1.Dock = DockStyle.Left;
-			panel1.Location = new Point(0, 58);
+			panel1.Location = new Point(0, 55);
 			panel1.Margin = new Padding(7, 8, 7, 8);
 			panel1.Name = "panel1";
-			panel1.Size = new Size(486, 1118);
+			panel1.Size = new Size(486, 1121);
 			panel1.TabIndex = 5;
 			// 
 			// treeViewData
@@ -356,7 +356,7 @@
 			treeViewData.Margin = new Padding(7, 8, 7, 8);
 			treeViewData.Name = "treeViewData";
 			treeViewData.SelectedImageIndex = 0;
-			treeViewData.Size = new Size(486, 1118);
+			treeViewData.Size = new Size(486, 1121);
 			treeViewData.TabIndex = 6;
 			// 
 			// imageList
@@ -377,21 +377,21 @@
 			// tabControlData
 			// 
 			tabControlData.Dock = DockStyle.Fill;
-			tabControlData.Location = new Point(486, 58);
+			tabControlData.Location = new Point(486, 55);
 			tabControlData.Margin = new Padding(7, 8, 7, 8);
 			tabControlData.Name = "tabControlData";
 			tabControlData.SelectedIndex = 0;
-			tabControlData.Size = new Size(1457, 1118);
+			tabControlData.Size = new Size(1457, 1121);
 			tabControlData.TabIndex = 9;
 			tabControlData.SelectedIndexChanged += tabControlData_SelectedIndexChanged;
 			tabControlData.ControlAdded += tabControlData_ControlAdded;
 			// 
 			// splitter1
 			// 
-			splitter1.Location = new Point(486, 58);
+			splitter1.Location = new Point(486, 55);
 			splitter1.Margin = new Padding(7, 8, 7, 8);
 			splitter1.Name = "splitter1";
-			splitter1.Size = new Size(7, 1118);
+			splitter1.Size = new Size(7, 1121);
 			splitter1.TabIndex = 11;
 			splitter1.TabStop = false;
 			// 

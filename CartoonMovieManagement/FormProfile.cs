@@ -218,73 +218,79 @@ namespace CartoonMovieManagement
                 }
                 else
                 {
-                    var tempEmployee = context.Employees
-                        .FirstOrDefault(e => e.EmployeeId == Int32.Parse(tbId.Text));
-                    if (tempEmployee != null)
-                    {
-                        tempEmployee.FullName = employee.FullName;
-                        tempEmployee.Email = employee.Email;
-                        tempEmployee.PhoneNumber = employee.PhoneNumber;
-                        tempEmployee.Gender = employee.Gender;
-                        tempEmployee.DateOfBirth = employee.DateOfBirth;
-                        tempEmployee.SocialMediaLink = employee.SocialMediaLink;
-                        tempEmployee.DepartmentId = employee.DepartmentId;
-                        tempEmployee.StudioId = employee.StudioId;
-                        tempEmployee.CitizenIdentification = employee.CitizenIdentification;
+					var tempEmployee = context.Employees
+		.FirstOrDefault(e => e.EmployeeId == Int32.Parse(tbId.Text));
+					if (tempEmployee != null)
+					{
+						tempEmployee.FullName = employee.FullName;
+						tempEmployee.Email = employee.Email;
+						tempEmployee.PhoneNumber = employee.PhoneNumber;
+						tempEmployee.Gender = employee.Gender;
+						tempEmployee.DateOfBirth = employee.DateOfBirth;
+						tempEmployee.SocialMediaLink = employee.SocialMediaLink;
+						tempEmployee.DepartmentId = employee.DepartmentId;
+						tempEmployee.StudioId = employee.StudioId;
+						tempEmployee.CitizenIdentification = employee.CitizenIdentification;
 
-                        if (pbAvatar.Image != null && pbAvatar.Name != tempEmployee.Avatar)
-                        {
-                            string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
-                            if(projectRootPath != null)
-                            {
-                                string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
+						if (pbAvatar.Image != null && pbAvatar.Name != tempEmployee.Avatar)
+						{
+							string? projectRootPath = Directory.GetParent(Application.StartupPath)?.Parent?.Parent?.Parent?.FullName;
+							if (projectRootPath != null)
+							{
+								string uploadsFolderPath = Path.Combine(projectRootPath, "Uploads", "Avatar");
 
-                                // Ensure the Uploads folder exists
-                                if (!Directory.Exists(uploadsFolderPath))
-                                {
-                                    Directory.CreateDirectory(uploadsFolderPath);
-                                }
+								// Ensure the Uploads folder exists
+								if (!Directory.Exists(uploadsFolderPath))
+								{
+									Directory.CreateDirectory(uploadsFolderPath);
+								}
 
-                                // Define the full path including the image name
-                                //string fileName = "your_image_name_here.jpg"; // Or use a dynamic name
-                                //string fullImagePath = Path.Combine(uploadsFolderPath, fileName);
-                                // Save the image
-                                //pbAvatar.Image.Save(fullImagePath);
+								// Generate a unique file name for the new image
+								string fileName = Guid.NewGuid().ToString() + ".jpg";
+								string filePath = Path.Combine(uploadsFolderPath, fileName);
 
-                                string fileName = Guid.NewGuid().ToString() + ".jpg"; // Or ".png" depending on your image format
+								// Save the image from the PictureBox
+								pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
 
-                                // Combine the folder path and file name
-                                string filePath = Path.Combine(uploadsFolderPath, fileName);
+								// Dispose of the current image in PictureBox to release any file locks
+								//if (pbAvatar.Image != null)
+								//{
+								//	pbAvatar.Image.Dispose();
+								//	pbAvatar.Image = null;
+								//}
 
-                                // Save the image from the PictureBox
-                                pbAvatar.Image.Save(filePath, ImageFormat.Jpeg);
+								if (!string.IsNullOrEmpty(tempEmployee.Avatar))
+								{
+									string deleteOldfilePath = Path.Combine(uploadsFolderPath, tempEmployee.Avatar);
+									if (File.Exists(deleteOldfilePath))
+									{
+										try
+										{
+											// Force garbage collection to finalize resources
+											GC.Collect();
+											GC.WaitForPendingFinalizers();
 
-                                if (tempEmployee.Avatar != null)
-                                {
-                                    string deleteOldfilePath = Path.Combine(uploadsFolderPath, tempEmployee.Avatar);
-                                    if (File.Exists(deleteOldfilePath))
-                                    {
-                                        try
-                                        {
-                                            // Delete the file
-                                            File.Delete(deleteOldfilePath);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            MessageBox.Show($"An error occurred while deleting the file: {ex.Message}");
-                                        }
-                                    }
-                                }
+											// Delete the old image file
+											File.Delete(deleteOldfilePath);
+										}
+										catch (Exception ex)
+										{
+											MessageBox.Show($"An error occurred while deleting the file: {ex.Message}");
+										}
+									}
+								}
 
-                                tempEmployee.Avatar = fileName;
-                            }
-                        }
+								tempEmployee.Avatar = fileName;
+							}
+						}
 
-                        context.Employees.Update(tempEmployee);
-                    }
-                    else
-                        MessageBox.Show("Not found");
-                }
+						context.Employees.Update(tempEmployee);
+					}
+					else
+					{
+						MessageBox.Show("Not found");
+					}
+				}
                 context.SaveChanges();
                 MessageBox.Show("Save successful");
                 formEmployee?.Refresh();
@@ -310,10 +316,36 @@ namespace CartoonMovieManagement
                     // Load the selected image into the PictureBox
                     pbAvatar.Image = Image.FromFile(openFileDialog.FileName);
                     pbAvatar.Name = openFileDialog.FileName;
+
+                    //try
+                    //{
+                    //    using (var stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    //    {
+                    //        // Dispose of the previous image to free memory
+                    //        if (pbAvatar.Image != null)
+                    //        {
+                    //            pbAvatar.Image.Dispose();
+                    //            pbAvatar.Image = null;
+                    //        }
+
+                    //        // Load the image from the stream
+                    //        pbAvatar.Image = Image.FromStream(stream);
+                    //    }
+                    //}
+                    //catch (OutOfMemoryException)
+                    //{
+                    //    MessageBox.Show("The selected file is not a valid image format or it is corrupted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    // Handle other exceptions
+                    //    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
+
                     // Optional: Adjust the PictureBox size mode if needed
                     //pbAvatar.SizeMode = PictureBoxSizeMode.Zoom;
                 }
-            }
+			}
         }
 
         private void btnAccount_Click(object? sender, EventArgs e)

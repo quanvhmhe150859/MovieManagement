@@ -126,16 +126,16 @@ namespace CartoonMovieManagement
             btnDelete.BackColor = Color.Red;
             btnDelete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 163);
             btnDelete.ForeColor = SystemColors.ActiveCaptionText;
-            btnDelete.Location = new Point(1049, 512);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(136, 35);
-            btnDelete.TabIndex = 49;
+			btnDelete.Location = new Point(2543, 1399);
+			btnDelete.Name = "btnDelete";
+			btnDelete.Size = new Size(330, 96);
+			btnDelete.TabIndex = 49;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
 
-            // Add the button to the form
-            this.Controls.Add(btnDelete);
+			// Add the button to the form
+			this.Controls.Add(btnDelete);
         }
 
         private void DeleteDeleteButton()
