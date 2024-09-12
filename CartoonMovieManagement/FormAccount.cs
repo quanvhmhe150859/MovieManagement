@@ -38,21 +38,21 @@ namespace CartoonMovieManagement
 
             if (type == "Admin")
             {
-                Label label9 = new Label();
+				Label label9 = new Label();
                 label9.AutoSize = true;
                 label9.Font = new Font("Segoe UI", 11.25F);
-                label9.Location = new Point(332, 177);
-                label9.Name = "label9";
-                label9.Size = new Size(77, 20);
-                label9.TabIndex = 19;
+                label9.Location = new Point(799, 483);
+				label9.Name = "label9";
+                label9.Size = new Size(195, 51);
+				label9.TabIndex = 19;
                 label9.Text = "Password: ";
                 this.Controls.Add(label9);
 
                 tbCreatePassword.Font = new Font("Segoe UI", 11.25F);
-                tbCreatePassword.Location = new Point(415, 174);
-                tbCreatePassword.Name = "tbCreatePassword";
-                tbCreatePassword.Size = new Size(269, 27);
-                tbCreatePassword.TabIndex = 20;
+                tbCreatePassword.Location = new Point(1008, 477);
+				tbCreatePassword.Name = "tbCreatePassword";
+                tbCreatePassword.Size = new Size(648, 57);
+				tbCreatePassword.TabIndex = 20;
                 this.Controls.Add(tbCreatePassword);
 
                 checkAccountActive.Enabled = true;

@@ -69,12 +69,12 @@ namespace CartoonMovieManagement
             }
             else if (type == "Employee")
             {
-                Button btnAccount = new Button();
+				Button btnAccount = new Button();
                 btnAccount.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 163);
-                btnAccount.Location = new Point(589, 255);
-                btnAccount.Name = "btnAccount";
-                btnAccount.Size = new Size(199, 32);
-                btnAccount.TabIndex = 36;
+                btnAccount.Location = new Point(1430, 723);
+				btnAccount.Name = "btnAccount";
+                btnAccount.Size = new Size(483, 87);
+				btnAccount.TabIndex = 36;
                 btnAccount.Text = "Account";
                 btnAccount.UseVisualStyleBackColor = true;
                 btnAccount.Click += btnAccount_Click;
