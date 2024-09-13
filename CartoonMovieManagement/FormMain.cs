@@ -164,7 +164,7 @@ namespace CartoonMovieManagement
 				editButtonColumn.UseColumnTextForButtonValue = true; // Show the same text for all buttons
 				dgvData.Columns.Insert(0, editButtonColumn);
 			}
-
+			 
 			if (type == "Project")
 			{
 				dgvData.DataSource = null;
@@ -957,6 +957,8 @@ namespace CartoonMovieManagement
 					taskSubmitToolStripMenuItem.Visible = false;
 					//LoadData("Task");
 					InitializeCountdownTimer();
+
+					this.Text = "Admin";
 				}
 				else
 				{
@@ -976,6 +978,8 @@ namespace CartoonMovieManagement
 					settingToolStripMenuItem.Visible = false;
 					InitializeTimer();
 					LoadTaskEmployee(account.EmployeeId);
+
+					this.Text = "Employee";
 				}
 			}
 			else

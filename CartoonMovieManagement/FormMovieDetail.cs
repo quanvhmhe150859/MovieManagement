@@ -144,7 +144,7 @@ namespace CartoonMovieManagement
             context.SaveChanges();
             MessageBox.Show("Save successfully");
 
-            formDashboard.LoadData("Movie", formDashboard.dgvDataMovie);
+            //formDashboard.LoadData("Movie", formDashboard.dgvDataMovie);
             formDashboard.LoadTreeView("Project");
             this.Close();
         }

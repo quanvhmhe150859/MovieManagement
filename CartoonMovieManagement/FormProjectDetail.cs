@@ -133,7 +133,7 @@ namespace CartoonMovieManagement
             }
             context.SaveChanges();
 
-            formDashboard.LoadData("Project", formDashboard.dgvDataProject);
+            //formDashboard.LoadData("Project", formDashboard.dgvDataProject);
             formDashboard.LoadTreeView("Project");
             this.Close();
         }

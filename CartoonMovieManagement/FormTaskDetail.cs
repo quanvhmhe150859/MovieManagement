@@ -362,7 +362,7 @@ namespace CartoonMovieManagement
 
                 MessageBox.Show("Save changes successfully.");
 
-                formDashboard.LoadData("Task", formDashboard.dgvDataTask);
+                //formDashboard.LoadData("Task", formDashboard.dgvDataTask);
                 formDashboard.LoadTreeView("Employee");
 
                 this.Close();

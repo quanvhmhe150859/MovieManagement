@@ -243,7 +243,7 @@ namespace CartoonMovieManagement
                 context.SaveChanges();
                 MessageBox.Show("Save successfully");
 
-                formDashboard.LoadData("Episode", formDashboard.dgvDataEpisode);
+                //formDashboard.LoadData("Episode", formDashboard.dgvDataEpisode);
                 formDashboard.LoadTreeView("Project");
                 this.Close();
             }
